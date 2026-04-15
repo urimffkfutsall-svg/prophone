@@ -1,0 +1,1819 @@
+﻿/* eslint-disable */
+import { supabase } from "./supabase";
+import { QRCodeSVG } from "qrcode.react";
+import { useState, useEffect, useCallback, useRef } from "react";
+
+// ============================================================
+// DataPhone v2 - Mobile Repair Shop Management System
+// ============================================================
+
+// ---- COLOR TOKENS (Light & Dark) ----
+const THEME = {
+  light: {
+    accent: "#0EA5E9",        // Sky blue - primary accent
+    accentDark: "#0284C7",
+    accentGrad: "linear-gradient(135deg, #0EA5E9, #0369A1)",
+    success: "#10B981",
+    successGrad: "linear-gradient(135deg, #10B981, #059669)",
+    danger: "#EF4444",
+    dangerGrad: "linear-gradient(135deg, #EF4444, #DC2626)",
+    warn: "#F59E0B",
+    bg: "#F0F4F8",
+    surface: "#FFFFFF",
+    surfaceAlt: "#F8FAFC",
+    border: "#E2E8F0",
+    borderStrong: "#CBD5E1",
+    text: "#0F172A",
+    textMuted: "#64748B",
+    textFaint: "#94A3B8",
+    nav: "#FFFFFF",
+    navBorder: "#E2E8F0",
+    inputBg: "#F8FAFC",
+    overlay: "rgba(15,23,42,0.45)",
+    badge: { new: { bg: "#FEE2E2", color: "#EF4444" }, ne_proces: { bg: "#FEF3C7", color: "#D97706" }, gati: { bg: "#DBEAFE", color: "#2563EB" }, perfunduar: { bg: "#D1FAE5", color: "#059669" }, i_marre: { bg: "#EDE9FE", color: "#7C3AED" }, nuk_merret: { bg: "#F1F5F9", color: "#475569" } },
+  },
+  dark: {
+    accent: "#38BDF8",
+    accentDark: "#0EA5E9",
+    accentGrad: "linear-gradient(135deg, #38BDF8, #0EA5E9)",
+    success: "#34D399",
+    successGrad: "linear-gradient(135deg, #34D399, #10B981)",
+    danger: "#F87171",
+    dangerGrad: "linear-gradient(135deg, #F87171, #EF4444)",
+    warn: "#FBBF24",
+    bg: "#0B1120",
+    surface: "#131D2E",
+    surfaceAlt: "#1A2744",
+    border: "#1E3A5F",
+    borderStrong: "#2563EB22",
+    text: "#F1F5F9",
+    textMuted: "#94A3B8",
+    textFaint: "#475569",
+    nav: "#131D2E",
+    navBorder: "#1E3A5F",
+    inputBg: "#0B1120",
+    overlay: "rgba(0,0,0,0.65)",
+    badge: { new: { bg: "#7f1d1d55", color: "#FCA5A5" }, ne_proces: { bg: "#78350f55", color: "#FCD34D" }, gati: { bg: "#1e3a8a55", color: "#93C5FD" }, perfunduar: { bg: "#065f4655", color: "#6EE7B7" }, i_marre: { bg: "#4c1d9555", color: "#C4B5FD" }, nuk_merret: { bg: "#1e293b", color: "#94A3B8" } },
+  },
+};
+
+const STATUSES = [
+  { key: "new", label: "I Pranuar në Servis", color: "#EF4444", bg: "#FEE2E2" },
+  { key: "ne_proces", label: "Në Proces", color: "#D97706", bg: "#FEF3C7" },
+  { key: "gati", label: "Gati", color: "#2563EB", bg: "#DBEAFE" },
+  { key: "perfunduar", label: "Përfunduar", color: "#059669", bg: "#D1FAE5" },
+  { key: "i_marre", label: "I Marrë nga Servisi", color: "#7C3AED", bg: "#EDE9FE" },
+  { key: "nuk_merret", label: "Nuk Rregullohet", color: "#475569", bg: "#F1F5F9" },
+];
+
+const COUNTRIES = [
+  { name: "Kosovë", cities: ["Prishtinë","Gjilan","Prizren","Pejë","Ferizaj","Mitrovicë","Gjakovë","Podujevë","Vushtrri","Suharekë","Rahovec","Drenas","Lipjan","Malishevë","Kamenicë","Viti","Deçan","Istog","Klinë","Skenderaj","Dragash","Fushë Kosovë","Kaçanik","Shtime","Obiliq","Novobërdë","Zubin Potok","Leposaviq","Shtërpcë","Graçanicë","Ranillug","Partesh","Kllokot","Mamushë","Junik","Hani i Elezit"] },
+  { name: "Shqipëri", cities: ["Tiranë","Durrës","Vlorë","Shkodër","Elbasan","Korçë","Fier","Berat","Lushnjë","Pogradec","Kavajë","Kukës","Sarandë","Lezhë","Gjirokastër","Peshkopi","Burrel","Laç","Krujë","Librazhd"] },
+  { name: "Maqedoni e Veriut", cities: ["Shkup","Tetovë","Gostivar","Kumanovë","Strumicë","Ohër","Manastir","Prilep","Veles","Shtip","Kërçovë"] },
+];
+
+let idCounter = Date.now();
+const uid = () => `${++idCounter}`;
+
+const fmtDate = (d) => {
+  if (!d) return "";
+  return new Date(d).toLocaleString("sq-AL", { year: "numeric", month: "2-digit", day: "2-digit", hour: "2-digit", minute: "2-digit", second: "2-digit" });
+};
+
+const timeAgo = (d) => {
+  const s = Math.floor((Date.now() - new Date(d)) / 1000);
+  if (s < 60) return `${s} sekonda me pare`;
+  if (s < 3600) return `${Math.floor(s / 60)} minuta me pare`;
+  if (s < 86400) return `${Math.floor(s / 3600)} ore me pare`;
+  return `${Math.floor(s / 86400)} dite me pare`;
+};
+
+const daysOld = (d) => Math.floor((Date.now() - new Date(d)) / 86400000);
+
+
+
+// SVG Icons
+const Ic = {
+  plus: (s = 16) => <svg width={s} height={s} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>,
+  search: (s = 16) => <svg width={s} height={s} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>,
+  edit: (s = 12) => <svg width={s} height={s} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>,
+  trash: (s = 12) => <svg width={s} height={s} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round"><polyline points="3 6 5 6 21 6"/><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/></svg>,
+  print: (s = 16) => <svg width={s} height={s} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round"><polyline points="6 9 6 2 18 2 18 9"/><path d="M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2"/><rect x="6" y="14" width="12" height="8"/></svg>,
+  phone: (s = 14) => <svg width={s} height={s} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72c.127.96.361 1.903.7 2.81a2 2 0 0 1-.45 2.11N09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45c.907.339 1.85.573 2.81.7A2 2 0 0 1 22 16.92z"/></svg>,
+  copy: (s = 14) => <svg width={s} height={s} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>,
+  check: (s = 14) => <svg width={s} height={s} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round"><polyline points="20 6 9 17 4 12"/></svg>,
+  x: (s = 14) => <svg width={s} height={s} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>,
+  bolt: (s = 14) => <svg width={s} height={s} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg>,
+  arrow: (s = 14) => <svg width={s} height={s} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>,
+  logout: (s = 14) => <svg width={s} height={s} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/></svg>,
+  down: (s = 12) => <svg width={s} height={s} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round"><polyline points="6 9 12 15 18 9"/></svg>,
+  xred: (s = 14) => <svg width={s} height={s} viewBox="0 0 24 24" fill="none" stroke="#EF4444" strokeWidth="3" strokeLinecap="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>,
+  eye: (s = 14) => <svg width={s} height={s} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>,
+  msg: (s = 14) => <svg width={s} height={s} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>,
+  moon: (s = 16) => <svg width={s} height={s} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>,
+  sun: (s = 16) => <svg width={s} height={s} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round"><circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/></svg>,
+  bell: (s = 16) => <svg width={s} height={s} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/></svg>,
+  download: (s = 14) => <svg width={s} height={s} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>,
+  money: (s = 14) => <svg width={s} height={s} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round"><line x1="12" y1="1" x2="12" y2="23"/><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg>,
+  warn: (s = 14) => <svg width={s} height={s} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>,
+};
+
+const DEFAULT_DATA = { business: null, workers: [], clients: [], jobs: [], messages: [], history: [] };
+
+// ============================================================
+// ADMIN CONFIG
+// ============================================================
+const ADMIN_CREDENTIALS = {
+  email: "urim.ffkfutsall@gmail.com",
+  password: "Albitnora123456@",
+  name: "Administrator",
+  role: "admin",
+};
+
+const SUBSCRIPTION_PLANS = [
+  { key: "1m",  label: "1 Muaj",   days: 30,  price: "9.99€" },
+  { key: "3m",  label: "3 Muaj",   days: 90,  price: "24.99€" },
+  { key: "6m",  label: "6 Muaj",   days: 180, price: "44.99€" },
+  { key: "12m", label: "12 Muaj",  days: 365, price: "79.99€" },
+];
+
+const addSubscriptionDays = (account, days) => {
+  const now = new Date();
+  // If there's an existing expiry date in the future, extend from it; otherwise from now
+  let base = now;
+  if (account.expiryDate) {
+    const existing = new Date(account.expiryDate);
+    if (existing > now) base = existing;
+  }
+  const newExpiry = new Date(base.getTime() + days * 86400000);
+  return {
+    ...account,
+    expiryDate: newExpiry.toISOString(),
+    expiresIn: `${Math.ceil((newExpiry - now) / 86400000)} dite`,
+    status: "active",
+    payments: [...(account.payments || []), {
+      amount: SUBSCRIPTION_PLANS.find(p => p.days === days)?.price || `${days}d`,
+      date: now.toISOString(),
+      validFor: SUBSCRIPTION_PLANS.find(p => p.days === days)?.label || `${days} dite`,
+    }],
+  };
+};
+
+const getAccountStatus = (account) => {
+  if (account.status === "suspended") return "suspended";
+  if (!account.expiryDate) return "trial";
+  const now = new Date();
+  const expiry = new Date(account.expiryDate);
+  if (expiry < now) return "expired";
+  const daysLeft = Math.ceil((expiry - now) / 86400000);
+  if (daysLeft <= 7) return "expiring";
+  return "active";
+};
+
+// ---- Shared Components ----
+function Modal({ open, onClose, title, children, width = 480, t }) {
+  if (!open) return null;
+  const T = t || THEME.light;
+  return (
+    <div style={{ position: "fixed", inset: 0, zIndex: 1000, background: T.overlay, backdropFilter: "blur(4px)", display: "flex", alignItems: "center", justifyContent: "center", animation: "fadeIn .2s ease" }} onClick={onClose}>
+      <div onClick={e => e.stopPropagation()} style={{ background: T.surface, borderRadius: 16, padding: "28px 32px", width: "90%", maxWidth: width, maxHeight: "90vh", overflowY: "auto", boxShadow: "0 24px 80px rgba(0,0,0,.25)", animation: "slideUp .25s ease", border: `1px solid ${T.border}` }}>
+        <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 20 }}>
+          <h3 style={{ margin: 0, fontSize: 18, fontWeight: 700, color: T.text }}>{title}</h3>
+          <button onClick={onClose} style={{ background: "none", border: "none", cursor: "pointer", color: T.textFaint, width: 32, height: 32, borderRadius: 8, display: "flex", alignItems: "center", justifyContent: "center" }}>{Ic.x(18)}</button>
+        </div>
+        {children}
+      </div>
+    </div>
+  );
+}
+
+function Input({ label, value, onChange, placeholder, type = "text", required, error, t, ...rest }) {
+  const T = t || THEME.light;
+  return (
+    <div style={{ marginBottom: 16 }}>
+      {label && <label style={{ display: "block", fontSize: 13, fontWeight: 600, color: T.textMuted, marginBottom: 6 }}>{label}{required && <span style={{ color: T.danger }}> *</span>}</label>}
+      <input type={type} value={value} onChange={e => onChange(e.target.value)} placeholder={placeholder} {...rest}
+        style={{ width: "100%", padding: "10px 14px", borderRadius: 10, border: error ? `2px solid ${T.danger}` : `1.5px solid ${T.border}`, fontSize: 14, outline: "none", transition: "border .2s", background: T.inputBg, color: T.text, boxSizing: "border-box" }}
+        onFocus={e => e.target.style.border = `1.5px solid ${T.accent}`} onBlur={e => e.target.style.border = error ? `2px solid ${T.danger}` : `1.5px solid ${T.border}`} />
+      {error && <span style={{ fontSize: 12, color: T.danger, marginTop: 4 }}>{error}</span>}
+    </div>
+  );
+}
+
+function Select({ label, value, onChange, options, placeholder, required, t }) {
+  const T = t || THEME.light;
+  return (
+    <div style={{ marginBottom: 16 }}>
+      {label && <label style={{ display: "block", fontSize: 13, fontWeight: 600, color: T.textMuted, marginBottom: 6 }}>{label}{required && <span style={{ color: T.danger }}> *</span>}</label>}
+      <select value={value} onChange={e => onChange(e.target.value)} style={{ width: "100%", padding: "10px 14px", borderRadius: 10, border: `1.5px solid ${T.border}`, fontSize: 14, outline: "none", background: T.inputBg, color: value ? T.text : T.textFaint, cursor: "pointer", boxSizing: "border-box" }}>
+        <option value="">{placeholder || "Zgjedh..."}</option>
+        {options.map(o => <option key={o.value || o} value={o.value || o}>{o.label || o}</option>)}
+      </select>
+    </div>
+  );
+}
+
+function Textarea({ label, value, onChange, placeholder, rows = 3, required, t }) {
+  const T = t || THEME.light;
+  return (
+    <div style={{ marginBottom: 16 }}>
+      {label && <label style={{ display: "block", fontSize: 13, fontWeight: 600, color: T.textMuted, marginBottom: 6 }}>{label}{required && <span style={{ color: T.danger }}> *</span>}</label>}
+      <textarea value={value} onChange={e => onChange(e.target.value)} placeholder={placeholder} rows={rows}
+        style={{ width: "100%", padding: "10px 14px", borderRadius: 10, border: `1.5px solid ${T.border}`, fontSize: 14, outline: "none", background: T.inputBg, color: T.text, resize: "vertical", fontFamily: "inherit", boxSizing: "border-box" }} />
+    </div>
+  );
+}
+
+function Btn({ children, onClick, variant = "primary", size = "md", style: s, disabled, t, ...rest }) {
+  const T = t || THEME.light;
+  const base = { border: "none", borderRadius: 10, cursor: disabled ? "not-allowed" : "pointer", fontWeight: 600, display: "inline-flex", alignItems: "center", gap: 6, transition: "all .2s", fontFamily: "inherit", opacity: disabled ? 0.5 : 1 };
+  const sizes = { sm: { padding: "6px 14px", fontSize: 12 }, md: { padding: "10px 20px", fontSize: 14 }, lg: { padding: "12px 28px", fontSize: 15 } };
+  const variants = {
+    primary: { background: T.accentGrad, color: "#fff" },
+    success: { background: T.successGrad, color: "#fff" },
+    danger: { background: T.dangerGrad, color: "#fff" },
+    outline: { background: "transparent", color: T.accent, border: `1.5px solid ${T.accent}` },
+    ghost: { background: "transparent", color: T.textMuted },
+    dark: { background: T.text, color: T.surface },
+  };
+  return <button onClick={onClick} disabled={disabled} style={{ ...base, ...sizes[size], ...variants[variant], ...s }} {...rest}
+    onMouseEnter={e => { if (!disabled) { e.currentTarget.style.transform = "translateY(-1px)"; e.currentTarget.style.boxShadow = "0 4px 16px rgba(0,0,0,.18)"; }}}
+    onMouseLeave={e => { e.currentTarget.style.transform = "none"; e.currentTarget.style.boxShadow = "none"; }}>{children}</button>;
+}
+
+function Badge({ status, t }) {
+  const T = t || THEME.light;
+  const s = STATUSES.find(st => st.key === status) || STATUSES[0];
+  const colors = T.badge?.[status] || { bg: s.bg, color: s.color };
+  return <span style={{ display: "inline-block", padding: "4px 12px", borderRadius: 20, fontSize: 11, fontWeight: 700, textTransform: "uppercase", background: colors.bg, color: colors.color, letterSpacing: 0.5 }}>{s.label}</span>;
+}
+
+function Toast({ message, visible }) {
+  if (!visible) return null;
+  return <div style={{ position: "fixed", top: 20, left: "50%", transform: "translateX(-50%)", background: "#0F172A", color: "#fff", padding: "12px 28px", borderRadius: 12, fontSize: 14, fontWeight: 600, zIndex: 2000, boxShadow: "0 8px 32px rgba(0,0,0,.3)", animation: "slideDown .3s ease", display: "flex", alignItems: "center", gap: 8 }}>{Ic.check(14)} {message}</div>;
+}
+
+// ---- Stale Jobs Alert Banner ----
+function StaleAlert({ jobs, onNavigate, t }) {
+  const T = t || THEME.light;
+  const stale = jobs.filter(j => !["perfunduar","nuk_merret"].includes(j.status) && daysOld(j.createdAt) >= 3);
+  if (stale.length === 0) return null;
+  return (
+    <div style={{ background: `linear-gradient(135deg, #7C3AED15, #DC262615)`, border: `1.5px solid #DC262640`, borderRadius: 12, padding: "12px 20px", marginBottom: 16, display: "flex", alignItems: "center", gap: 12, cursor: "pointer" }} onClick={() => onNavigate("dashboard")}>
+      <span style={{ color: "#DC2626", display: "flex" }}>{Ic.warn(18)}</span>
+      <div>
+        <span style={{ fontWeight: 700, fontSize: 13, color: "#DC2626" }}>{stale.length} punë të vjetra (3+ ditë)</span>
+        <span style={{ fontSize: 12, color: T.textMuted, marginLeft: 8 }}>Kliket per t'i pare</span>
+      </div>
+      <div style={{ marginLeft: "auto", display: "flex", gap: 6, flexWrap: "wrap" }}>
+        {stale.slice(0, 3).map(j => <span key={j.id} style={{ background: "#DC262615", color: "#DC2626", padding: "2px 8px", borderRadius: 20, fontSize: 11, fontWeight: 600 }}>{j.phoneModel} ({daysOld(j.createdAt)}d)</span>)}
+        {stale.length > 3 && <span style={{ color: "#DC2626", fontSize: 11, fontWeight: 600, padding: "2px 0" }}>+{stale.length - 3} tjera</span>}
+      </div>
+    </div>
+  );
+}
+
+// ---- Export CSV ----
+function exportJobsCSV(jobs, clients, workers) {
+  const header = ["Nr", "Klienti", "Telefon Klienti", "Modeli", "IMEI", "Kodi", "Pershkrimi", "Puntori", "Status", "Cmimi", "Data Pranimit"];
+  const rows = jobs.map(j => {
+    const cl = clients.find(c => c.id === j.clientId);
+    const wk = workers.find(w => w.id === j.workerId);
+    return [
+      `#${j.id.slice(-6)}`,
+      cl?.name || "",
+      cl?.phone || "",
+      j.phoneModel,
+      j.imei || "",
+      j.code || "",
+      `"${(j.description || "").replace(/"/g, "'")}"`,
+      wk?.name || "",
+      STATUSES.find(s => s.key === j.status)?.label || j.status,
+      j.price || "",
+      fmtDate(j.createdAt),
+    ].join(",");
+  });
+  const csv = [header.join(","), ...rows].join("\n");
+  const blob = new Blob(["\uFEFF" + csv], { type: "text/csv;charset=utf-8;" });
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement("a");
+  a.href = url; a.download = `DataPhone_Punet_${new Date().toISOString().slice(0,10)}.csv`;
+  a.click(); URL.revokeObjectURL(url);
+}
+
+// ============================================================
+// COUPON COMPONENT
+// ============================================================
+function PrintCoupon({ job, client, worker, business, onClose }) {
+  const qrData = window.location.origin + '?v=1' + '&jid=' + encodeURIComponent(job.id) + '&cn=' + encodeURIComponent(client?.name||'') + '&cp=' + encodeURIComponent(client?.phone||'') + '&pm=' + encodeURIComponent(job.phoneModel||'') + '&im=' + encodeURIComponent(job.imei||'') + '&ds=' + encodeURIComponent((job.description||'').substring(0,50)) + '&pr=' + encodeURIComponent(job.price||'') + '&st=' + encodeURIComponent(job.status||'new') + '&wn=' + encodeURIComponent(worker?.name||'') + '&bn=' + encodeURIComponent(business?.name||'') + '&dt=' + encodeURIComponent(job.createdAt||'');
+  const printRef = useRef(null);
+  const handlePrint = () => {
+    const content = printRef.current;
+    const win = window.open("", "_blank");
+    win.document.write(`<!DOCTYPE html><html><head><title>Kupon</title><style>@page{size:80mm 210mm;margin:0}body{margin:0;padding:0;font-family:'Segoe UI',Arial,sans-serif}*{box-sizing:border-box}</style></head><body>${content.innerHTML}</body></html>`);
+    win.document.close();
+    setTimeout(() => win.print(), 300);
+  };
+  const statusObj = STATUSES.find(s => s.key === job.status) || STATUSES[0];
+  return (
+    <div style={{ position: "fixed", inset: 0, zIndex: 1000, background: "rgba(15,20,30,0.55)", backdropFilter: "blur(4px)", display: "flex", alignItems: "center", justifyContent: "center" }} onClick={onClose}>
+      <div onClick={e => e.stopPropagation()} style={{ background: "#f4f4f8", borderRadius: 16, padding: 24, maxHeight: "95vh", overflowY: "auto" }}>
+        <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 16 }}>
+          <h3 style={{ margin: 0, fontSize: 16, fontWeight: 700 }}>Kuponi i Printimit</h3>
+          <div style={{ display: "flex", gap: 8 }}>
+            <Btn variant="primary" size="sm" onClick={handlePrint}>{Ic.print(14)} Printo</Btn>
+            <button onClick={onClose} style={{ background: "none", border: "none", cursor: "pointer", color: "#94a3b8" }}>{Ic.x(18)}</button>
+          </div>
+        </div>
+        <div ref={printRef}>
+          <div style={{ width: "302px", minHeight: "793px", background: "#fff", fontFamily: "'Segoe UI',Arial,sans-serif", fontSize: 11, color: "#1a1a2e", display: "flex", flexDirection: "column" }}>
+            <div style={{ flex: 1, padding: "16px 14px" }}>
+              <div style={{ textAlign: "center", marginBottom: 12, paddingBottom: 10, borderBottom: "2px solid #1a1a2e" }}>
+                <div style={{ fontSize: 20, fontWeight: 900, letterSpacing: -0.5 }}>{business?.name || "DataPhone"}</div>
+                {business?.address && <div style={{ fontSize: 9, color: "#64748b", marginTop: 2 }}>{business.address}</div>}
+                {business?.phone && <div style={{ fontSize: 9, color: "#64748b" }}>Tel: {business.phone}</div>}
+              </div>
+              <div style={{ textAlign: "center", fontSize: 13, fontWeight: 800, textTransform: "uppercase", letterSpacing: 1, marginBottom: 10 }}>Kupon Pranues</div>
+              {[["Nr. Punes", `#${job.id.slice(-6)}`], ["Klienti", client?.name || "—"], ["Telefon", client?.phone || "—"], ["Modeli", job.phoneModel], ["IMEI", job.imei || "—"], ["Kodi", job.code || "—"], ["Cmimi", job.price ? `${job.price}€` : "—"], ["Data", fmtDate(job.createdAt)], ["Puntori", worker?.name || "—"]].map(([l, v]) => (
+                <div key={l} style={{ display: "flex", justifyContent: "space-between", padding: "3px 0", borderBottom: "1px dashed #e2e8f0" }}>
+                  <span style={{ fontWeight: 600, color: "#64748b" }}>{l}:</span>
+                  <span style={{ fontWeight: 700, fontSize: 11 }}>{v}</span>
+                </div>
+              ))}
+              <div style={{ marginTop: 8, marginBottom: 8 }}>
+                <div style={{ fontWeight: 700, fontSize: 10, color: "#64748b", marginBottom: 3 }}>Pershkrimi:</div>
+                <div style={{ fontSize: 10, lineHeight: 1.4, padding: "4px 6px", background: "#f8fafc", borderRadius: 4, border: "1px solid #e2e8f0" }}>{job.description}</div>
+              </div>
+              <div style={{ textAlign: "center", padding: "6px 0", marginBottom: 10, background: statusObj.bg, borderRadius: 6 }}>
+                <span style={{ fontSize: 12, fontWeight: 800, color: statusObj.color, textTransform: "uppercase" }}>Statusi: {statusObj.label}</span>
+              </div>
+              <div style={{ textAlign: "center", marginBottom: 8 }}>
+                <QRCodeSVG value={qrData} size={100} />
+                <div style={{ fontSize: 8, color: "#94a3b8", marginTop: 4 }}>Skanoni per te pare statusin e pajisjes</div>
+              </div>
+              <div style={{ textAlign: "center", fontSize: 8, color: "#94a3b8" }}>Powered by DataPhone</div>
+            </div>
+            <div style={{ borderTop: "2px dashed #94a3b8", margin: "0 8px", height: 24, display: "flex", alignItems: "center", justifyContent: "center" }}>
+              <span style={{ background: "#fff", padding: "0 8px", fontSize: 7, color: "#94a3b8", textTransform: "uppercase", letterSpacing: 1 }}>-- SHKEPUT KETU -- KOPJA E SERVISIT --</span>
+            </div>
+            <div style={{ padding: "12px 14px", background: "#fafafa" }}>
+              <div style={{ textAlign: "center", fontSize: 11, fontWeight: 800, textTransform: "uppercase", letterSpacing: 0.5, marginBottom: 8 }}>Kopja e Servisit</div>
+              {[["Nr", `#${job.id.slice(-6)}`], ["Klienti", client?.name || "—"], ["Tel", client?.phone || "—"], ["Modeli", job.phoneModel], ["Kodi", job.code || "—"], ["Cmimi", job.price ? `${job.price}€` : "—"]].map(([l, v]) => (
+                <div key={l} style={{ display: "flex", justifyContent: "space-between", padding: "2px 0", fontSize: 10 }}>
+                  <span style={{ fontWeight: 600, color: "#64748b" }}>{l}:</span>
+                  <span style={{ fontWeight: 700 }}>{v}</span>
+                </div>
+              ))}
+              <div style={{ fontSize: 9, color: "#64748b", marginTop: 4 }}><strong>Defekti:</strong> {job.description}</div>
+              <div style={{ textAlign: "center", marginTop: 6 }}><QRCodeSVG value={qrData} size={60} /></div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+}
+
+// ============================================================
+// Client Status View
+// ============================================================
+function ClientStatusView({ job, client, worker, business, onBack }) {
+  const statusObj = STATUSES.find(s => s.key === job.status) || STATUSES[0];
+  const progressStatuses = STATUSES.filter(s => s.key !== "nuk_merret");
+  const currentIdx = progressStatuses.findIndex(s => s.key === job.status);
+  return (
+    <div style={{ minHeight: "100vh", background: "linear-gradient(160deg, #f0f4f8 0%, #e0f2fe 50%, #f0f9ff 100%)", fontFamily: "'DM Sans','Segoe UI',sans-serif", padding: "24px 16px", display: "flex", justifyContent: "center" }}>
+      <div style={{ width: "100%", maxWidth: 440 }}>
+        <div style={{ textAlign: "center", marginBottom: 24 }}>
+          <div style={{ fontSize: 28, fontWeight: 900, color: "#0F172A", letterSpacing: -1 }}>Data<span style={{ background: "linear-gradient(135deg,#0EA5E9,#0369A1)", WebkitBackgroundClip: "text", WebkitTextFillColor: "transparent" }}>Phone</span></div>
+          <p style={{ color: "#64748b", fontSize: 13, margin: "4px 0 0" }}>Statusi i pajisjes suaj</p>
+        </div>
+        <div style={{ background: "#fff", borderRadius: 20, padding: 24, boxShadow: "0 12px 40px rgba(14,165,233,.12)", marginBottom: 16 }}>
+          <div style={{ textAlign: "center", marginBottom: 20 }}>
+            <div style={{ display: "inline-block", padding: "8px 24px", borderRadius: 30, background: statusObj.bg, color: statusObj.color, fontSize: 16, fontWeight: 800, textTransform: "uppercase" }}>{statusObj.label}</div>
+          </div>
+          <div style={{ display: "flex", gap: 4, marginBottom: 24 }}>
+            {progressStatuses.map((s, i) => <div key={s.key} style={{ flex: 1, height: 6, borderRadius: 3, background: i <= currentIdx ? s.color : "#e2e8f0", transition: "background .3s" }} />)}
+          </div>
+          {[["Nr. Punes", `#${job.id.slice(-6)}`], ["Klienti", client?.name || "—"], ["Modeli", job.phoneModel], ["IMEI", job.imei || "—"], ["Data pranimit", fmtDate(job.createdAt)], ["Tekniku", worker?.name || "—"]].map(([l, v]) => (
+            <div key={l} style={{ display: "flex", justifyContent: "space-between", padding: "10px 0", borderBottom: "1px solid #f1f5f9", fontSize: 14 }}>
+              <span style={{ color: "#64748b", fontWeight: 600 }}>{l}</span>
+              <span style={{ fontWeight: 700 }}>{v}</span>
+            </div>
+          ))}
+          <div style={{ marginTop: 16 }}>
+            <div style={{ fontWeight: 700, fontSize: 13, color: "#64748b", marginBottom: 6 }}>Pershkrimi i defektit:</div>
+            <div style={{ background: "#f8fafc", borderRadius: 10, padding: 12, fontSize: 13, lineHeight: 1.5, border: "1px solid #e2e8f0" }}>{job.description}</div>
+          </div>
+        </div>
+        {business && <div style={{ background: "#fff", borderRadius: 16, padding: 16, textAlign: "center" }}><div style={{ fontWeight: 700, fontSize: 14 }}>{business.name}</div>{business.phone && <div style={{ fontSize: 12, color: "#64748b", marginTop: 2 }}>Tel: {business.phone}</div>}</div>}
+        <div style={{ textAlign: "center", marginTop: 16 }}><Btn variant="ghost" size="sm" onClick={onBack}>Kthehu ne panel</Btn></div>
+      </div>
+    </div>
+  );
+}
+
+// ============================================================
+// Auth Page
+// ============================================================
+function AuthPage({ onRegister, onLogin, accounts, regSuccess, onGoLogin }) {
+  const [mode, setMode] = useState("register");
+  const [name, setName] = useState(""); const [email, setEmail] = useState(""); const [password, setPassword] = useState("");
+  const [phone, setPhone] = useState(""); const [country, setCountry] = useState(""); const [city, setCity] = useState("");
+  const [error, setError] = useState("");
+  const T = THEME.light;
+  const cities = COUNTRIES.find(c => c.name === country)?.cities || [];
+
+  const handleRegister = () => {
+    if (!name.trim() || !email.trim() || !password.trim()) { setError("Plotsoni te gjitha fushat e detyrueshme"); return; }
+    if (email.trim() === ADMIN_CREDENTIALS.email) { setError("Ky email nuk mund te regjistrohet"); return; }
+  if (email.trim() === ADMIN_CREDENTIALS.email) { setError("Ky email nuk mund te regjistrohet"); return; }
+  if (accounts.find(a => a.email === email.trim())) { setError("Ky email eshte i regjistruar tashme"); return; }
+    setError("");
+    onRegister({ id: uid(), name: name.trim(), email: email.trim(), password: password.trim(), phone: phone.trim(), country, city, address: "", facebook: "", instagram: "", website: "", registeredAt: new Date().toISOString(), expiresIn: "30 dite", payments: [{ amount: "0.00E", date: new Date().toISOString(), validFor: "30 dite" }] });
+  };
+  const handleLogin = () => {
+    if (!email.trim() || !password.trim()) { setError("Shkruani emailin dhe fjalekalimin"); return; }
+    // Check admin first
+    if (email.trim() === ADMIN_CREDENTIALS.email && password.trim() === ADMIN_CREDENTIALS.password) {
+      setError(""); onLogin({ email: ADMIN_CREDENTIALS.email, password: ADMIN_CREDENTIALS.password, role: "admin" });
+      return;
+    }
+    const account = accounts.find(a => a.email === email.trim() && a.password === password.trim());
+    if (!account) { setError("Email ose fjalekalim i gabuar"); return; }
+    if (getAccountStatus(account) === "suspended") { setError("Llogaria juaj është pezulluar. Kontaktoni administratorin."); return; }
+    setError(""); onLogin(account);
+  };
+
+  return (
+    <div style={{ minHeight: "100vh", display: "flex", alignItems: "center", justifyContent: "center", background: "linear-gradient(160deg, #f0f9ff 0%, #e0f2fe 50%, #f0f4f8 100%)", fontFamily: "'DM Sans','Segoe UI',sans-serif" }}>
+      <div style={{ background: "#fff", borderRadius: 24, padding: "48px 40px", width: "90%", maxWidth: 440, boxShadow: "0 20px 60px rgba(14,165,233,.14)", border: "1px solid #e0f2fe" }}>
+        <div style={{ textAlign: "center", marginBottom: 36 }}>
+          <div style={{ fontSize: 36, fontWeight: 900, color: "#0F172A", letterSpacing: -1 }}>Data<span style={{ background: "linear-gradient(135deg,#0EA5E9,#0369A1)", WebkitBackgroundClip: "text", WebkitTextFillColor: "transparent" }}>Phone</span></div>
+          <p style={{ color: "#94a3b8", fontSize: 14, margin: "8px 0 0" }}>{mode === "register" ? "Regjistro biznesin tend" : "Kyqu ne llogarine tende"}</p>
+        </div>
+        {error && <div style={{ background: "#FEE2E2", color: "#EF4444", padding: "10px 14px", borderRadius: 10, fontSize: 13, fontWeight: 600, marginBottom: 16 }}>{error}</div>}
+        {mode === "register" ? (
+          <>
+            <Input label="Emri Biznesit" value={name} onChange={setName} placeholder="p.sh. TechFix Mobile" required t={T} />
+            <Input label="Email" value={email} onChange={setEmail} placeholder="email@biznesi.com" type="email" required t={T} />
+            <Input label="Fjalekalimi" value={password} onChange={setPassword} placeholder="Shkruaj fjalekalimin" type="password" required t={T} />
+            <Input label="Numri Kontaktues" value={phone} onChange={setPhone} placeholder="044 123 456" t={T} />
+            <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 12 }}>
+              <Select label="Shteti" value={country} onChange={v => { setCountry(v); setCity(""); }} options={COUNTRIES.map(c => c.name)} placeholder="Shteti" t={T} />
+              <Select label="Qyteti" value={city} onChange={setCity} options={cities} placeholder="Qyteti" t={T} />
+            </div>
+            {regSuccess ? (
+                <div style={{ background: "#D1FAE5", border: "1.5px solid #059669", borderRadius: 12, padding: "20px 16px", textAlign: "center", marginTop: 8 }}>
+                  <div style={{ fontSize: 32, marginBottom: 8 }}>✅</div>
+                  <div style={{ fontWeight: 800, color: "#059669", fontSize: 16, marginBottom: 4 }}>U regjistruat me sukses!</div>
+                  <div style={{ color: "#065f46", fontSize: 13, marginBottom: 16 }}>Tani mund të kyqeni me llogarinë tuaj.</div>
+                  <Btn onClick={() => { onGoLogin(); setMode("login"); setError(""); }} variant="success" size="lg" style={{ width: "100%", justifyContent: "center" }} t={T}>KYQU TANI</Btn>
+                </div>
+              ) : (
+                <Btn onClick={handleRegister} variant="primary" size="lg" disabled={!name.trim() || !email.trim() || !password.trim()} style={{ width: "100%", justifyContent: "center", marginTop: 8 }} t={T}>REGJISTRO BIZNESIN</Btn>
+              )}
+            <div style={{ textAlign: "center", marginTop: 20 }}>
+              <span style={{ color: "#64748b", fontSize: 13 }}>Jeni regjistruar? </span>
+              <span onClick={() => { setMode("login"); setError(""); }} style={{ color: T.accent, fontSize: 13, fontWeight: 700, cursor: "pointer", textDecoration: "underline" }}>Kyqu ketu</span>
+            </div>
+          </>
+        ) : (
+          <>
+            <Input label="Email" value={email} onChange={setEmail} placeholder="email@biznesi.com" type="email" required t={T} />
+            <Input label="Fjalekalimi" value={password} onChange={setPassword} placeholder="Shkruaj fjalekalimin" type="password" required t={T} />
+            <Btn onClick={handleLogin} variant="primary" size="lg" disabled={!email.trim() || !password.trim()} style={{ width: "100%", justifyContent: "center", marginTop: 8 }} t={T}>KYQU</Btn>
+            <div style={{ textAlign: "center", marginTop: 20 }}>
+              <span style={{ color: "#64748b", fontSize: 13 }}>Nuk keni llogari? </span>
+              <span onClick={() => { setMode("register"); setError(""); }} style={{ color: T.accent, fontSize: 13, fontWeight: 700, cursor: "pointer", textDecoration: "underline" }}>Regjistrohu ketu</span>
+            </div>
+          </>
+        )}
+      </div>
+    </div>
+  );
+}
+
+// ============================================================
+// StatCard
+// ============================================================
+function StatCard({ label, count, color, active, onClick, T }) {
+  return (
+    <div onClick={onClick} style={{ background: active ? color : T.surface, color: active ? "#fff" : T.text, borderRadius: 14, padding: "16px 20px", textAlign: "center", cursor: "pointer", transition: "all .2s", minWidth: 100, border: active ? "none" : `2px solid ${color}30`, boxShadow: active ? `0 4px 20px ${color}50` : "none" }}
+      onMouseEnter={e => { if (!active) e.currentTarget.style.transform = "translateY(-2px)"; }} onMouseLeave={e => { e.currentTarget.style.transform = "none"; }}>
+      <div style={{ fontSize: 11, fontWeight: 600, textTransform: "uppercase", opacity: 0.85, letterSpacing: 0.5 }}>{label}</div>
+      <div style={{ fontSize: 28, fontWeight: 800, marginTop: 4 }}>{count}</div>
+    </div>
+  );
+}
+
+// ============================================================
+// Dashboard
+// ============================================================
+function Dashboard({ data, setData, onNavigate, currentWorker, T }) {
+  const [filter, setFilter] = useState("all");
+  const [search, setSearch] = useState(""); const [dateFilter, setDateFilter] = useState(""); const [statusFilter, setStatusFilter] = useState(""); const [workerFilter, setWorkerFilter] = useState("");
+  const todayStr = new Date().toISOString().slice(0, 10);
+  const todayJobs = data.jobs.filter(j => j.createdAt.slice(0, 10) === todayStr);
+  const todayDone = todayJobs.filter(j => j.status === "perfunduar" || j.status === "nuk_merret");
+  const statusCounts = () => STATUSES.map(s => ({ ...s, count: data.jobs.filter(j => j.status === s.key).length }));
+  const filteredJobs = data.jobs.filter(j => {
+    if (filter !== "all" && j.status !== filter) return false;
+    if (search) { const s = search.toLowerCase(); const cl = data.clients.find(c => c.id === j.clientId); if (!(cl?.name?.toLowerCase().includes(s) || j.imei?.toLowerCase().includes(s) || j.phoneModel?.toLowerCase().includes(s))) return false; }
+    if (statusFilter && j.status !== statusFilter) return false;
+    if (workerFilter && j.workerId !== workerFilter) return false;
+    if (dateFilter && j.createdAt.slice(0, 10) !== dateFilter) return false;
+    return true;
+  }).sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
+
+  const totalRevenue = data.jobs.filter(j => j.status === "perfunduar" && j.price).reduce((sum, j) => sum + parseFloat(j.price || 0), 0);
+
+  return (
+    <div>
+      <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 20 }}>
+        <h2 style={{ margin: 0, fontSize: 22, fontWeight: 800, color: T.text }}>Ballina</h2>
+        <div style={{ display: "flex", gap: 8 }}>
+          <Btn onClick={() => exportJobsCSV(filteredJobs, data.clients, data.workers)} variant="outline" size="sm" t={T}>{Ic.download(13)} Eksporto CSV</Btn>
+          <Btn onClick={() => onNavigate("createJob")} variant="primary" t={T}>{Ic.plus(14)} Shto pune</Btn>
+        </div>
+      </div>
+
+      <StaleAlert jobs={data.jobs} onNavigate={onNavigate} t={T} />
+
+      {currentWorker && (
+        <div style={{ background: T.surface, borderRadius: 16, padding: "20px 24px", marginBottom: 16, border: `1.5px solid ${T.border}` }}>
+          <div style={{ fontSize: 18, fontWeight: 700, color: T.text }}>{currentWorker.name}</div>
+          <div style={{ display: "flex", gap: 20, marginTop: 8, fontSize: 13, color: T.textMuted }}>
+            <span>Pune aktive: <strong style={{ color: T.accent }}>{data.jobs.filter(j => j.workerId === currentWorker.id && !["perfunduar","nuk_merret"].includes(j.status)).length}</strong></span>
+            <span>Punuar: <strong style={{ color: T.success }}>{data.jobs.filter(j => j.workerId === currentWorker.id && j.status === "perfunduar").length}</strong></span>
+          </div>
+        </div>
+      )}
+
+      {/* Revenue summary */}
+      <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr 1fr 1fr", gap: 12, marginBottom: 16 }}>
+        {[
+          { label: "Te gjitha punet", val: data.jobs.length, color: T.accent },
+          { label: "Aktive", val: data.jobs.filter(j => !["perfunduar","nuk_merret"].includes(j.status)).length, color: "#D97706" },
+          { label: "Perfunduara", val: data.jobs.filter(j => j.status === "perfunduar").length, color: T.success },
+          { label: "Te ardhura (€)", val: `${totalRevenue.toFixed(2)}€`, color: "#8B5CF6" },
+        ].map(item => (
+          <div key={item.label} style={{ background: T.surface, border: `1.5px solid ${T.border}`, borderRadius: 14, padding: "16px 20px" }}>
+            <div style={{ fontSize: 11, fontWeight: 600, color: T.textMuted, textTransform: "uppercase", letterSpacing: 0.5 }}>{item.label}</div>
+            <div style={{ fontSize: 26, fontWeight: 800, color: item.color, marginTop: 4 }}>{item.val}</div>
+          </div>
+        ))}
+      </div>
+
+      <div style={{ background: T.surface, borderRadius: 20, padding: 24, marginBottom: 16, border: `1.5px solid ${T.border}` }}>
+        <div style={{ fontSize: 13, fontWeight: 700, color: T.accent, textTransform: "uppercase", letterSpacing: 1 }}>+{todayJobs.length} PUNE TE REJA SOT</div>
+        <div style={{ fontSize: 12, color: T.textMuted, marginTop: 2 }}>{todayDone.length} PUNE TE PROCESUARA / KRYERA SOT</div>
+        <div style={{ display: "flex", gap: 10, marginTop: 16, flexWrap: "wrap" }}>
+          {statusCounts().map(s => <StatCard key={s.key} label={`${s.label} | sot`} count={s.count} color={s.color} active={filter === s.key} onClick={() => setFilter(filter === s.key ? "all" : s.key)} T={T} />)}
+        </div>
+      </div>
+
+      <div style={{ background: T.surface, borderRadius: 20, padding: 24, border: `1.5px solid ${T.border}` }}>
+        <div style={{ display: "flex", gap: 12, marginBottom: 16, flexWrap: "wrap", alignItems: "center" }}>
+          <div style={{ flex: 1, minWidth: 200, position: "relative" }}>
+            <span style={{ position: "absolute", left: 12, top: "50%", transform: "translateY(-50%)", color: T.textFaint, display: "flex" }}>{Ic.search(14)}</span>
+            <input value={search} onChange={e => setSearch(e.target.value)} placeholder="Kerko me emer, numer, telefon ose imei" style={{ width: "100%", padding: "10px 14px 10px 36px", borderRadius: 10, border: `1.5px solid ${T.border}`, fontSize: 13, outline: "none", background: T.inputBg, color: T.text, boxSizing: "border-box" }} />
+          </div>
+          <input type="date" value={dateFilter} onChange={e => setDateFilter(e.target.value)} style={{ padding: "10px 14px", borderRadius: 10, border: `1.5px solid ${T.border}`, fontSize: 13, background: T.inputBg, color: T.text, outline: "none" }} />
+        </div>
+        <div style={{ display: "flex", gap: 12, marginBottom: 16, flexWrap: "wrap" }}>
+          <select value={statusFilter} onChange={e => setStatusFilter(e.target.value)} style={{ padding: "8px 12px", borderRadius: 8, border: `1.5px solid ${T.border}`, fontSize: 12, background: T.inputBg, color: T.text }}><option value="">Zgjedh Statusin</option>{STATUSES.map(s => <option key={s.key} value={s.key}>{s.label}</option>)}</select>
+          <select value={workerFilter} onChange={e => setWorkerFilter(e.target.value)} style={{ padding: "8px 12px", borderRadius: 8, border: `1.5px solid ${T.border}`, fontSize: 12, background: T.inputBg, color: T.text }}><option value="">Zgjedh puntorin</option>{data.workers.map(w => <option key={w.id} value={w.id}>{w.name}</option>)}</select>
+          <Btn variant="ghost" size="sm" onClick={() => { setFilter("all"); setSearch(""); setDateFilter(""); setStatusFilter(""); setWorkerFilter(""); }} t={T}>Largo filtrat</Btn>
+        </div>
+
+        <div style={{ display: "grid", gridTemplateColumns: "1.5fr 1fr 1fr 1fr 1.5fr 0.8fr 0.8fr 1.2fr 0.8fr", padding: "10px 16px", fontSize: 12, fontWeight: 700, color: T.textMuted, textTransform: "uppercase", letterSpacing: 0.5, borderBottom: `2px solid ${T.border}` }}>
+          <span>Klienti</span><span>Status</span><span>Telefoni</span><span>IMEI</span><span>Pershkrimi</span><span>Puntori</span><span>Çmimi</span><span>Data pranimit</span><span>Action</span>
+        </div>
+        {filteredJobs.length === 0 ? (
+          <div style={{ textAlign: "center", padding: "40px 0", color: T.textFaint, fontSize: 14 }}>Ska asnje rezultat!</div>
+        ) : filteredJobs.map(job => {
+          const cl = data.clients.find(c => c.id === job.clientId);
+          const wk = data.workers.find(w => w.id === job.workerId);
+          const stale = !["perfunduar","nuk_merret"].includes(job.status) && daysOld(job.createdAt) >= 3;
+          return (
+            <div key={job.id} style={{ display: "grid", gridTemplateColumns: "1.5fr 1fr 1fr 1fr 1.5fr 0.8fr 0.8fr 1.2fr 0.8fr", padding: "14px 16px", fontSize: 13, alignItems: "center", borderBottom: `1px solid ${T.border}`, cursor: "pointer", transition: "background .15s", background: stale ? `${T.danger}08` : "transparent" }}
+              onMouseEnter={e => e.currentTarget.style.background = T.surfaceAlt} onMouseLeave={e => e.currentTarget.style.background = stale ? `${T.danger}08` : "transparent"}
+              onClick={() => onNavigate("jobDetail", job.id)}>
+              <span style={{ fontWeight: 600, color: T.text, display: "flex", alignItems: "center", gap: 6 }}>
+                {stale && <span title={`${daysOld(job.createdAt)} dite`} style={{ color: "#DC2626", display: "flex" }}>{Ic.warn(12)}</span>}
+                {cl?.name || "—"}
+              </span>
+              <span><Badge status={job.status} t={T} /></span>
+              <span style={{ color: T.textMuted }}>{job.phoneModel}</span>
+              <span style={{ color: job.imei ? T.textMuted : T.danger, display: "flex", alignItems: "center" }}>{job.imei || Ic.xred(12)}</span>
+              <span style={{ color: T.textMuted, overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>{job.description}</span>
+              <span style={{ color: T.textMuted }}>{wk?.name || "—"}</span>
+              <span style={{ color: job.price ? T.success : T.textFaint, fontWeight: job.price ? 700 : 400 }}>{job.price ? `${job.price}€` : "—"}</span>
+              <span style={{ color: T.textMuted, fontSize: 12 }}>{fmtDate(job.createdAt)}<br/><span style={{ color: T.textFaint, fontSize: 11 }}>{timeAgo(job.createdAt)}</span></span>
+              <span style={{ display: "flex", gap: 4 }}>
+                <button onClick={e => { e.stopPropagation(); onNavigate("jobDetail", job.id); }} style={{ background: T.accent, color: "#fff", border: "none", borderRadius: 6, width: 28, height: 28, cursor: "pointer", display: "flex", alignItems: "center", justifyContent: "center" }}>{Ic.edit(12)}</button>
+                <button onClick={e => { e.stopPropagation(); if (window.confirm("Je i sigurt?")) setData(d => ({ ...d, jobs: d.jobs.filter(j => j.id !== job.id) })); }} style={{ background: T.danger, color: "#fff", border: "none", borderRadius: 6, width: 28, height: 28, cursor: "pointer", display: "flex", alignItems: "center", justifyContent: "center" }}>{Ic.trash(12)}</button>
+              </span>
+            </div>
+          );
+        })}
+      </div>
+    </div>
+  );
+}
+
+// ============================================================
+// Workers
+// ============================================================
+function Workers({ data, setData, T }) {
+  const [showAdd, setShowAdd] = useState(false); const [name, setName] = useState(""); const [phone, setPhone] = useState("");
+  const addWorker = () => { if (!name.trim()) return; setData(d => ({ ...d, workers: [...d.workers, { id: uid(), name: name.trim(), phone: phone.trim(), createdAt: new Date().toISOString() }] })); setName(""); setPhone(""); setShowAdd(false); };
+  const deleteWorker = (id) => { if (window.confirm("Je i sigurt?")) setData(d => ({ ...d, workers: d.workers.filter(w => w.id !== id) })); };
+  const months = ["Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct","Nov","Dec"];
+  const now = new Date();
+  const last6 = Array.from({ length: 6 }, (_, i) => { const d = new Date(now.getFullYear(), now.getMonth() - 5 + i, 1); return { month: months[d.getMonth()], key: `${d.getFullYear()}-${d.getMonth()}` }; });
+
+  return (
+    <div>
+      <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 24 }}>
+        <h2 style={{ margin: 0, fontSize: 22, fontWeight: 800, color: T.text }}>Puntoret</h2>
+        <Btn onClick={() => setShowAdd(true)} variant="primary" t={T}>{Ic.plus(14)} Krijo puntor</Btn>
+      </div>
+      <div style={{ background: T.surface, borderRadius: 20, padding: 24, marginBottom: 20, border: `1.5px solid ${T.border}` }}>
+        <h3 style={{ margin: "0 0 8px", fontSize: 16, fontWeight: 700, color: T.text }}>Performanca e puntoreve</h3>
+        <p style={{ fontSize: 12, color: T.textFaint, margin: "0 0 20px" }}>Punet me te gjitha statuset. Per 6 muaj.</p>
+        <div style={{ display: "flex", alignItems: "end", gap: 8, height: 120, marginBottom: 8 }}>
+          {last6.map(m => { const count = data.jobs.filter(j => { const d = new Date(j.createdAt); return `${d.getFullYear()}-${d.getMonth()}` === m.key; }).length; const maxH = Math.max(...last6.map(m2 => data.jobs.filter(j => { const d = new Date(j.createdAt); return `${d.getFullYear()}-${d.getMonth()}` === m2.key; }).length), 1); return (
+            <div key={m.key} style={{ flex: 1, textAlign: "center" }}><div style={{ height: Math.max((count / maxH) * 100, 4), background: T.accentGrad, borderRadius: "6px 6px 0 0", margin: "0 auto", width: "60%" }} /><div style={{ fontSize: 10, color: T.textFaint, marginTop: 6 }}>{m.month}</div></div>
+          ); })}
+        </div>
+      </div>
+      <div style={{ background: T.surface, borderRadius: 20, padding: 24, marginBottom: 20, border: `1.5px solid ${T.border}` }}>
+        <h3 style={{ margin: "0 0 16px", fontSize: 16, fontWeight: 700, color: T.text }}>Tabela e statistikave</h3>
+        <div style={{ fontSize: 18, fontWeight: 800, color: T.text }}>Total: {data.jobs.length}</div>
+        {data.workers.length === 0 ? <div style={{ padding: "20px 0", color: T.textFaint, fontSize: 14 }}>0 Puntore</div> : data.workers.map(w => {
+          const wJobs = data.jobs.filter(j => j.workerId === w.id);
+          const wRevenue = wJobs.filter(j => j.status === "perfunduar" && j.price).reduce((s, j) => s + parseFloat(j.price || 0), 0);
+          return (<div key={w.id} style={{ background: T.surfaceAlt, borderRadius: 12, padding: 16, marginTop: 12, border: `1px solid ${T.border}` }}>
+            <div style={{ fontWeight: 700, marginBottom: 8, color: T.text, display: "flex", justifyContent: "space-between" }}>
+              <span>{w.name}</span>
+              <span style={{ fontSize: 13, color: T.success, fontWeight: 600 }}>{wRevenue.toFixed(2)}€ te ardhura</span>
+            </div>
+            {STATUSES.map(s => <div key={s.key} style={{ display: "flex", justifyContent: "space-between", padding: "4px 0", fontSize: 13, color: T.textMuted }}><span>{s.label}</span><span style={{ fontWeight: 600 }}>{wJobs.filter(j => j.status === s.key).length}</span></div>)}
+          </div>);
+        })}
+      </div>
+      <div style={{ background: T.surface, borderRadius: 20, padding: 24, border: `1.5px solid ${T.border}` }}>
+        <div style={{ display: "grid", gridTemplateColumns: "60px 1fr 1fr 100px", padding: "10px 16px", fontSize: 12, fontWeight: 700, color: T.textMuted, textTransform: "uppercase", borderBottom: `2px solid ${T.border}` }}><span>#</span><span>Emri</span><span>Numri</span><span>Manage</span></div>
+        {data.workers.length === 0 ? <div style={{ textAlign: "center", padding: 30, color: T.textFaint, fontSize: 14 }}>Nuk ka puntor te regjistruar!</div> : data.workers.map((w, i) => (
+          <div key={w.id} style={{ display: "grid", gridTemplateColumns: "60px 1fr 1fr 100px", padding: "14px 16px", fontSize: 13, borderBottom: `1px solid ${T.border}`, alignItems: "center" }}>
+            <span style={{ color: T.textFaint }}>{i + 1}</span><span style={{ fontWeight: 600, color: T.text }}>{w.name}</span><span style={{ color: T.textMuted }}>{w.phone}</span>
+            <button onClick={() => deleteWorker(w.id)} style={{ background: "#FEE2E2", color: "#EF4444", border: "none", borderRadius: 8, padding: "6px 12px", fontSize: 12, cursor: "pointer", fontWeight: 600 }}>Fshij</button>
+          </div>
+        ))}
+      </div>
+      <Modal open={showAdd} onClose={() => setShowAdd(false)} title="Shto puntorin te ri" t={T}>
+        <Input label="Emri" value={name} onChange={setName} placeholder="Emri i puntorit" required t={T} />
+        <Input label="Numri tel." value={phone} onChange={setPhone} placeholder="044123123" t={T} />
+        <div style={{ display: "flex", gap: 10, justifyContent: "flex-end", marginTop: 8 }}><Btn variant="ghost" onClick={() => setShowAdd(false)} t={T}>Mbyll</Btn><Btn variant="primary" onClick={addWorker} disabled={!name.trim()} t={T}>Shto puntorin</Btn></div>
+      </Modal>
+    </div>
+  );
+}
+
+// ============================================================
+// Clients
+// ============================================================
+function Clients({ data, setData, onNavigate, T }) {
+  const [search, setSearch] = useState("");
+  const sorted = [...data.clients].sort((a, b) => data.jobs.filter(j => j.clientId === b.id).length - data.jobs.filter(j => j.clientId === a.id).length);
+  const filtered = sorted.filter(c => !search || c.name.toLowerCase().includes(search.toLowerCase()) || c.phone.includes(search));
+  const top4 = sorted.slice(0, 4);
+  return (
+    <div>
+      <h2 style={{ margin: "0 0 24px", fontSize: 22, fontWeight: 800, color: T.text }}>Klientat</h2>
+      {top4.length > 0 && <div style={{ background: T.surface, borderRadius: 20, padding: 24, marginBottom: 20, border: `1.5px solid ${T.border}` }}><h3 style={{ margin: "0 0 16px", fontSize: 15, fontWeight: 700, color: T.textMuted }}>Top 4 klientat</h3><div style={{ display: "flex", gap: 12, flexWrap: "wrap" }}>{top4.map(c => <div key={c.id} style={{ background: T.surfaceAlt, borderRadius: 12, padding: "12px 20px", border: `1px solid ${T.border}` }}><div style={{ fontWeight: 700, fontSize: 14, color: T.text }}>{c.name}</div><div style={{ fontSize: 12, color: T.accent, fontWeight: 600 }}>{data.jobs.filter(j => j.clientId === c.id).length} pune</div></div>)}</div></div>}
+      <div style={{ background: T.surface, borderRadius: 20, padding: 24, border: `1.5px solid ${T.border}` }}>
+        <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 16 }}>
+          <h3 style={{ margin: 0, fontSize: 15, fontWeight: 700, color: T.text }}>Tabela e klientave</h3>
+          <div style={{ position: "relative" }}><span style={{ position: "absolute", left: 10, top: "50%", transform: "translateY(-50%)", color: T.textFaint, display: "flex" }}>{Ic.search(13)}</span><input value={search} onChange={e => setSearch(e.target.value)} placeholder="Kerko me emer ose me numer" style={{ padding: "8px 12px 8px 32px", borderRadius: 8, border: `1.5px solid ${T.border}`, fontSize: 13, width: 220, background: T.inputBg, color: T.text, outline: "none" }} /></div>
+        </div>
+        <div style={{ display: "grid", gridTemplateColumns: "1.5fr 1fr 0.8fr 1fr 0.8fr", padding: "10px 16px", fontSize: 12, fontWeight: 700, color: T.textMuted, textTransform: "uppercase", borderBottom: `2px solid ${T.border}` }}><span>Emri</span><span>Numri</span><span>Nr.Puneve</span><span>Regjistruar</span><span>Menaxho</span></div>
+        {filtered.length === 0 ? <div style={{ textAlign: "center", padding: 30, color: T.textFaint, fontSize: 14 }}>Nuk ka klienta! <span onClick={() => onNavigate("createJob")} style={{ color: T.accent, cursor: "pointer", textDecoration: "underline" }}>Shto klienta</span></div> : filtered.map(c => (
+          <div key={c.id} style={{ display: "grid", gridTemplateColumns: "1.5fr 1fr 0.8fr 1fr 0.8fr", padding: "14px 16px", fontSize: 13, borderBottom: `1px solid ${T.border}`, alignItems: "center" }}>
+            <span style={{ fontWeight: 600, color: T.text }}>{c.name}</span><span style={{ color: T.textMuted }}>{c.phone}</span><span style={{ fontWeight: 700, color: T.accent }}>{data.jobs.filter(j => j.clientId === c.id).length}</span><span style={{ color: T.textMuted, fontSize: 12 }}>{fmtDate(c.createdAt)}</span>
+            <button onClick={() => { if (window.confirm("Fshi?")) setData(d => ({ ...d, clients: d.clients.filter(cl => cl.id !== c.id) })); }} style={{ background: "#FEE2E2", color: "#EF4444", border: "none", borderRadius: 8, padding: "6px 12px", fontSize: 12, cursor: "pointer", fontWeight: 600 }}>Fshij</button>
+          </div>
+        ))}
+      </div>
+    </div>
+  );
+}
+
+// ============================================================
+// Create Job
+// ============================================================
+function CreateJob({ data, setData, onNavigate, T }) {
+  const [clientSearch, setClientSearch] = useState(""); const [selectedClient, setSelectedClient] = useState(null); const [newClientPhone, setNewClientPhone] = useState("");
+  const [workerId, setWorkerId] = useState(data.workers[0]?.id || ""); const [phoneModel, setPhoneModel] = useState(""); const [imei, setImei] = useState(""); const [code, setCode] = useState(""); const [description, setDescription] = useState(""); const [price, setPrice] = useState(""); const [showSuggestions, setShowSuggestions] = useState(false);
+  const matchingClients = data.clients.filter(c => clientSearch && (c.name.toLowerCase().includes(clientSearch.toLowerCase()) || c.phone.includes(clientSearch)));
+
+  const handleSubmit = () => {
+    if (!phoneModel.trim() || !description.trim()) return;
+    let clientId = selectedClient?.id;
+    if (!clientId && clientSearch.trim()) { const nc = { id: uid(), name: clientSearch.trim(), phone: newClientPhone.trim(), createdAt: new Date().toISOString() }; setData(d => ({ ...d, clients: [...d.clients, nc] })); clientId = nc.id; }
+    const job = { id: uid(), clientId, workerId, phoneModel: phoneModel.trim(), imei: imei.trim(), code: code.trim(), description: description.trim(), price: price.trim(), status: "new", createdAt: new Date().toISOString() };
+    setData(d => ({ ...d, jobs: [...d.jobs, job], history: [...d.history, { id: uid(), jobId: job.id, type: "status_change", from: null, to: "new", by: data.workers.find(w => w.id === workerId)?.name || "System", at: new Date().toISOString(), public: false }] }));
+    // Save to Supabase for QR scanning
+    const cl = selectedClient || { name: clientSearch.trim(), phone: newClientPhone.trim() };
+    const wk = data.workers.find(w => w.id === workerId);
+    alert("Duke ruajtur ne Supabase: " + job.id); saveJobToSupabase(job, cl, wk, data.business);
+    onNavigate("dashboard");
+  };
+
+  return (
+    <div>
+      <h2 style={{ margin: "0 0 24px", fontSize: 22, fontWeight: 800, color: T.text }}>Regjistro punen</h2>
+      <div style={{ background: T.surface, borderRadius: 20, padding: 28, border: `1.5px solid ${T.border}` }}>
+        <div style={{ background: `${T.accent}10`, borderRadius: 14, padding: "20px 24px", marginBottom: 24, borderLeft: `4px solid ${T.accent}` }}>
+          <h3 style={{ margin: "0 0 16px", fontSize: 16, fontWeight: 700, color: T.accent }}>Klienti</h3>
+          <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 16 }}>
+            <div style={{ position: "relative" }}>
+              <Input label="Klienti" value={clientSearch} onChange={v => { setClientSearch(v); setSelectedClient(null); setShowSuggestions(true); }} placeholder="Kerko klientin" required t={T} />
+              {showSuggestions && matchingClients.length > 0 && <div style={{ position: "absolute", top: "100%", left: 0, right: 0, zIndex: 10, background: T.surface, borderRadius: 10, border: `1.5px solid ${T.border}`, boxShadow: "0 8px 24px rgba(0,0,0,.12)", maxHeight: 150, overflowY: "auto" }}>{matchingClients.map(c => <div key={c.id} onClick={() => { setSelectedClient(c); setClientSearch(c.name); setNewClientPhone(c.phone); setShowSuggestions(false); }} style={{ padding: "10px 14px", cursor: "pointer", fontSize: 13, borderBottom: `1px solid ${T.border}`, color: T.text }} onMouseEnter={e => e.currentTarget.style.background = T.surfaceAlt} onMouseLeave={e => e.currentTarget.style.background = "transparent"}><strong>{c.name}</strong> — {c.phone}</div>)}</div>}
+            </div>
+            <Input label="Numri tel." value={newClientPhone} onChange={setNewClientPhone} placeholder="Numri kontaktues" t={T} />
+          </div>
+          {!selectedClient && clientSearch && <Btn variant="outline" size="sm" onClick={() => { const nc = { id: uid(), name: clientSearch.trim(), phone: newClientPhone.trim(), createdAt: new Date().toISOString() }; setData(d => ({ ...d, clients: [...d.clients, nc] })); setSelectedClient(nc); }} t={T}>Zgjedh/Shto klientin</Btn>}
+        </div>
+        <h3 style={{ margin: "0 0 16px", fontSize: 16, fontWeight: 700, color: T.accent }}>Puna re</h3>
+        <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 16 }}>
+          <Input label="Klienti zgjedhur" value={selectedClient?.name || clientSearch} onChange={() => {}} placeholder="Asnje" t={T} />
+          <Select label="Puntori" value={workerId} onChange={setWorkerId} required options={data.workers.map(w => ({ value: w.id, label: w.name }))} placeholder="Zgjedh puntorin" t={T} />
+        </div>
+        <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr 1fr 1fr", gap: 16 }}>
+          <Input label="Modeli telefonit" value={phoneModel} onChange={setPhoneModel} placeholder="iPhone 12 blu" required t={T} />
+          <Input label="IMEI" value={imei} onChange={setImei} placeholder="3576647773..." t={T} />
+          <Input label="Kodi" value={code} onChange={setCode} placeholder="123456" t={T} />
+          <Input label="Çmimi (€)" value={price} onChange={setPrice} placeholder="0.00" type="number" t={T} />
+        </div>
+        <Textarea label="Pershkrimi" value={description} onChange={setDescription} placeholder="Shenuaj detaje rreth punes." required rows={4} t={T} />
+        <div style={{ display: "flex", justifyContent: "flex-end", marginTop: 8 }}><Btn variant="primary" size="lg" onClick={handleSubmit} disabled={!phoneModel.trim() || !description.trim()} t={T}>Shto Punen</Btn></div>
+      </div>
+    </div>
+  );
+}
+
+// ============================================================
+// Job Detail
+// ============================================================
+function JobDetail({ data, setData, jobId, onNavigate, T }) {
+  const [showMsg, setShowMsg] = useState(false); const [showCoupon, setShowCoupon] = useState(false); const [showClientView, setShowClientView] = useState(false);
+  const [msgTitle, setMsgTitle] = useState(""); const [msgBody, setMsgBody] = useState(""); const [msgPublic, setMsgPublic] = useState(false);
+  const [editField, setEditField] = useState(null); const [editValue, setEditValue] = useState("");
+
+  const job = data.jobs.find(j => j.id === jobId);
+  if (!job) return <div style={{ padding: 40, textAlign: "center", color: T.textFaint }}>Puna nuk u gjet.</div>;
+  const client = data.clients.find(c => c.id === job.clientId);
+  const worker = data.workers.find(w => w.id === job.workerId);
+  const jobHistory = data.history.filter(h => h.jobId === jobId).sort((a, b) => new Date(b.at) - new Date(a.at));
+  const jobMessages = data.messages.filter(m => m.jobId === jobId).sort((a, b) => new Date(b.at) - new Date(a.at));
+
+  const changeStatus = (ns) => { updateJobStatusSupabase(jobId, ns); if (ns === job.status) return; setData(d => ({ ...d, jobs: d.jobs.map(j => j.id === jobId ? { ...j, status: ns } : j), history: [...d.history, { id: uid(), jobId, type: "status_change", from: job.status, to: ns, by: worker?.name || "System", at: new Date().toISOString(), public: true }] })); };
+  const saveEdit = (field) => { setData(d => ({ ...d, jobs: d.jobs.map(j => j.id === jobId ? { ...j, [field]: editValue } : j) })); setEditField(null); };
+  const addMessage = () => { if (!msgTitle.trim()) return; setData(d => ({ ...d, messages: [...d.messages, { id: uid(), jobId, title: msgTitle.trim(), body: msgBody.trim(), public: msgPublic, at: new Date().toISOString() }] })); setMsgTitle(""); setMsgBody(""); setMsgPublic(false); setShowMsg(false); };
+
+  if (showClientView) return <ClientStatusView job={job} client={client} worker={worker} business={data.business} onBack={() => setShowClientView(false)} />;
+
+  const EF = ({ label, field, value }) => (
+    <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", padding: "12px 0", borderBottom: `1px solid ${T.border}` }}>
+      <span style={{ fontSize: 13, color: T.textMuted, fontWeight: 600 }}>{label}</span>
+      <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
+        {editField === field ? (
+          <><input value={editValue} onChange={e => setEditValue(e.target.value)} style={{ padding: "6px 10px", borderRadius: 6, border: `1.5px solid ${T.accent}`, fontSize: 13, outline: "none", width: 180, background: T.inputBg, color: T.text }} autoFocus onKeyDown={e => e.key === "Enter" && saveEdit(field)} />
+          <button onClick={() => saveEdit(field)} style={{ background: T.success, color: "#fff", border: "none", borderRadius: 6, padding: "6px 10px", cursor: "pointer", display: "flex", alignItems: "center" }}>{Ic.check(11)}</button>
+          <button onClick={() => setEditField(null)} style={{ background: T.danger, color: "#fff", border: "none", borderRadius: 6, padding: "6px 10px", cursor: "pointer", display: "flex", alignItems: "center" }}>{Ic.x(11)}</button></>
+        ) : (
+          <><span style={{ fontSize: 14, fontWeight: 600, color: value ? T.text : T.danger, display: "flex", alignItems: "center" }}>{value || Ic.xred(12)}</span>
+          <button onClick={() => { setEditField(field); setEditValue(value || ""); }} style={{ background: T.accent, color: "#fff", border: "none", borderRadius: 6, width: 26, height: 26, cursor: "pointer", display: "flex", alignItems: "center", justifyContent: "center" }}>{Ic.edit(11)}</button></>
+        )}
+      </div>
+    </div>
+  );
+
+  return (
+    <div>
+      <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 24 }}>
+        <h2 style={{ margin: 0, fontSize: 22, fontWeight: 800, color: T.text }}>Perditso punen</h2>
+        <div style={{ display: "flex", gap: 8 }}>
+          <Btn variant="outline" size="sm" onClick={() => setShowClientView(true)} t={T}>{Ic.eye(13)} Pamja e klientit</Btn>
+          <Btn variant="dark" size="sm" onClick={() => setShowCoupon(true)} t={T}>{Ic.print(14)} Printo kuponin</Btn>
+          <Btn variant="primary" size="sm" onClick={() => window.open(`https://wa.me/${client?.phone?.replace(/\s/g, "")}`, "_blank")} t={T}>WhatsApp</Btn>
+        </div>
+      </div>
+      <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 20 }}>
+        <div style={{ background: T.surface, borderRadius: 20, padding: 28, border: `1.5px solid ${T.border}` }}>
+          <div style={{ fontSize: 12, color: T.textFaint, fontWeight: 600, textTransform: "uppercase" }}>NR.PUNEVE TE KLIENTIT: {data.jobs.filter(j => j.clientId === job.clientId).length}</div>
+          <div style={{ display: "flex", alignItems: "center", gap: 12, marginTop: 8, marginBottom: 4 }}>
+            <h2 style={{ margin: 0, fontSize: 24, fontWeight: 800, color: T.text }}>{client?.name || "—"}</h2>
+            <button onClick={() => { setEditField("clientName"); setEditValue(client?.name || ""); }} style={{ background: T.accent, color: "#fff", border: "none", borderRadius: 6, width: 26, height: 26, cursor: "pointer", display: "flex", alignItems: "center", justifyContent: "center" }}>{Ic.edit(11)}</button>
+          </div>
+          <div style={{ fontSize: 14, color: T.textMuted, marginBottom: 16, display: "flex", alignItems: "center", gap: 8 }}>{client?.phone} <span style={{ cursor: "pointer", display: "inline-flex", color: T.textMuted }}>{Ic.phone(14)}</span> <span style={{ cursor: "pointer", display: "inline-flex", color: T.textMuted }}>{Ic.copy(14)}</span></div>
+          <EF label="Status" field="_status" value={STATUSES.find(s => s.key === job.status)?.label} />
+          <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", padding: "12px 0", borderBottom: `1px solid ${T.border}` }}>
+            <span style={{ fontSize: 13, color: T.textMuted, fontWeight: 600 }}>Duke punu</span>
+            <div style={{ display: "flex", alignItems: "center", gap: 8 }}><span style={{ fontSize: 14, fontWeight: 600, color: T.text }}>{worker?.name || "—"}</span>
+              <select value={job.workerId} onChange={e => setData(d => ({ ...d, jobs: d.jobs.map(j => j.id === jobId ? { ...j, workerId: e.target.value } : j) }))} style={{ padding: "4px 8px", borderRadius: 6, border: `1px solid ${T.border}`, fontSize: 12, background: T.inputBg, color: T.text }}>{data.workers.map(w => <option key={w.id} value={w.id}>{w.name}</option>)}</select>
+            </div>
+          </div>
+          {/* Price field inline */}
+          <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", padding: "12px 0", borderBottom: `1px solid ${T.border}` }}>
+            <span style={{ fontSize: 13, color: T.textMuted, fontWeight: 600, display: "flex", alignItems: "center", gap: 6 }}>{Ic.money(13)} Çmimi (€)</span>
+            <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
+              {editField === "price" ? (
+                <><input value={editValue} onChange={e => setEditValue(e.target.value)} type="number" style={{ padding: "6px 10px", borderRadius: 6, border: `1.5px solid ${T.accent}`, fontSize: 13, outline: "none", width: 100, background: T.inputBg, color: T.text }} autoFocus onKeyDown={e => e.key === "Enter" && saveEdit("price")} />
+                <button onClick={() => saveEdit("price")} style={{ background: T.success, color: "#fff", border: "none", borderRadius: 6, padding: "6px 10px", cursor: "pointer", display: "flex", alignItems: "center" }}>{Ic.check(11)}</button>
+                <button onClick={() => setEditField(null)} style={{ background: T.danger, color: "#fff", border: "none", borderRadius: 6, padding: "6px 10px", cursor: "pointer", display: "flex", alignItems: "center" }}>{Ic.x(11)}</button></>
+              ) : (
+                <><span style={{ fontSize: 15, fontWeight: 700, color: job.price ? T.success : T.textFaint }}>{job.price ? `${job.price}€` : "—"}</span>
+                <button onClick={() => { setEditField("price"); setEditValue(job.price || ""); }} style={{ background: T.accent, color: "#fff", border: "none", borderRadius: 6, width: 26, height: 26, cursor: "pointer", display: "flex", alignItems: "center", justifyContent: "center" }}>{Ic.edit(11)}</button></>
+              )}
+            </div>
+          </div>
+          <EF label="Pranuar" field="_date" value={fmtDate(job.createdAt)} />
+          <EF label="Telefoni" field="phoneModel" value={job.phoneModel} />
+          <EF label="IMEI" field="imei" value={job.imei} />
+          <EF label="Kodi" field="code" value={job.code} />
+          <div style={{ marginTop: 20 }}>
+            <h3 style={{ fontSize: 16, fontWeight: 700, marginBottom: 8, display: "flex", alignItems: "center", gap: 8, color: T.text }}>Pershkrimi <button onClick={() => { setEditField("description"); setEditValue(job.description); }} style={{ background: "none", border: "none", cursor: "pointer", color: T.accent, display: "inline-flex" }}>{Ic.edit(13)}</button></h3>
+            {editField === "description" ? <div><textarea value={editValue} onChange={e => setEditValue(e.target.value)} rows={4} style={{ width: "100%", padding: 12, borderRadius: 10, border: `1.5px solid ${T.accent}`, fontSize: 14, outline: "none", fontFamily: "inherit", boxSizing: "border-box", background: T.inputBg, color: T.text }} /><div style={{ display: "flex", gap: 8, marginTop: 8 }}><Btn variant="primary" size="sm" onClick={() => saveEdit("description")} t={T}>Ruaj</Btn><Btn variant="ghost" size="sm" onClick={() => setEditField(null)} t={T}>Anulo</Btn></div></div> :
+            <div style={{ background: T.surfaceAlt, borderRadius: 12, padding: 16, fontSize: 14, color: T.textMuted, lineHeight: 1.6, border: `1px solid ${T.border}`, minHeight: 60 }}>{job.description}</div>}
+          </div>
+        </div>
+        <div>
+          <div style={{ background: T.surface, borderRadius: 20, padding: 24, border: `1.5px solid ${T.border}`, marginBottom: 20 }}>
+            <h3 style={{ margin: "0 0 12px", fontSize: 15, fontWeight: 700, display: "flex", alignItems: "center", gap: 8, color: T.text }}>Menyja shpejte <span style={{ background: T.accent, color: "#fff", borderRadius: 6, padding: "2px 8px", fontSize: 11, display: "inline-flex", alignItems: "center" }}>{Ic.bolt(11)}</span></h3>
+            <div style={{ display: "flex", gap: 8, flexWrap: "wrap" }}>{STATUSES.map(s => <button key={s.key} onClick={() => changeStatus(s.key)} style={{ padding: "8px 16px", borderRadius: 8, fontSize: 12, fontWeight: 700, cursor: "pointer", transition: "all .2s", background: job.status === s.key ? s.color : T.surfaceAlt, color: job.status === s.key ? "#fff" : s.color, border: `2px solid ${s.color}`, opacity: job.status === s.key ? 0.8 : 1 }}>{s.label}</button>)}</div>
+          </div>
+          <div style={{ background: T.surface, borderRadius: 20, padding: 24, border: `1.5px solid ${T.border}` }}>
+            <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 16 }}>
+              <h3 style={{ margin: 0, fontSize: 15, fontWeight: 700, color: T.text }}>Historiku dhe mesazhet</h3>
+              <Btn variant="primary" size="sm" onClick={() => setShowMsg(true)} t={T}>{Ic.plus(12)} Shto mesazh</Btn>
+            </div>
+            {jobMessages.map(m => <div key={m.id} style={{ background: `${T.accent}12`, borderRadius: 12, padding: 16, marginBottom: 12, borderLeft: `3px solid ${T.accent}` }}><div style={{ display: "flex", justifyContent: "space-between" }}><strong style={{ fontSize: 14, color: T.text }}>{m.title}</strong><span style={{ fontSize: 11, color: m.public ? T.success : T.textFaint, fontWeight: 600 }}>{m.public ? "Publik" : "Privat"}</span></div>{m.body && <p style={{ margin: "8px 0 0", fontSize: 13, color: T.textMuted }}>{m.body}</p>}<div style={{ fontSize: 11, color: T.textFaint, marginTop: 6 }}>{timeAgo(m.at)}</div></div>)}
+            {jobHistory.map(h => <div key={h.id} style={{ background: T.surfaceAlt, borderRadius: 12, padding: 16, marginBottom: 12, borderLeft: `3px solid ${T.border}` }}><div style={{ display: "flex", justifyContent: "space-between" }}><strong style={{ fontSize: 14, color: T.text }}>Statusi u nderrua</strong><span style={{ fontSize: 11, color: h.public ? T.success : T.textFaint, fontWeight: 600 }}>{h.public ? "Publik" : "Privat"}</span></div><div style={{ display: "flex", alignItems: "center", gap: 8, marginTop: 8 }}>{h.from && <Badge status={h.from} t={T} />}{h.from && <span style={{ color: T.textFaint, display: "flex" }}>{Ic.arrow(12)}</span>}<Badge status={h.to} t={T} /></div><div style={{ fontSize: 11, color: T.textFaint, marginTop: 6 }}>Detajet: {h.by} - {fmtDate(h.at)} <span style={{ marginLeft: 12 }}>{timeAgo(h.at)}</span></div></div>)}
+            {jobHistory.length === 0 && jobMessages.length === 0 && <div style={{ textAlign: "center", padding: 20, color: T.textFaint, fontSize: 14 }}>Nuk ka mesazhe</div>}
+          </div>
+        </div>
+      </div>
+      <Modal open={showMsg} onClose={() => setShowMsg(false)} title="Shto mesazh" t={T}>
+        <Input label="Titulli" value={msgTitle} onChange={setMsgTitle} placeholder="info" t={T} /><Textarea label="Mesazhi" value={msgBody} onChange={setMsgBody} placeholder="Shkruani mesazhin..." t={T} />
+        <label style={{ display: "flex", alignItems: "center", gap: 8, fontSize: 13, color: T.textMuted, marginBottom: 16, cursor: "pointer" }}><input type="checkbox" checked={msgPublic} onChange={e => setMsgPublic(e.target.checked)} /> Publik</label>
+        <div style={{ display: "flex", gap: 10, justifyContent: "flex-end" }}><Btn variant="ghost" onClick={() => setShowMsg(false)} t={T}>Mbyll</Btn><Btn variant="primary" onClick={addMessage} t={T}>Ruaj</Btn></div>
+      </Modal>
+      {showCoupon && <PrintCoupon job={job} client={client} worker={worker} business={data.business} onClose={() => setShowCoupon(false)} />}
+    </div>
+  );
+}
+
+// ============================================================
+// Business Settings
+// ============================================================
+function BusinessSettings({ data, setData, T }) {
+  const b = data.business;
+  const [form, setForm] = useState({ ...b });
+  const update = (k, v) => setForm(f => ({ ...f, [k]: v }));
+  const save = () => setData(d => ({ ...d, business: { ...d.business, ...form } }));
+  const statusCounts = STATUSES.map(s => ({ ...s, count: data.jobs.filter(j => j.status === s.key).length }));
+  const thisMonth = data.jobs.filter(j => { const d = new Date(j.createdAt); const n = new Date(); return d.getMonth() === n.getMonth() && d.getFullYear() === n.getFullYear(); }).length;
+  const last6 = data.jobs.filter(j => { const d = new Date(j.createdAt); const n = new Date(); return ((n.getFullYear() - d.getFullYear()) * 12 + n.getMonth() - d.getMonth()) <= 6; }).length;
+  const totalRevenue = data.jobs.filter(j => j.status === "perfunduar" && j.price).reduce((s, j) => s + parseFloat(j.price || 0), 0);
+
+  return (
+    <div>
+      <h2 style={{ margin: "0 0 24px", fontSize: 22, fontWeight: 800, color: T.text }}>Biznesi</h2>
+      <div style={{ background: T.surface, borderRadius: 20, padding: 24, marginBottom: 20, border: `1.5px solid ${T.border}` }}>
+        <h3 style={{ margin: "0 0 4px", fontSize: 14, color: T.textMuted, textAlign: "center" }}>Numri puneve sipas statusit</h3>
+        <div style={{ background: T.surfaceAlt, borderRadius: 12, padding: 20, marginBottom: 20, border: `1px solid ${T.border}` }}>
+          <div style={{ textAlign: "center", fontWeight: 700, marginBottom: 12, color: T.text }}>Te gjitha</div>
+          {STATUSES.map(s => <div key={s.key} style={{ display: "flex", justifyContent: "space-between", padding: "6px 0", fontSize: 13 }}><span style={{ color: T.textMuted }}>{s.label}</span><span style={{ fontWeight: 700, color: T.text }}>{statusCounts.find(sc => sc.key === s.key)?.count || 0}</span></div>)}
+          <div style={{ borderTop: `2px solid ${T.border}`, marginTop: 8, paddingTop: 8, fontSize: 18, fontWeight: 800, color: T.text }}>Total: {data.jobs.length}</div>
+        </div>
+        <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr 1fr 1fr", gap: 12 }}>
+          {[["Kete muaj", thisMonth], ["6 Muajt e fundit", last6], ["Te gjitha", data.jobs.length], ["Te ardhura", `${totalRevenue.toFixed(2)}€`]].map(([l, c]) => <div key={l} style={{ background: T.surfaceAlt, borderRadius: 12, padding: 16, textAlign: "center", border: `1px solid ${T.border}` }}><div style={{ fontSize: 12, color: T.textMuted }}>{l}</div><div style={{ fontSize: 22, fontWeight: 800, color: T.accent }}>{c}{typeof c === "number" && <span style={{ fontSize: 12, fontWeight: 400 }}> / pune</span>}</div></div>)}
+        </div>
+      </div>
+      <div style={{ background: T.surface, borderRadius: 20, padding: 28, marginBottom: 20, border: `1.5px solid ${T.border}` }}>
+        <div style={{ display: "flex", alignItems: "center", gap: 12, marginBottom: 20 }}><h2 style={{ margin: 0, fontSize: 22, fontWeight: 800, color: T.text }}>{b.name}</h2><span style={{ background: "#D1FAE5", color: "#10B981", padding: "4px 14px", borderRadius: 20, fontSize: 12, fontWeight: 700 }}>Aktiv</span></div>
+        <div style={{ display: "grid", gridTemplateColumns: "140px 1fr", gap: "8px 16px", fontSize: 14 }}>
+          <span style={{ color: T.textMuted, fontWeight: 600 }}>Email:</span><span style={{ color: T.text }}>{b.email || "—"}</span>
+          <span style={{ color: T.textMuted, fontWeight: 600 }}>Adresa:</span><span style={{ color: T.text }}>{b.address || "—"}</span>
+          <span style={{ color: T.textMuted, fontWeight: 600 }}>Numri Kontaktues:</span><span style={{ color: T.text }}>{b.phone || "—"}</span>
+          <span style={{ color: T.textMuted, fontWeight: 600 }}>Regjistruar:</span><span style={{ color: T.text }}>{fmtDate(b.registeredAt)}</span>
+          <span style={{ color: T.textMuted, fontWeight: 600 }}>Skadimi:</span><span style={{ color: T.accent, fontWeight: 600 }}>{b.expiresIn}</span>
+        </div>
+        <h3 style={{ margin: "24px 0 12px", fontSize: 15, fontWeight: 700, color: T.text }}>Pagesat e programit</h3>
+        <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr 1fr", padding: "10px 16px", fontSize: 12, fontWeight: 700, color: T.textMuted, borderBottom: `2px solid ${T.border}` }}><span>Shuma</span><span>Data pageses</span><span>Valide per</span></div>
+        {(b.payments || []).map((p, i) => <div key={i} style={{ display: "grid", gridTemplateColumns: "1fr 1fr 1fr", padding: "12px 16px", fontSize: 13, borderBottom: `1px solid ${T.border}`, color: T.text }}><span>{p.amount}</span><span>{fmtDate(p.date)}</span><span style={{ color: T.accent, fontWeight: 600 }}>{p.validFor}</span></div>)}
+      </div>
+      <div style={{ background: T.surface, borderRadius: 20, padding: 28, border: `1.5px solid ${T.border}` }}>
+        <h3 style={{ margin: "0 0 20px", fontSize: 16, fontWeight: 700, display: "flex", alignItems: "center", gap: 8, color: T.text }}>Perditso te dhenat e biznesit <span style={{ background: T.accent, color: "#fff", borderRadius: 6, padding: "2px 8px", fontSize: 11, display: "inline-flex", alignItems: "center" }}>{Ic.edit(11)}</span></h3>
+        <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 16 }}><Input label="Biznesi" value={form.name} onChange={v => update("name", v)} t={T} /><Input label="Numri Tel." value={form.phone || ""} onChange={v => update("phone", v)} t={T} /></div>
+        <Input label="Email" value={form.email || ""} onChange={v => update("email", v)} t={T} />
+        <Input label="Adresa" value={form.address || ""} onChange={v => update("address", v)} placeholder="Rruga Jonuzi objekti nr 128" t={T} />
+        <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr 1fr", gap: 16 }}><Input label="Facebook" value={form.facebook || ""} onChange={v => update("facebook", v)} placeholder="https://facebook.com/..." t={T} /><Input label="Instagram" value={form.instagram || ""} onChange={v => update("instagram", v)} placeholder="https://instagram.com/..." t={T} /><Input label="Website" value={form.website || ""} onChange={v => update("website", v)} placeholder="https://..." t={T} /></div>
+        <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 16 }}><Select label="Shteti" value={form.country || ""} onChange={v => update("country", v)} options={COUNTRIES.map(c => c.name)} t={T} /><Select label="Qyteti" value={form.city || ""} onChange={v => update("city", v)} options={(COUNTRIES.find(c => c.name === form.country)?.cities || [])} t={T} /></div>
+        <Btn variant="success" size="lg" onClick={save} style={{ width: "100%", justifyContent: "center", marginTop: 8 }} t={T}>Perditso</Btn>
+      </div>
+    </div>
+  );
+}
+
+// ============================================================
+
+// ============================================================
+// SETTINGS PAGE
+// ============================================================
+function SettingsPage({ tab, data, setData, onNavigate, T }) {
+  const [activeTab, setActiveTab] = React.useState(tab || "profili");
+  const tabs = [
+    { key: "profili", label: "Profili" },
+    { key: "perdoruesit", label: "Perdoruesit" },
+    { key: "param_print", label: "Parametrat e printimit" },
+    { key: "param_status", label: "Parametrat e statusave" },
+  ];
+  return (
+    <div>
+      <div style={{ display: "flex", alignItems: "center", gap: 16, marginBottom: 24 }}>
+        <button onClick={() => onNavigate("dashboard")} style={{ background: "none", border: "none", cursor: "pointer", color: T.textMuted, fontSize: 14, display: "flex", alignItems: "center", gap: 6 }}>← Kthehu</button>
+        <h2 style={{ margin: 0, fontSize: 22, fontWeight: 800, color: T.text }}>Manage Account</h2>
+      </div>
+      <div style={{ display: "flex", gap: 8, marginBottom: 24, flexWrap: "wrap" }}>
+        {tabs.map(t => (
+          <button key={t.key} onClick={() => setActiveTab(t.key)} style={{ padding: "10px 20px", borderRadius: 10, border: "none", cursor: "pointer", fontWeight: 600, fontSize: 13, background: activeTab === t.key ? T.accentGrad : T.surfaceAlt, color: activeTab === t.key ? "#fff" : T.textMuted, transition: "all .2s" }}>{t.label}</button>
+        ))}
+      </div>
+      {activeTab === "profili" && <SettingsProfili data={data} setData={setData} T={T} />}
+      {activeTab === "perdoruesit" && <SettingsPerdoruesit data={data} setData={setData} T={T} />}
+      {activeTab === "param_print" && <SettingsPrint data={data} setData={setData} T={T} />}
+      {activeTab === "param_status" && <SettingsStatuses data={data} setData={setData} T={T} />}
+    </div>
+  );
+}
+
+function SettingsProfili({ data, setData, T }) {
+  const b = data.business || {};
+  const [form, setForm] = React.useState({ name: b.name||"", email: b.email||"", phone: b.phone||"", address: b.address||"", country: b.country||"", city: b.city||"", facebook: b.facebook||"", instagram: b.instagram||"", website: b.website||"" });
+  const [logo, setLogo] = React.useState(b.logo || null);
+  const [saved, setSaved] = React.useState(false);
+  const handleLogoUpload = (e) => {
+    const file = e.target.files[0];
+    if (!file) return;
+    const reader = new FileReader();
+    reader.onload = (ev) => setLogo(ev.target.result);
+    reader.readAsDataURL(file);
+  };
+  const save = () => {
+    setData(d => ({ ...d, business: { ...d.business, ...form, logo } }));
+    setSaved(true);
+    setTimeout(() => setSaved(false), 2000);
+  };
+  const cities = COUNTRIES.find(c => c.name === form.country)?.cities || [];
+  return (
+    <div style={{ display: "grid", gap: 20 }}>
+      <div style={{ background: T.surface, borderRadius: 20, padding: 28, border: "1.5px solid " + T.border }}>
+        <h3 style={{ margin: "0 0 20px", fontSize: 16, fontWeight: 700, color: T.text }}>Logo e Biznesit</h3>
+        <div style={{ display: "flex", alignItems: "center", gap: 20 }}>
+          <div style={{ width: 100, height: 100, borderRadius: 16, border: "2px dashed " + T.border, display: "flex", alignItems: "center", justifyContent: "center", overflow: "hidden", background: T.surfaceAlt }}>
+            {logo ? <img src={logo} alt="logo" style={{ width: "100%", height: "100%", objectFit: "contain" }} /> : <span style={{ color: T.textFaint, fontSize: 12, textAlign: "center" }}>Nuk ka logo</span>}
+          </div>
+          <div>
+            <label style={{ display: "inline-block", padding: "10px 20px", background: T.accentGrad, color: "#fff", borderRadius: 10, cursor: "pointer", fontWeight: 600, fontSize: 13 }}>
+              Ngarko Logo nga PC
+              <input type="file" accept="image/*" onChange={handleLogoUpload} style={{ display: "none" }} />
+            </label>
+            {logo && <button onClick={() => setLogo(null)} style={{ marginLeft: 10, background: "none", border: "1.5px solid " + T.border, borderRadius: 10, padding: "10px 16px", cursor: "pointer", color: T.textMuted, fontSize: 13 }}>Largo logon</button>}
+            <p style={{ margin: "8px 0 0", fontSize: 12, color: T.textFaint }}>PNG, JPG deri 2MB. Logo shfaqet ne kupon.</p>
+          </div>
+        </div>
+      </div>
+      <div style={{ background: T.surface, borderRadius: 20, padding: 28, border: "1.5px solid " + T.border }}>
+        <h3 style={{ margin: "0 0 20px", fontSize: 16, fontWeight: 700, color: T.text }}>Informacioni i Biznesit</h3>
+        <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 16 }}>
+          <Input label="Emri Biznesit" value={form.name} onChange={v => setForm(f=>({...f,name:v}))} t={T} />
+          <Input label="Numri Tel." value={form.phone} onChange={v => setForm(f=>({...f,phone:v}))} t={T} />
+        </div>
+        <Input label="Email" value={form.email} onChange={v => setForm(f=>({...f,email:v}))} t={T} />
+        <Input label="Adresa" value={form.address} onChange={v => setForm(f=>({...f,address:v}))} t={T} />
+        <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr 1fr", gap: 16 }}>
+          <Input label="Facebook" value={form.facebook} onChange={v => setForm(f=>({...f,facebook:v}))} t={T} />
+          <Input label="Instagram" value={form.instagram} onChange={v => setForm(f=>({...f,instagram:v}))} t={T} />
+          <Input label="Website" value={form.website} onChange={v => setForm(f=>({...f,website:v}))} t={T} />
+        </div>
+        <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 16 }}>
+          <Select label="Shteti" value={form.country} onChange={v => setForm(f=>({...f,country:v,city:""}))} options={COUNTRIES.map(c=>c.name)} t={T} />
+          <Select label="Qyteti" value={form.city} onChange={v => setForm(f=>({...f,city:v}))} options={cities} t={T} />
+        </div>
+        <Btn variant={saved ? "success" : "primary"} size="lg" onClick={save} style={{ width: "100%", justifyContent: "center", marginTop: 8 }} t={T}>{saved ? "U ruajt!" : "Ruaj ndryshimet"}</Btn>
+      </div>
+    </div>
+  );
+}
+
+function SettingsPerdoruesit({ data, setData, T }) {
+  const [name, setName] = React.useState("");
+  const [phone, setPhone] = React.useState("");
+  const addWorker = () => {
+    if (!name.trim()) return;
+    setData(d => ({ ...d, workers: [...d.workers, { id: Date.now().toString(), name: name.trim(), phone: phone.trim(), createdAt: new Date().toISOString() }] }));
+    setName(""); setPhone("");
+  };
+  const removeWorker = (id) => setData(d => ({ ...d, workers: d.workers.filter(w => w.id !== id) }));
+  return (
+    <div style={{ display: "grid", gap: 20 }}>
+      <div style={{ background: T.surface, borderRadius: 20, padding: 28, border: "1.5px solid " + T.border }}>
+        <h3 style={{ margin: "0 0 20px", fontSize: 16, fontWeight: 700, color: T.text }}>Shto Perdorues te Ri</h3>
+        <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 16 }}>
+          <Input label="Emri" value={name} onChange={setName} placeholder="Emri i punëtorit" t={T} />
+          <Input label="Numri Tel." value={phone} onChange={setPhone} placeholder="044 123 456" t={T} />
+        </div>
+        <Btn variant="primary" onClick={addWorker} disabled={!name.trim()} t={T}>+ Shto Perdoruesin</Btn>
+      </div>
+      <div style={{ background: T.surface, borderRadius: 20, padding: 28, border: "1.5px solid " + T.border }}>
+        <h3 style={{ margin: "0 0 20px", fontSize: 16, fontWeight: 700, color: T.text }}>Perdoruesit Aktual ({data.workers.length})</h3>
+        {data.workers.length === 0 && <div style={{ textAlign: "center", padding: 40, color: T.textFaint }}>Nuk ka perdorues</div>}
+        {data.workers.map(w => (
+          <div key={w.id} style={{ display: "flex", justifyContent: "space-between", alignItems: "center", padding: "14px 0", borderBottom: "1px solid " + T.border }}>
+            <div>
+              <div style={{ fontWeight: 700, color: T.text, fontSize: 14 }}>{w.name}</div>
+              <div style={{ fontSize: 12, color: T.textMuted }}>{w.phone || "Pa numer"}</div>
+            </div>
+            <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
+              <span style={{ fontSize: 12, color: T.textFaint }}>{data.jobs.filter(j => j.workerId === w.id).length} pune</span>
+              <button onClick={() => removeWorker(w.id)} style={{ background: "#FEE2E2", color: "#EF4444", border: "none", borderRadius: 8, padding: "6px 12px", cursor: "pointer", fontWeight: 600, fontSize: 12 }}>Largo</button>
+            </div>
+          </div>
+        ))}
+      </div>
+    </div>
+  );
+}
+
+function SettingsPrint({ data, setData, T }) {
+  const b = data.business || {};
+  const [form, setForm] = React.useState({
+    printHeader: b.printHeader || "",
+    printFooter: b.printFooter || "",
+    printShowLogo: b.printShowLogo !== false,
+    printShowQR: b.printShowQR !== false,
+    printShowPrice: b.printShowPrice !== false,
+    printShowIMEI: b.printShowIMEI !== false,
+    printPaperSize: b.printPaperSize || "80mm",
+  });
+  const [saved, setSaved] = React.useState(false);
+  const save = () => {
+    setData(d => ({ ...d, business: { ...d.business, ...form } }));
+    setSaved(true);
+    setTimeout(() => setSaved(false), 2000);
+  };
+  const Toggle = ({ label, field }) => (
+    <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", padding: "14px 0", borderBottom: "1px solid " + T.border }}>
+      <span style={{ fontSize: 14, color: T.text }}>{label}</span>
+      <button onClick={() => setForm(f => ({ ...f, [field]: !f[field] }))} style={{ width: 48, height: 26, borderRadius: 13, border: "none", cursor: "pointer", background: form[field] ? T.accent : T.border, position: "relative", transition: "background .2s" }}>
+        <span style={{ position: "absolute", top: 3, left: form[field] ? 24 : 3, width: 20, height: 20, borderRadius: "50%", background: "#fff", transition: "left .2s", display: "block" }} />
+      </button>
+    </div>
+  );
+  return (
+    <div style={{ background: T.surface, borderRadius: 20, padding: 28, border: "1.5px solid " + T.border }}>
+      <h3 style={{ margin: "0 0 20px", fontSize: 16, fontWeight: 700, color: T.text }}>Parametrat e Kuponit</h3>
+      <Toggle label="Shfaq logon ne kupon" field="printShowLogo" />
+      <Toggle label="Shfaq QR kodin" field="printShowQR" />
+      <Toggle label="Shfaq cmimin" field="printShowPrice" />
+      <Toggle label="Shfaq IMEI-n" field="printShowIMEI" />
+      <div style={{ marginTop: 20 }}>
+        <label style={{ fontSize: 13, fontWeight: 600, color: T.textMuted, display: "block", marginBottom: 8 }}>Madhesia e letres</label>
+        <select value={form.printPaperSize} onChange={e => setForm(f=>({...f,printPaperSize:e.target.value}))} style={{ padding: "10px 14px", borderRadius: 10, border: "1.5px solid " + T.border, fontSize: 14, background: T.inputBg, color: T.text, width: "100%", outline: "none" }}>
+          <option value="80mm">80mm (Printer termik)</option>
+          <option value="A4">A4</option>
+          <option value="A5">A5</option>
+        </select>
+      </div>
+      <div style={{ marginTop: 16 }}>
+        <Input label="Teksti i kokes se kuponit" value={form.printHeader} onChange={v => setForm(f=>({...f,printHeader:v}))} placeholder="p.sh. Faleminderit per besimin!" t={T} />
+        <Input label="Teksti i fundit te kuponit" value={form.printFooter} onChange={v => setForm(f=>({...f,printFooter:v}))} placeholder="p.sh. Garanci 30 dite" t={T} />
+      </div>
+      <Btn variant={saved ? "success" : "primary"} size="lg" onClick={save} style={{ width: "100%", justifyContent: "center", marginTop: 8 }} t={T}>{saved ? "U ruajt!" : "Ruaj ndryshimet"}</Btn>
+    </div>
+  );
+}
+
+function SettingsStatuses({ data, setData, T }) {
+  const [statuses, setStatuses] = React.useState(() => STATUSES.map(s => ({...s})));
+  const [saved, setSaved] = React.useState(false);
+  const save = () => { setSaved(true); setTimeout(() => setSaved(false), 2000); };
+  return (
+    <div style={{ background: T.surface, borderRadius: 20, padding: 28, border: "1.5px solid " + T.border }}>
+      <h3 style={{ margin: "0 0 8px", fontSize: 16, fontWeight: 700, color: T.text }}>Parametrat e Statusave</h3>
+      <p style={{ margin: "0 0 20px", fontSize: 13, color: T.textMuted }}>Shiko dhe menaxho statuset aktuale te puneve.</p>
+      {statuses.map((s, i) => (
+        <div key={s.key} style={{ display: "flex", alignItems: "center", gap: 12, padding: "12px 0", borderBottom: "1px solid " + T.border }}>
+          <div style={{ width: 16, height: 16, borderRadius: "50%", background: s.color, flexShrink: 0 }} />
+          <div style={{ flex: 1 }}>
+            <input value={s.label} onChange={e => { const ns = [...statuses]; ns[i] = {...ns[i], label: e.target.value}; setStatuses(ns); }} style={{ width: "100%", padding: "8px 12px", borderRadius: 8, border: "1.5px solid " + T.border, fontSize: 14, background: T.inputBg, color: T.text, outline: "none" }} />
+          </div>
+          <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
+            <input type="color" value={s.color} onChange={e => { const ns = [...statuses]; ns[i] = {...ns[i], color: e.target.value}; setStatuses(ns); }} style={{ width: 36, height: 36, border: "none", cursor: "pointer", borderRadius: 8 }} />
+            <span style={{ padding: "4px 12px", borderRadius: 20, fontSize: 11, fontWeight: 700, background: s.bg, color: s.color }}>{s.label}</span>
+          </div>
+        </div>
+      ))}
+      <Btn variant={saved ? "success" : "primary"} size="lg" onClick={save} style={{ width: "100%", justifyContent: "center", marginTop: 20 }} t={T}>{saved ? "U ruajt!" : "Ruaj ndryshimet"}</Btn>
+    </div>
+  );
+}
+
+
+// ADMIN PANEL
+// ============================================================
+function AdminPanel({ accounts, setAccounts, onLogout }) {
+  const [darkMode, setDarkMode] = useState(false);
+  const T = darkMode ? THEME.dark : THEME.light;
+  const [page, setPage] = useState("overview");
+  const [selectedAccount, setSelectedAccount] = useState(null);
+  const [search, setSearch] = useState("");
+  const [toast, setToast] = useState({ msg: "", show: false });
+  const [menuOpen, setMenuOpen] = useState(false);
+
+  // Edit modal state
+  const [editModal, setEditModal] = useState(false);
+  const [editForm, setEditForm] = useState({});
+
+  // Sub modal state
+  const [subModal, setSubModal] = useState(false);
+  const [subTarget, setSubTarget] = useState(null);
+
+  // Delete confirm
+  const [deleteConfirm, setDeleteConfirm] = useState(null);
+
+  const showToast = (msg) => { setToast({ msg, show: true }); setTimeout(() => setToast({ msg: "", show: false }), 2800); };
+
+  const filtered = accounts.filter(a =>
+    !search || a.name.toLowerCase().includes(search.toLowerCase()) || a.email.toLowerCase().includes(search.toLowerCase()) || (a.city || "").toLowerCase().includes(search.toLowerCase())
+  );
+
+  const stats = {
+    total: accounts.length,
+    active: accounts.filter(a => getAccountStatus(a) === "active").length,
+    trial: accounts.filter(a => getAccountStatus(a) === "trial").length,
+    expired: accounts.filter(a => ["expired", "expiring"].includes(getAccountStatus(a))).length,
+    suspended: accounts.filter(a => getAccountStatus(a) === "suspended").length,
+  };
+
+  const handleSuspend = (id) => {
+    setAccounts(prev => prev.map(a => a.id === id ? { ...a, status: a.status === "suspended" ? "active" : "suspended" } : a));
+    showToast(accounts.find(a => a.id === id)?.status === "suspended" ? "Firma u aktivizua!" : "Firma u pezullua!");
+  };
+
+  const handleDelete = (id) => {
+    setAccounts(prev => prev.filter(a => a.id !== id));
+    setDeleteConfirm(null);
+    if (selectedAccount?.id === id) { setSelectedAccount(null); setPage("overview"); }
+    showToast("Firma u fshi!");
+  };
+
+  const handleEdit = (account) => {
+    setEditForm({ name: account.name, email: account.email, phone: account.phone || "", address: account.address || "", city: account.city || "", country: account.country || "" });
+    setEditModal(true);
+    setSelectedAccount(account);
+  };
+
+  const saveEdit = () => {
+    setAccounts(prev => prev.map(a => a.id === selectedAccount.id ? { ...a, ...editForm } : a));
+    setEditModal(false);
+    showToast("Te dhenat u perditesuan!");
+  };
+
+  const handleAddSub = (plan) => {
+    const updated = addSubscriptionDays(subTarget, plan.days);
+    setAccounts(prev => prev.map(a => a.id === subTarget.id ? updated : a));
+    if (selectedAccount?.id === subTarget.id) setSelectedAccount(updated);
+    setSubModal(false);
+    showToast(`Abonimi ${plan.label} u shtua me sukses!`);
+  };
+
+  const openSubModal = (account) => { setSubTarget(account); setSubModal(true); };
+
+  const StatusPill = ({ status }) => {
+    const cfg = {
+      active:    { bg: "#D1FAE5", color: "#059669", label: "Aktiv" },
+      trial:     { bg: "#DBEAFE", color: "#2563EB", label: "Trial" },
+      expiring:  { bg: "#FEF3C7", color: "#D97706", label: "Skadon shpejt" },
+      expired:   { bg: "#FEE2E2", color: "#EF4444", label: "Skaduar" },
+      suspended: { bg: "#F1F5F9", color: "#64748B", label: "Pezulluar" },
+    };
+    const c = cfg[status] || cfg.trial;
+    return <span style={{ display: "inline-block", padding: "3px 12px", borderRadius: 20, fontSize: 11, fontWeight: 700, background: c.bg, color: c.color }}>{c.label}</span>;
+  };
+
+  function daysLeft(account) {
+    if (!account.expiryDate) return null;
+    const d = Math.ceil((new Date(account.expiryDate) - new Date()) / 86400000);
+    return d > 0 ? d : 0;
+  };
+
+  const styles = `
+    @import url('https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,100..1000;1,9..40,100..1000&display=swap');
+    @keyframes fadeIn{from{opacity:0}to{opacity:1}}
+    @keyframes slideUp{from{opacity:0;transform:translateY(16px)}to{opacity:1;transform:translateY(0)}}
+    @keyframes slideDown{from{opacity:0;transform:translate(-50%,-12px)}to{opacity:1;transform:translate(-50%,0)}}
+    *{box-sizing:border-box;margin:0;padding:0}
+    ::-webkit-scrollbar{width:6px}::-webkit-scrollbar-track{background:transparent}
+    ::-webkit-scrollbar-thumb{background:${darkMode?"#1E3A5F":"#d1d5db"};border-radius:3px}
+    input::placeholder{color:${T.textFaint};}
+    select option{background:${T.surface};color:${T.text};}
+  `;
+
+  const AccountDetail = ({ acc }) => {
+    const status = getAccountStatus(acc);
+    const dl = daysLeft(acc);
+    return (
+      <div style={{ animation: "slideUp .2s ease" }}>
+        <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 24 }}>
+          <div style={{ display: "flex", alignItems: "center", gap: 12 }}>
+            <button onClick={() => { setPage("firms"); setSelectedAccount(null); }} style={{ background: T.surfaceAlt, border: `1px solid ${T.border}`, borderRadius: 8, padding: "6px 14px", cursor: "pointer", fontSize: 13, color: T.textMuted, display: "flex", alignItems: "center", gap: 6 }}>
+              €Â Â Kthehu
+            </button>
+            <h2 style={{ margin: 0, fontSize: 20, fontWeight: 800, color: T.text }}>{acc.name}</h2>
+            <StatusPill status={status} />
+          </div>
+          <div style={{ display: "flex", gap: 8 }}>
+            <button onClick={() => openSubModal(acc)} style={{ background: T.accentGrad, color: "#fff", border: "none", borderRadius: 10, padding: "9px 18px", cursor: "pointer", fontWeight: 700, fontSize: 13, display: "flex", alignItems: "center", gap: 6 }}>
+              {Ic.money(13)} Shto abonim
+            </button>
+            <button onClick={() => handleEdit(acc)} style={{ background: T.surfaceAlt, color: T.textMuted, border: `1.5px solid ${T.border}`, borderRadius: 10, padding: "9px 18px", cursor: "pointer", fontWeight: 600, fontSize: 13, display: "flex", alignItems: "center", gap: 6 }}>
+              {Ic.edit(13)} Edito
+            </button>
+            <button onClick={() => handleSuspend(acc.id)} style={{ background: status === "suspended" ? "#D1FAE5" : "#FEF3C7", color: status === "suspended" ? "#059669" : "#D97706", border: "none", borderRadius: 10, padding: "9px 18px", cursor: "pointer", fontWeight: 700, fontSize: 13 }}>
+              {status === "suspended" ? "▶ Aktivizo" : "⏸ Pezullo"}
+            </button>
+            <button onClick={() => setDeleteConfirm(acc.id)} style={{ background: "#FEE2E2", color: "#EF4444", border: "none", borderRadius: 10, padding: "9px 14px", cursor: "pointer", fontWeight: 700, fontSize: 13, display: "flex", alignItems: "center", gap: 6 }}>
+              {Ic.trash(13)} Fshi
+            </button>
+          </div>
+        </div>
+
+        <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 20, marginBottom: 20 }}>
+          {/* Info card */}
+          <div style={{ background: T.surface, borderRadius: 20, padding: 24, border: `1.5px solid ${T.border}` }}>
+            <h3 style={{ margin: "0 0 16px", fontSize: 15, fontWeight: 700, color: T.text }}>Informacioni i firmes</h3>
+            {[["Email", acc.email], ["Telefon", acc.phone || "—"], ["Adresa", acc.address || "—"], ["Qyteti", acc.city || "—"], ["Shteti", acc.country || "—"], ["Regjistruar", fmtDate(acc.registeredAt)]].map(([l, v]) => (
+              <div key={l} style={{ display: "flex", justifyContent: "space-between", padding: "10px 0", borderBottom: `1px solid ${T.border}`, fontSize: 14 }}>
+                <span style={{ color: T.textMuted, fontWeight: 600 }}>{l}</span>
+                <span style={{ color: T.text, fontWeight: 500 }}>{v}</span>
+              </div>
+            ))}
+          </div>
+
+          {/* Subscription card */}
+          <div style={{ background: T.surface, borderRadius: 20, padding: 24, border: `1.5px solid ${T.border}` }}>
+            <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 16 }}>
+              <h3 style={{ margin: 0, fontSize: 15, fontWeight: 700, color: T.text }}>Abonimet</h3>
+              <button onClick={() => openSubModal(acc)} style={{ background: T.accentGrad, color: "#fff", border: "none", borderRadius: 8, padding: "6px 14px", cursor: "pointer", fontSize: 12, fontWeight: 700 }}>+ Shto</button>
+            </div>
+            <div style={{ background: status === "active" ? "#D1FAE511" : status === "expired" ? "#FEE2E211" : "#FEF3C711", borderRadius: 12, padding: "16px 20px", marginBottom: 16, border: `1px solid ${status === "active" ? "#10B98130" : "#EF444430"}` }}>
+              <div style={{ fontSize: 12, color: T.textMuted, fontWeight: 600 }}>STATUSI ABONIMIT</div>
+              <div style={{ fontSize: 22, fontWeight: 800, color: status === "active" ? "#059669" : status === "expired" ? "#EF4444" : "#D97706", marginTop: 4 }}>
+                {dl !== null ? `${dl} ditë mbeten` : "Pa abonim"}
+              </div>
+              {acc.expiryDate && <div style={{ fontSize: 12, color: T.textMuted, marginTop: 4 }}>Skadon: {fmtDate(acc.expiryDate)}</div>}
+            </div>
+            <div style={{ fontSize: 13, fontWeight: 700, color: T.textMuted, marginBottom: 10 }}>Historiku i pagesave</div>
+            {(acc.payments || []).length === 0 ? (
+              <div style={{ color: T.textFaint, fontSize: 13, textAlign: "center", padding: "12px 0" }}>Ska pagesa</div>
+            ) : [...(acc.payments || [])].reverse().slice(0, 5).map((p, i) => (
+              <div key={i} style={{ display: "grid", gridTemplateColumns: "1fr 1fr 1fr", padding: "8px 0", fontSize: 12, borderBottom: `1px solid ${T.border}` }}>
+                <span style={{ fontWeight: 700, color: T.accent }}>{p.amount}</span>
+                <span style={{ color: T.textMuted }}>{fmtDate(p.date).slice(0, 10)}</span>
+                <span style={{ color: T.success, fontWeight: 600 }}>{p.validFor}</span>
+              </div>
+            ))}
+          </div>
+        </div>
+
+        {/* Social & web */}
+        {(acc.facebook || acc.instagram || acc.website) && (
+          <div style={{ background: T.surface, borderRadius: 20, padding: 24, border: `1.5px solid ${T.border}` }}>
+            <h3 style={{ margin: "0 0 12px", fontSize: 15, fontWeight: 700, color: T.text }}>Rrjetet sociale</h3>
+            <div style={{ display: "flex", gap: 12, flexWrap: "wrap" }}>
+              {acc.facebook && <a href={acc.facebook} target="_blank" rel="noreferrer" style={{ color: "#2563EB", fontSize: 13 }}>Facebook</a>}
+              {acc.instagram && <a href={acc.instagram} target="_blank" rel="noreferrer" style={{ color: "#E11D48", fontSize: 13 }}>Instagram</a>}
+              {acc.website && <a href={acc.website} target="_blank" rel="noreferrer" style={{ color: T.accent, fontSize: 13 }}>Website</a>}
+            </div>
+          </div>
+        )}
+      </div>
+    );
+  };
+
+  return (
+    <>
+      <style>{styles}</style>
+      <div style={{ fontFamily: "'DM Sans','Segoe UI',sans-serif", background: T.bg, minHeight: "100vh", color: T.text, transition: "background .3s" }}>
+        {/* Admin Nav */}
+        <nav style={{ background: T.nav, borderBottom: `1.5px solid ${T.navBorder}`, padding: "0 32px", position: "sticky", top: 0, zIndex: 100, display: "flex", alignItems: "center", justifyContent: "space-between", height: 64 }}>
+          <div style={{ display: "flex", alignItems: "center", gap: 32 }}>
+            <div style={{ fontSize: 22, fontWeight: 900, color: T.text, letterSpacing: -0.5 }}>
+              Data<span style={{ background: T.accentGrad, WebkitBackgroundClip: "text", WebkitTextFillColor: "transparent" }}>Phone</span>
+              <span style={{ marginLeft: 10, fontSize: 11, fontWeight: 700, background: "linear-gradient(135deg,#7C3AED,#4F46E5)", color: "#fff", padding: "3px 10px", borderRadius: 20, verticalAlign: "middle", letterSpacing: 1 }}>ADMIN</span>
+            </div>
+            <div style={{ display: "flex", gap: 4 }}>
+              {[{ key: "overview", label: "Pasqyra" }, { key: "firms", label: "Firmat" }].map(item => (
+                <button key={item.key} onClick={() => { setPage(item.key); setSelectedAccount(null); }}
+                  style={{ padding: "8px 18px", borderRadius: 10, fontSize: 13, fontWeight: 600, border: "none", cursor: "pointer", transition: "all .2s", background: page === item.key ? T.accent : "transparent", color: page === item.key ? "#fff" : T.textMuted }}
+                  onMouseEnter={e => { if (page !== item.key) e.currentTarget.style.background = T.surfaceAlt; }} onMouseLeave={e => { if (page !== item.key) e.currentTarget.style.background = "transparent"; }}>
+                  {item.label}
+                </button>
+              ))}
+            </div>
+          </div>
+          <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
+            <button onClick={() => setDarkMode(!darkMode)} style={{ background: T.surfaceAlt, border: `1.5px solid ${T.border}`, borderRadius: 10, width: 38, height: 38, cursor: "pointer", display: "flex", alignItems: "center", justifyContent: "center", color: T.textMuted }}>
+              {darkMode ? Ic.sun(16) : Ic.moon(16)}
+            </button>
+            <div style={{ position: "relative" }}>
+              <button onClick={() => setMenuOpen(!menuOpen)} style={{ padding: "8px 16px", borderRadius: 10, fontSize: 13, fontWeight: 600, border: `1.5px solid ${T.border}`, cursor: "pointer", background: T.surface, color: T.textMuted, display: "flex", alignItems: "center", gap: 6 }}>
+                Administrator {Ic.down(10)}
+              </button>
+              {menuOpen && (
+                <div style={{ position: "absolute", top: "100%", right: 0, marginTop: 4, background: T.surface, borderRadius: 12, border: `1.5px solid ${T.border}`, boxShadow: "0 8px 24px rgba(0,0,0,.15)", width: 180, zIndex: 200, overflow: "hidden" }}>
+                  <div style={{ padding: "10px 16px", fontSize: 12, color: T.textFaint, borderBottom: `1px solid ${T.border}` }}>{ADMIN_CREDENTIALS.email}</div>
+                  <div style={{ padding: "10px 16px", fontSize: 13, cursor: "pointer", color: T.danger, fontWeight: 600, display: "flex", alignItems: "center", gap: 8 }}
+                    onClick={() => { onLogout(); setMenuOpen(false); }}>{Ic.logout(13)} Log Out</div>
+                </div>
+              )}
+            </div>
+          </div>
+        </nav>
+
+        <div style={{ maxWidth: 1200, margin: "0 auto", padding: "28px 24px 60px" }}>
+
+          {/* OVERVIEW PAGE */}
+          {page === "overview" && (
+            <div style={{ animation: "slideUp .2s ease" }}>
+              <h2 style={{ margin: "0 0 24px", fontSize: 22, fontWeight: 800, color: T.text }}>Pasqyra e sistemit</h2>
+              <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr 1fr 1fr 1fr", gap: 14, marginBottom: 28 }}>
+                {[
+                  { label: "Gjithsej Firma", val: stats.total, color: T.accent, bg: `${T.accent}15` },
+                  { label: "Aktive", val: stats.active, color: "#059669", bg: "#D1FAE5" },
+                  { label: "Trial", val: stats.trial, color: "#2563EB", bg: "#DBEAFE" },
+                  { label: "Skaduara", val: stats.expired, color: "#EF4444", bg: "#FEE2E2" },
+                  { label: "Pezulluara", val: stats.suspended, color: "#64748B", bg: "#F1F5F9" },
+                ].map(item => (
+                  <div key={item.label} style={{ background: T.surface, borderRadius: 16, padding: "20px 24px", border: `1.5px solid ${T.border}`, cursor: "pointer" }} onClick={() => setPage("firms")}>
+                    <div style={{ fontSize: 11, fontWeight: 700, color: T.textMuted, textTransform: "uppercase", letterSpacing: 0.5 }}>{item.label}</div>
+                    <div style={{ fontSize: 36, fontWeight: 900, color: item.color, marginTop: 6 }}>{item.val}</div>
+                  </div>
+                ))}
+              </div>
+
+              {/* Recent registrations */}
+              <div style={{ background: T.surface, borderRadius: 20, padding: 24, border: `1.5px solid ${T.border}`, marginBottom: 20 }}>
+                <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 16 }}>
+                  <h3 style={{ margin: 0, fontSize: 16, fontWeight: 700, color: T.text }}>Regjistrimet e fundit</h3>
+                  <button onClick={() => setPage("firms")} style={{ background: "none", border: "none", color: T.accent, fontSize: 13, fontWeight: 600, cursor: "pointer" }}>Shih te gjitha –</button>
+                </div>
+                {accounts.length === 0 ? (
+                  <div style={{ textAlign: "center", padding: "30px 0", color: T.textFaint, fontSize: 14 }}>Nuk ka firma te regjistruara ende.</div>
+                ) : [...accounts].sort((a, b) => new Date(b.registeredAt) - new Date(a.registeredAt)).slice(0, 5).map(acc => {
+                  const status = getAccountStatus(acc);
+                  const dl = daysLeft(acc);
+                  return (
+                    <div key={acc.id} style={{ display: "grid", gridTemplateColumns: "1.5fr 1.5fr 1fr 1fr 1fr", padding: "14px 0", borderBottom: `1px solid ${T.border}`, alignItems: "center", fontSize: 13, cursor: "pointer" }}
+                      onClick={() => { setSelectedAccount(acc); setPage("firmDetail"); }}>
+                      <span style={{ fontWeight: 700, color: T.text }}>{acc.name}</span>
+                      <span style={{ color: T.textMuted }}>{acc.email}</span>
+                      <span style={{ color: T.textMuted }}>{acc.city || "—"}</span>
+                      <span><StatusPill status={status} /></span>
+                      <span style={{ color: dl !== null ? (dl < 7 ? T.danger : T.success) : T.textFaint, fontWeight: 600, fontSize: 12 }}>
+                        {dl !== null ? `${dl}d` : "—"}
+                      </span>
+                    </div>
+                  );
+                })}
+              </div>
+
+              {/* Expiring soon */}
+              {accounts.filter(a => getAccountStatus(a) === "expiring").length > 0 && (
+                <div style={{ background: "#FEF3C7", borderRadius: 16, padding: 20, border: "1.5px solid #FCD34D" }}>
+                  <div style={{ display: "flex", alignItems: "center", gap: 8, marginBottom: 12 }}>
+                    <span style={{ color: "#D97706" }}>{Ic.warn(16)}</span>
+                    <strong style={{ color: "#92400E", fontSize: 14 }}>Firma me abonim që skadon shpejt (€Â°Â¤7 ditë)</strong>
+                  </div>
+                  {accounts.filter(a => getAccountStatus(a) === "expiring").map(acc => (
+                    <div key={acc.id} style={{ display: "flex", justifyContent: "space-between", alignItems: "center", padding: "8px 0", borderBottom: "1px solid #FCD34D", fontSize: 13 }}>
+                      <span style={{ fontWeight: 700, color: "#92400E" }}>{acc.name}</span>
+                      <span style={{ color: "#92400E" }}>{daysLeft(acc)} ditë mbeten</span>
+                      <button onClick={() => openSubModal(acc)} style={{ background: "#D97706", color: "#fff", border: "none", borderRadius: 8, padding: "5px 14px", cursor: "pointer", fontSize: 12, fontWeight: 700 }}>Rinovoi</button>
+                    </div>
+                  ))}
+                </div>
+              )}
+            </div>
+          )}
+
+          {/* FIRMS LIST PAGE */}
+          {page === "firms" && !selectedAccount && (
+            <div style={{ animation: "slideUp .2s ease" }}>
+              <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 20 }}>
+                <h2 style={{ margin: 0, fontSize: 22, fontWeight: 800, color: T.text }}>Te gjitha firmat ({accounts.length})</h2>
+                <div style={{ position: "relative" }}>
+                  <span style={{ position: "absolute", left: 12, top: "50%", transform: "translateY(-50%)", color: T.textFaint, display: "flex" }}>{Ic.search(14)}</span>
+                  <input value={search} onChange={e => setSearch(e.target.value)} placeholder="Kerko firmen..." style={{ padding: "10px 14px 10px 36px", borderRadius: 10, border: `1.5px solid ${T.border}`, fontSize: 13, width: 260, background: T.inputBg, color: T.text, outline: "none" }} />
+                </div>
+              </div>
+
+              <div style={{ background: T.surface, borderRadius: 20, padding: 24, border: `1.5px solid ${T.border}` }}>
+                <div style={{ display: "grid", gridTemplateColumns: "1.5fr 1.5fr 0.8fr 1fr 1fr 1.4fr", padding: "10px 16px", fontSize: 12, fontWeight: 700, color: T.textMuted, textTransform: "uppercase", letterSpacing: 0.5, borderBottom: `2px solid ${T.border}` }}>
+                  <span>Firma</span><span>Email</span><span>Qyteti</span><span>Statusi</span><span>Abonimi</span><span>Veprimet</span>
+                </div>
+                {filtered.length === 0 ? (
+                  <div style={{ textAlign: "center", padding: "40px 0", color: T.textFaint, fontSize: 14 }}>Nuk ka firma!</div>
+                ) : filtered.map(acc => {
+                  const status = getAccountStatus(acc);
+                  const dl = daysLeft(acc);
+                  return (
+                    <div key={acc.id} style={{ display: "grid", gridTemplateColumns: "1.5fr 1.5fr 0.8fr 1fr 1fr 1.4fr", padding: "14px 16px", fontSize: 13, alignItems: "center", borderBottom: `1px solid ${T.border}`, transition: "background .15s", cursor: "pointer" }}
+                      onMouseEnter={e => e.currentTarget.style.background = T.surfaceAlt} onMouseLeave={e => e.currentTarget.style.background = "transparent"}
+                      onClick={() => { setSelectedAccount(acc); setPage("firmDetail"); }}>
+                      <span style={{ fontWeight: 700, color: T.text }}>{acc.name}</span>
+                      <span style={{ color: T.textMuted, fontSize: 12 }}>{acc.email}</span>
+                      <span style={{ color: T.textMuted }}>{acc.city || "—"}</span>
+                      <span onClick={e => e.stopPropagation()}><StatusPill status={status} /></span>
+                      <span style={{ color: dl !== null ? (dl <= 7 ? T.danger : T.success) : T.textFaint, fontWeight: 600 }}>
+                        {dl !== null ? `${dl} ditë` : "Pa abonim"}
+                      </span>
+                      <span style={{ display: "flex", gap: 6 }} onClick={e => e.stopPropagation()}>
+                        <button onClick={() => openSubModal(acc)} title="Shto abonim" style={{ background: T.accentGrad, color: "#fff", border: "none", borderRadius: 7, width: 30, height: 30, cursor: "pointer", display: "flex", alignItems: "center", justifyContent: "center" }}>{Ic.money(12)}</button>
+                        <button onClick={() => handleEdit(acc)} title="Edito" style={{ background: T.surfaceAlt, color: T.textMuted, border: `1px solid ${T.border}`, borderRadius: 7, width: 30, height: 30, cursor: "pointer", display: "flex", alignItems: "center", justifyContent: "center" }}>{Ic.edit(12)}</button>
+                        <button onClick={() => handleSuspend(acc.id)} title={status === "suspended" ? "Aktivizo" : "Pezullo"} style={{ background: status === "suspended" ? "#D1FAE5" : "#FEF3C7", color: status === "suspended" ? "#059669" : "#D97706", border: "none", borderRadius: 7, width: 30, height: 30, cursor: "pointer", display: "flex", alignItems: "center", justifyContent: "center", fontWeight: 900, fontSize: 13 }}>{status === "suspended" ? "▶" : "⏸"}</button>
+                        <button onClick={() => setDeleteConfirm(acc.id)} title="Fshi" style={{ background: "#FEE2E2", color: "#EF4444", border: "none", borderRadius: 7, width: 30, height: 30, cursor: "pointer", display: "flex", alignItems: "center", justifyContent: "center" }}>{Ic.trash(12)}</button>
+                      </span>
+                    </div>
+                  );
+                })}
+              </div>
+            </div>
+          )}
+
+          {/* FIRM DETAIL */}
+          {page === "firmDetail" && selectedAccount && <AccountDetail acc={selectedAccount} />}
+
+        </div>
+      </div>
+
+      {/* EDIT MODAL */}
+      {editModal && (
+        <div style={{ position: "fixed", inset: 0, zIndex: 1000, background: T.overlay, backdropFilter: "blur(4px)", display: "flex", alignItems: "center", justifyContent: "center", animation: "fadeIn .2s" }} onClick={() => setEditModal(false)}>
+          <div onClick={e => e.stopPropagation()} style={{ background: T.surface, borderRadius: 20, padding: "32px 36px", width: "90%", maxWidth: 520, boxShadow: "0 24px 80px rgba(0,0,0,.25)", animation: "slideUp .25s ease", border: `1px solid ${T.border}` }}>
+            <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 24 }}>
+              <h3 style={{ margin: 0, fontSize: 18, fontWeight: 700, color: T.text }}>Edito firmen: {selectedAccount?.name}</h3>
+              <button onClick={() => setEditModal(false)} style={{ background: "none", border: "none", cursor: "pointer", color: T.textFaint }}>{Ic.x(18)}</button>
+            </div>
+            <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 16 }}>
+              {[["Emri i firmes", "name"], ["Email", "email"], ["Telefon", "phone"], ["Adresa", "address"], ["Qyteti", "city"], ["Shteti", "country"]].map(([label, key]) => (
+                <div key={key} style={{ marginBottom: 4 }}>
+                  <label style={{ display: "block", fontSize: 12, fontWeight: 600, color: T.textMuted, marginBottom: 5 }}>{label}</label>
+                  <input value={editForm[key] || ""} onChange={e => setEditForm(f => ({ ...f, [key]: e.target.value }))}
+                    style={{ width: "100%", padding: "10px 14px", borderRadius: 10, border: `1.5px solid ${T.border}`, fontSize: 14, outline: "none", background: T.inputBg, color: T.text, boxSizing: "border-box" }}
+                    onFocus={e => e.target.style.borderColor = T.accent} onBlur={e => e.target.style.borderColor = T.border} />
+                </div>
+              ))}
+            </div>
+            <div style={{ display: "flex", gap: 10, justifyContent: "flex-end", marginTop: 20 }}>
+              <button onClick={() => setEditModal(false)} style={{ background: "none", border: `1.5px solid ${T.border}`, borderRadius: 10, padding: "10px 20px", cursor: "pointer", fontSize: 14, color: T.textMuted, fontWeight: 600 }}>Anulo</button>
+              <button onClick={saveEdit} style={{ background: T.accentGrad, color: "#fff", border: "none", borderRadius: 10, padding: "10px 24px", cursor: "pointer", fontSize: 14, fontWeight: 700 }}>Ruaj ndryshimet</button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* SUBSCRIPTION MODAL */}
+      {subModal && subTarget && (
+        <div style={{ position: "fixed", inset: 0, zIndex: 1000, background: T.overlay, backdropFilter: "blur(4px)", display: "flex", alignItems: "center", justifyContent: "center", animation: "fadeIn .2s" }} onClick={() => setSubModal(false)}>
+          <div onClick={e => e.stopPropagation()} style={{ background: T.surface, borderRadius: 20, padding: "32px 36px", width: "90%", maxWidth: 500, boxShadow: "0 24px 80px rgba(0,0,0,.25)", animation: "slideUp .25s ease", border: `1px solid ${T.border}` }}>
+            <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 8 }}>
+              <h3 style={{ margin: 0, fontSize: 18, fontWeight: 700, color: T.text }}>Shto abonim</h3>
+              <button onClick={() => setSubModal(false)} style={{ background: "none", border: "none", cursor: "pointer", color: T.textFaint }}>{Ic.x(18)}</button>
+            </div>
+            <p style={{ color: T.textMuted, fontSize: 14, marginBottom: 24 }}>Firma: <strong style={{ color: T.text }}>{subTarget.name}</strong></p>
+            {subTarget.expiryDate && (
+              <div style={{ background: T.surfaceAlt, borderRadius: 10, padding: "10px 16px", marginBottom: 20, fontSize: 13, color: T.textMuted, border: `1px solid ${T.border}` }}>
+                Abonimi aktual skadon: <strong style={{ color: T.text }}>{fmtDate(subTarget.expiryDate)}</strong>
+                {daysLeft(subTarget) !== null && <span style={{ marginLeft: 8, color: daysLeft(subTarget) < 7 ? T.danger : T.success, fontWeight: 700 }}>({daysLeft(subTarget)} ditë mbeten)</span>}
+              </div>
+            )}
+            <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 14 }}>
+              {SUBSCRIPTION_PLANS.map(plan => (
+                <button key={plan.key} onClick={() => handleAddSub(plan)}
+                  style={{ background: T.surfaceAlt, border: `2px solid ${T.border}`, borderRadius: 16, padding: "20px 16px", cursor: "pointer", textAlign: "center", transition: "all .2s", fontFamily: "inherit" }}
+                  onMouseEnter={e => { e.currentTarget.style.borderColor = T.accent; e.currentTarget.style.background = `${T.accent}12`; }}
+                  onMouseLeave={e => { e.currentTarget.style.borderColor = T.border; e.currentTarget.style.background = T.surfaceAlt; }}>
+                  <div style={{ fontSize: 22, fontWeight: 900, color: T.accent }}>{plan.label}</div>
+                  <div style={{ fontSize: 16, fontWeight: 700, color: T.text, marginTop: 6 }}>{plan.price}</div>
+                  <div style={{ fontSize: 11, color: T.textFaint, marginTop: 4 }}>{plan.days} ditë</div>
+                </button>
+              ))}
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* DELETE CONFIRM */}
+      {deleteConfirm && (
+        <div style={{ position: "fixed", inset: 0, zIndex: 1100, background: T.overlay, backdropFilter: "blur(4px)", display: "flex", alignItems: "center", justifyContent: "center" }} onClick={() => setDeleteConfirm(null)}>
+          <div onClick={e => e.stopPropagation()} style={{ background: T.surface, borderRadius: 20, padding: "36px 40px", width: "90%", maxWidth: 400, boxShadow: "0 24px 80px rgba(0,0,0,.3)", textAlign: "center", border: `1px solid ${T.border}` }}>
+            <div style={{ fontSize: 48, marginBottom: 16 }}>✅Â ️Â</div>
+            <h3 style={{ margin: "0 0 10px", fontSize: 18, fontWeight: 800, color: T.text }}>Konfirmo fshirjen</h3>
+            <p style={{ color: T.textMuted, fontSize: 14, marginBottom: 28 }}>
+              A jeni i sigurt? Firma <strong style={{ color: T.text }}>{accounts.find(a => a.id === deleteConfirm)?.name}</strong> do të fshihet përgjithmonë!
+            </p>
+            <div style={{ display: "flex", gap: 12, justifyContent: "center" }}>
+              <button onClick={() => setDeleteConfirm(null)} style={{ background: T.surfaceAlt, border: `1.5px solid ${T.border}`, borderRadius: 10, padding: "11px 28px", cursor: "pointer", fontSize: 14, color: T.textMuted, fontWeight: 600 }}>Anulo</button>
+              <button onClick={() => handleDelete(deleteConfirm)} style={{ background: "#EF4444", color: "#fff", border: "none", borderRadius: 10, padding: "11px 28px", cursor: "pointer", fontSize: 14, fontWeight: 700 }}>Po, fshije!</button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      <Toast message={toast.msg} visible={toast.show} />
+      {menuOpen && <div style={{ position: "fixed", inset: 0, zIndex: 99 }} onClick={() => setMenuOpen(false)} />}
+    </>
+  );
+}
+
+// ============================================================
+// MAIN APP
+// ============================================================
+
+
+
+async function saveJobToSupabase(job, client, worker, business) {
+    console.log("SAVING TO SUPABASE:", job.id);
+  try {
+    const { error: saveErr } = await supabase.from("public_jobs").upsert({
+      id: job.id,
+      client_name: client?.name || "",
+      client_phone: client?.phone || "",
+      phone_model: job.phoneModel,
+      imei: job.imei || "",
+      code: job.code || "",
+      description: job.description,
+      price: job.price || "",
+      status: job.status,
+      worker_name: worker?.name || "",
+      business_name: business?.name || "",
+      business_phone: business?.phone || "",
+      updated_at: new Date().toISOString()
+    });
+    if (saveErr) { console.log("SAVE ERROR:", saveErr); alert("Save error: " + saveErr.message); } else { console.log("JOB SAVED OK"); }
+  } catch(e) { console.log("Supabase save error:", e); alert("Supabase error: " + e.message); }
+}
+
+async function updateJobStatusSupabase(jobId, status) {
+  try {
+    await supabase.from("public_jobs").update({ status, updated_at: new Date().toISOString() }).eq("id", jobId);
+  } catch(e) { console.log("Supabase update error:", e); }
+}
+
+function JobStatusPage({ jobId, data, onBack, T }) {
+  const params = new URLSearchParams(window.location.search);
+  const isQR = params.get("v") === "1";
+  
+  if (isQR) {
+    const job = { id: params.get("jid")||jobId, phoneModel: params.get("pm")||"", imei: params.get("im")||"", description: params.get("ds")||"", price: params.get("pr")||"", status: params.get("st")||"new", createdAt: params.get("dt")||"" };
+    const client = { name: params.get("cn")||"", phone: params.get("cp")||"" };
+    const worker = { name: params.get("wn")||"" };
+    const business = { name: params.get("bn")||"" };
+    return <ClientStatusView job={job} client={client} worker={worker} business={business} onBack={onBack} />;
+  }
+  
+  const job = data.jobs.find(j => j.id === jobId);
+  if (!job) return <div>Puna nuk u gjet.</div>;
+  const client = data.clients.find(c => c.id === job.clientId)||null;
+  const worker = data.workers.find(w => w.id === job.workerId)||null;
+  return <ClientStatusView job={job} client={client} worker={worker} business={data.business} onBack={onBack} />;
+}
+
+
+
+export default function DataPhone() {
+  // accounts is shared — both admin and businesses share this list
+  const [accounts, setAccounts] = useState([]);
+  const [data, setData] = useState(DEFAULT_DATA);
+  const [page, setPage] = useState("auth");
+  const [pageParam, setPageParam] = useState(null);
+  const [toast, setToast] = useState({ msg: "", show: false });
+  const [menuOpen, setMenuOpen] = useState(false);
+  const [darkMode, setDarkMode] = useState(false);
+  const [isAdmin, setIsAdmin] = useState(false);
+  const [regSuccess, setRegSuccess] = useState(false);
+
+  // Handle QR code scan - read ?job= from URL
+  useEffect(() => {
+    const params = new URLSearchParams(window.location.search);
+    const jobId = params.get('job') || params.get('jid');
+    if (jobId) {
+      setPage('jobStatus');
+      setPageParam(jobId);
+      // URL params kept for JobStatusPage to read
+    }
+  }, []);
+
+
+  const T = darkMode ? THEME.dark : THEME.light;
+
+  const showToast = (msg) => { setToast({ msg, show: true }); setTimeout(() => setToast({ msg: "", show: false }), 2500); };
+  const navigate = (pg, param = null) => { setPage(pg); setPageParam(param); window.scrollTo(0, 0); };
+  const wrappedSetData = useCallback((updater) => { setData(prev => typeof updater === "function" ? updater(prev) : updater); showToast("Ndryshimet u ruajten me sukses"); }, []);
+
+  const handleRegister = (biz) => {
+    // New business gets a 30-day trial by default
+    const withTrial = addSubscriptionDays(biz, 30);
+    setAccounts(a => [...a, withTrial]);
+    setData(d => ({ ...d, business: withTrial }));
+    setRegSuccess(true);
+  };
+
+
+  const handleLogin = (account) => {
+    // Check if admin
+    if (account.email === ADMIN_CREDENTIALS.email && account.password === ADMIN_CREDENTIALS.password) {
+      setIsAdmin(true);
+      showToast("Mirë se vini, Administrator!");
+      return;
+    }
+    // Check if account is suspended
+    if (getAccountStatus(account) === "suspended") {
+      showToast("Llogaria juaj është pezulluar. Kontaktoni administratorin.");
+      return;
+    }
+    // Sync account from latest accounts list (to get updated subscription)
+    const fresh = accounts.find(a => a.id === account.id) || account;
+    setData(d => ({ ...d, business: fresh }));
+    showToast("U kyqet me sukses!");
+    setPage("dashboard");
+  };
+
+  // When admin updates accounts, also update currently logged-in business data
+  const handleSetAccounts = useCallback((updater) => {
+    setAccounts(prev => {
+      const next = typeof updater === "function" ? updater(prev) : updater;
+      // Keep current business in sync if it was updated
+      if (data.business) {
+        const updated = next.find(a => a.id === data.business.id);
+        if (updated) setData(d => ({ ...d, business: updated }));
+      }
+      return next;
+    });
+  }, [data.business]);
+
+  // If admin logs out
+  const handleAdminLogout = () => { setIsAdmin(false); showToast("U shkyqet me sukses!"); };
+
+  if (!data.business && page !== "auth") setPage("auth");
+
+  // If admin is logged in – show admin panel
+  if (isAdmin) {
+    return <AdminPanel accounts={accounts} setAccounts={handleSetAccounts} onLogout={handleAdminLogout} />;
+  }
+
+  const currentWorker = data.workers[0];
+  const NAV = [{ key: "dashboard", label: "Ballina" }, { key: "workers", label: "Puntoret" }, { key: "clients", label: "Klientat" }, { key: "business", label: "Biznesi" }];
+  const staleCount = data.jobs.filter(j => !["perfunduar","nuk_merret"].includes(j.status) && daysOld(j.createdAt) >= 3).length;
+
+  const styles = `
+    @import url('https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,100..1000;1,9..40,100..1000&display=swap');
+    @keyframes fadeIn{from{opacity:0}to{opacity:1}}
+    @keyframes slideUp{from{opacity:0;transform:translateY(16px)}to{opacity:1;transform:translateY(0)}}
+    @keyframes slideDown{from{opacity:0;transform:translate(-50%,-12px)}to{opacity:1;transform:translate(-50%,0)}}
+    *{box-sizing:border-box;margin:0;padding:0}
+    ::-webkit-scrollbar{width:6px}
+    ::-webkit-scrollbar-track{background:transparent}
+    ::-webkit-scrollbar-thumb{background:${darkMode ? "#1E3A5F" : "#d1d5db"};border-radius:3px}
+    input[type=number]::-webkit-inner-spin-button,input[type=number]::-webkit-outer-spin-button{-webkit-appearance:none;}
+    input::placeholder,textarea::placeholder{color:${T.textFaint};}
+    select option{background:${T.surface};color:${T.text};}
+  `;
+
+
+  
+  // DIRECT QR CODE HANDLER - shows client view immediately
+  const urlParams = new URLSearchParams(window.location.search);
+  if (urlParams.get("v") === "1") {
+    const qrJob = { id: urlParams.get("jid")||"", phoneModel: urlParams.get("pm")||"", imei: urlParams.get("im")||"", description: urlParams.get("ds")||"", price: urlParams.get("pr")||"", status: urlParams.get("st")||"new", createdAt: urlParams.get("dt")||"" };
+    const qrClient = { name: urlParams.get("cn")||"", phone: urlParams.get("cp")||"" };
+    const qrWorker = { name: urlParams.get("wn")||"" };
+    const qrBiz = { name: urlParams.get("bn")||"", phone: urlParams.get("bp")||"" };
+    return <ClientStatusView job={qrJob} client={qrClient} worker={qrWorker} business={qrBiz} onBack={() => window.location.href = window.location.origin} />;
+  }
+
+  if (isAdmin) return (
+    <><style>{styles}</style>
+    <AdminPanel accounts={accounts} setAccounts={setAccounts} onLogout={() => { setIsAdmin(false); setPage("auth"); }} />
+    </>
+  );
+  if (page === "jobStatus" && pageParam) return (
+    <JobStatusPage jobId={pageParam} data={data} onBack={() => setPage("auth")} T={T} />
+  );
+  if (page === "auth") return (
+    <><style>{styles}</style>
+    <AuthPage onRegister={handleRegister} onLogin={handleLogin} accounts={accounts} regSuccess={regSuccess} onGoLogin={() => { setRegSuccess(false); }} />
+    {regSuccess && (
+      <div style={{ position:"fixed",inset:0,background:"rgba(15,23,42,0.65)",backdropFilter:"blur(8px)",display:"flex",alignItems:"center",justifyContent:"center",zIndex:9999,fontFamily:"DM Sans,sans-serif" }}>
+        <div style={{ background:"#fff",borderRadius:28,padding:"52px 44px",textAlign:"center",maxWidth:440,width:"90%",boxShadow:"0 40px 100px rgba(0,0,0,0.3)" }}>
+          <div style={{ width:72,height:72,borderRadius:"50%",background:"linear-gradient(135deg,#10B981,#059669)",display:"flex",alignItems:"center",justifyContent:"center",margin:"0 auto 24px",color:"#fff",fontSize:32,fontWeight:700 }}>&#10003;</div>
+          <div style={{ fontWeight:800,color:"#0F172A",fontSize:24,marginBottom:12,letterSpacing:-0.5 }}>Regjistrimi u krye!</div>
+          <div style={{ color:"#64748B",fontSize:14,marginBottom:36,lineHeight:1.8 }}>Biznesi juaj eshte regjistruar me sukses.<br/>Kyquni tani per te filluar.</div>
+          <button onClick={() => setRegSuccess(false)} style={{ width:"100%",padding:"15px",background:"linear-gradient(135deg,#0EA5E9,#0369A1)",color:"#fff",border:"none",borderRadius:14,fontSize:15,fontWeight:700,cursor:"pointer",letterSpacing:0.3,boxShadow:"0 8px 24px rgba(14,165,233,0.35)" }}>Kyqu ketu</button>
+        </div>
+      </div>
+    )}
+            </div>
+            <div style={{ display: "flex", gap: 4 }}>
+              {NAV.map(item => (
+                <button key={item.key} onClick={() => navigate(item.key)} style={{ padding: "8px 18px", borderRadius: 10, fontSize: 13, fontWeight: 600, border: "none", cursor: "pointer", transition: "all .2s", background: page === item.key ? T.accent : "transparent", color: page === item.key ? "#fff" : T.textMuted, position: "relative" }}
+                  onMouseEnter={e => { if (page !== item.key) e.target.style.background = T.surfaceAlt; }} onMouseLeave={e => { if (page !== item.key) e.target.style.background = "transparent"; }}>
+                  {item.label}
+                  {item.key === "dashboard" && staleCount > 0 && <span style={{ position: "absolute", top: 4, right: 4, width: 8, height: 8, borderRadius: "50%", background: "#EF4444", border: "2px solid " + T.nav }}></span>}
+                </button>
+              ))}
+            </div>
+          </div>
+          <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
+            {/* Stale notification bell */}
+            {staleCount > 0 && (
+              <button onClick={() => navigate("dashboard")} style={{ background: "#FEE2E2", border: "none", borderRadius: 10, padding: "7px 12px", cursor: "pointer", display: "flex", alignItems: "center", gap: 6, color: "#EF4444", fontSize: 12, fontWeight: 700 }}>
+                {Ic.bell(14)} {staleCount} punë me vonesë
+              </button>
+            )}
+            {/* Dark mode toggle */}
+            <button onClick={() => setDarkMode(!darkMode)} style={{ background: T.surfaceAlt, border: `1.5px solid ${T.border}`, borderRadius: 10, width: 38, height: 38, cursor: "pointer", display: "flex", alignItems: "center", justifyContent: "center", color: T.textMuted, transition: "all .2s" }}>
+              {darkMode ? Ic.sun(16) : Ic.moon(16)}
+            </button>
+            <div style={{ position: "relative" }}>
+              <button onClick={() => setMenuOpen(!menuOpen)} style={{ padding: "8px 16px", borderRadius: 10, fontSize: 13, fontWeight: 600, border: `1.5px solid ${T.border}`, cursor: "pointer", background: T.surface, color: T.textMuted, display: "flex", alignItems: "center", gap: 6 }}>
+                {data.business?.name || "—"} {Ic.down(10)}
+              </button>
+              {menuOpen && (
+                <div style={{ position: "absolute", top: "100%", right: 0, marginTop: 4, background: T.surface, borderRadius: 12, border: `1.5px solid ${T.border}`, boxShadow: "0 8px 24px rgba(0,0,0,.15)", width: 200, zIndex: 200, overflow: "hidden" }}>
+                  <div style={{ padding: "8px 0 8px 16px", fontSize: 11, color: T.textFaint, fontWeight: 600, textTransform: "uppercase" }}>Manage Account</div>
+                  {["Profili", "Perdoruesit", "Parametrat e printimit", "Parametrat e statusav"].map(item => (
+                    <div key={item} style={{ padding: "10px 16px", fontSize: 13, cursor: "pointer", color: T.textMuted }} onMouseEnter={e => e.currentTarget.style.background = T.surfaceAlt} onMouseLeave={e => e.currentTarget.style.background = "transparent"}>{item}</div>
+                  ))}
+                  <div style={{ borderTop: `1px solid ${T.border}`, padding: "10px 16px", fontSize: 13, cursor: "pointer", color: T.danger, fontWeight: 600, display: "flex", alignItems: "center", gap: 8 }} onClick={() => { setData(DEFAULT_DATA); navigate("auth"); setMenuOpen(false); }}>
+                    {Ic.logout(13)} Log Out
+                  </div>
+                </div>
+              )}
+            </div>
+          </div>
+        </nav>
+
+        <div style={{ maxWidth: 1200, margin: "0 auto", padding: "24px 24px 60px" }}>
+          {/* Subscription expiry warnings */}
+          {data.business && getAccountStatus(data.business) === "expired" && (
+            <div style={{ background: "#FEE2E2", border: "1.5px solid #FCA5A5", borderRadius: 12, padding: "12px 20px", marginBottom: 16, display: "flex", alignItems: "center", gap: 10, fontSize: 13 }}>
+              <span style={{ color: "#EF4444" }}>{Ic.warn(16)}</span>
+              <strong style={{ color: "#EF4444" }}>Abonimet tuaj ka skaduar!</strong>
+              <span style={{ color: "#7F1D1D" }}>Kontaktoni administratorin për ta rinovuar.</span>
+            </div>
+          )}
+          {data.business && getAccountStatus(data.business) === "expiring" && data.business.expiryDate && (
+            <div style={{ background: "#FEF3C7", border: "1.5px solid #FCD34D", borderRadius: 12, padding: "12px 20px", marginBottom: 16, display: "flex", alignItems: "center", gap: 10, fontSize: 13 }}>
+              <span style={{ color: "#D97706" }}>{Ic.warn(16)}</span>
+              <strong style={{ color: "#D97706" }}>Abonimet skadon pas {data.business ? Math.ceil((new Date(data.business.expiryDate) - new Date()) / 86400000) : 0} ditësh!</strong>
+              <span style={{ color: "#78350F" }}>Kontaktoni administratorin për rinovim.</span>
+            </div>
+          )}
+            {page === "dashboard" && <Dashboard data={data} setData={wrappedSetData} onNavigate={navigate} currentWorker={currentWorker} T={T} />}
+          {page === "workers" && <Workers data={data} setData={wrappedSetData} T={T} />}
+          {page === "clients" && <Clients data={data} setData={wrappedSetData} onNavigate={navigate} T={T} />}
+          {page === "createJob" && <CreateJob data={data} setData={wrappedSetData} onNavigate={navigate} T={T} />}
+          {page === "jobDetail" && <JobDetail data={data} setData={wrappedSetData} jobId={pageParam} onNavigate={navigate} T={T} />}
+          {page === "business" && <BusinessSettings data={data} setData={wrappedSetData} T={T} />}
+          {page === "settings" && <SettingsPage tab={pageParam} data={data} setData={wrappedSetData} onNavigate={navigate} T={T} />}
+        </div>
+      </div>
+      <Toast message={toast.msg} visible={toast.show} />
+      {menuOpen && <div style={{ position: "fixed", inset: 0, zIndex: 99 }} onClick={() => setMenuOpen(false)} />}
+    </>
+  );
+}
+
+
+
+
+
+
