@@ -152,9 +152,10 @@ const Ic = {
   warn: (s = 14) => <svg width={s} height={s} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>,
 };
 
-const DEFAULT_DATA = { business: null, workers: [], clients: [], jobs: [], messages: [], history: [], products: [], sales: [], warranties: [], debts: [] };
+const DEFAULT_DATA = { business: null, workers: [], clients: [], jobs: [], messages: [], history: [], products: [], sales: [], warranties: [], debts: [], coupons: [], postaOrders: [] };
 const NAV_BASE = [{ key: "dashboard", label: "Ballina" }, { key: "workers", label: "Puntoret" }, { key: "clients", label: "Klientat" }, { key: "business", label: "Biznesi" }];
 const NAV_ARKA = { key: "arka", label: "Arka" };
+const NAV_POSTA = { key: "posta", label: "📦 Posta" };
 // Legacy fallback for any old references
 const NAV = NAV_BASE;
 
@@ -1660,6 +1661,28 @@ function AdminPanel({ accounts, setAccounts, onLogout }) {
     const [arkaEnabled, setArkaEnabled] = useState(!!acc.hasArka);
     const [arkaPin, setArkaPin] = useState(acc.arkaPin || "");
     const [arkaDirty, setArkaDirty] = useState(false);
+    const [postaEnabled, setPostaEnabled] = useState(!!acc.hasPosta);
+    const [postaDirty, setPostaDirty] = useState(false);
+    const [postaSqlNeeded, setPostaSqlNeeded] = useState(false);
+
+    const savePostaConfig = async () => {
+      try {
+        const { error } = await supabase.from('accounts').update({ has_posta: postaEnabled }).eq('id', acc.id);
+        if (error) {
+          showToast("⚠️ Ekzekuto SQL-in e migrimit në Supabase (shih poshtë)!");
+          setPostaSqlNeeded(true);
+          return;
+        }
+      } catch(e) {
+        showToast("Gabim gjatë ruajtjes: " + e.message);
+        return;
+      }
+      setAccounts(prev => prev.map(a => a.id === acc.id ? { ...a, hasPosta: postaEnabled } : a));
+      setSelectedAccount(s => s && s.id === acc.id ? { ...s, hasPosta: postaEnabled } : s);
+      setPostaDirty(false);
+      setPostaSqlNeeded(false);
+      showToast(postaEnabled ? "✅ Posta u aktivizua!" : "Posta u çaktivizua");
+    };
 
     const saveArkaConfig = () => {
       if (arkaEnabled && (!arkaPin || arkaPin.length < 6 || !/^\d{6}$/.test(arkaPin))) {
@@ -1778,6 +1801,50 @@ function AdminPanel({ accounts, setAccounts, onLogout }) {
               <button onClick={() => { setArkaEnabled(!!acc.hasArka); setArkaPin(acc.arkaPin || ""); setArkaDirty(false); }} style={{ background: T.surfaceAlt, color: T.textMuted, border: `1.5px solid ${T.border}`, borderRadius: 10, padding: "10px 18px", cursor: "pointer", fontWeight: 600, fontSize: 13 }}>
                 Anulo
               </button>
+            </div>
+          )}
+        </div>
+
+        {/* POSTA MODULE */}
+        <div style={{ background: T.surface, borderRadius: 20, padding: 24, border: `1.5px solid ${T.border}`, marginBottom: 20 }}>
+          <h3 style={{ margin: "0 0 14px", fontSize: 15, fontWeight: 700, color: T.text, display: "flex", alignItems: "center", gap: 8 }}>
+            📦 Moduli i Postës (Dërgesa)
+          </h3>
+          <label style={{ display: "flex", alignItems: "center", gap: 12, cursor: "pointer", padding: "12px 14px", borderRadius: 12, background: postaEnabled ? "#EFF6FF" : T.surfaceAlt, border: `1.5px solid ${postaEnabled ? "#3B82F6" : T.border}`, transition: "all .2s" }}>
+            <input type="checkbox" checked={postaEnabled} onChange={e => { setPostaEnabled(e.target.checked); setPostaDirty(true); }} style={{ width: 18, height: 18, accentColor: "#3B82F6", cursor: "pointer" }} />
+            <div>
+              <div style={{ fontSize: 14, fontWeight: 700, color: T.text }}>Shto postën te biznesi</div>
+              <div style={{ fontSize: 12, color: T.textMuted, marginTop: 2 }}>Aktivizo modulin e dërgesave (Posta) për këtë firmë</div>
+            </div>
+          </label>
+          {postaDirty && (
+            <div style={{ marginTop: 16, display: "flex", gap: 8 }}>
+              <button onClick={savePostaConfig} style={{ background: "#3B82F6", color: "#fff", border: "none", borderRadius: 10, padding: "10px 22px", cursor: "pointer", fontWeight: 700, fontSize: 13 }}>✔ Ruaj</button>
+              <button onClick={() => { setPostaEnabled(!!acc.hasPosta); setPostaDirty(false); setPostaSqlNeeded(false); }} style={{ background: T.surfaceAlt, color: T.textMuted, border: `1.5px solid ${T.border}`, borderRadius: 10, padding: "10px 18px", cursor: "pointer", fontWeight: 600, fontSize: 13 }}>Anulo</button>
+            </div>
+          )}
+          {postaSqlNeeded && (
+            <div style={{ marginTop: 16, background: "#FEF3C7", border: "1.5px solid #F59E0B", borderRadius: 12, padding: 16 }}>
+              <div style={{ fontWeight: 700, fontSize: 13, marginBottom: 8, color: "#92400E" }}>⚠️ Kolona mungon në DB. Ekzekuto SQL-in në Supabase SQL Editor:</div>
+              <pre style={{ fontSize: 11, background: "#1E293B", color: "#94A3B8", padding: 12, borderRadius: 8, overflowX: "auto", margin: 0, whiteSpace: "pre-wrap" }}>{`ALTER TABLE accounts ADD COLUMN IF NOT EXISTS has_posta BOOLEAN DEFAULT FALSE;
+
+CREATE TABLE IF NOT EXISTS posta_orders (
+  id TEXT PRIMARY KEY,
+  account_id UUID NOT NULL REFERENCES accounts(id) ON DELETE CASCADE,
+  order_no TEXT, client_name TEXT, client_surname TEXT, client_phone TEXT,
+  city TEXT, country TEXT, address TEXT, description TEXT,
+  price NUMERIC(10,2) DEFAULT 0, weight TEXT, notes TEXT,
+  status TEXT DEFAULT 'procesuara',
+  created_at TIMESTAMPTZ DEFAULT NOW(), updated_at TIMESTAMPTZ DEFAULT NOW()
+);
+
+CREATE TABLE IF NOT EXISTS coupons (
+  id TEXT PRIMARY KEY,
+  account_id UUID NOT NULL REFERENCES accounts(id) ON DELETE CASCADE,
+  code TEXT NOT NULL, discount_percent NUMERIC(5,2) DEFAULT 0,
+  is_active BOOLEAN DEFAULT TRUE, created_at TIMESTAMPTZ DEFAULT NOW()
+);`}</pre>
+              <button onClick={savePostaConfig} style={{ marginTop: 10, background: "#3B82F6", color: "#fff", border: "none", borderRadius: 8, padding: "8px 18px", cursor: "pointer", fontWeight: 700, fontSize: 12 }}>🔄 Provo përsëri pas ekzekutimit</button>
             </div>
           )}
         </div>
@@ -2121,6 +2188,7 @@ function mapAccountFromDB(row) {
     trialStart: row.trial_start,
     subscriptionPlan: row.subscription_plan,
     hasArka: !!row.has_arka,
+    hasPosta: !!row.has_posta,
     arkaPin: row.arka_pin || "",
     logo: row.logo || null,
     nui: row.nui || "",
@@ -2154,6 +2222,7 @@ function mapAccountToDB(a) {
     trial_start: a.trialStart || null,
     subscription_plan: a.subscriptionPlan || null,
     has_arka: a.hasArka || false,
+    has_posta: a.hasPosta || false,
     arka_pin: a.arkaPin || null,
     logo: a.logo || null,
     nui: a.nui || null,
@@ -2300,23 +2369,50 @@ function mapWarrantyToDB(w, accountId) {
     created_at: w.createdAt || new Date().toISOString(),
   };
 }
+function mapCouponFromDB(row) {
+  return { id: row.id, code: row.code, discountPercent: Number(row.discount_percent) || 0, isActive: !!row.is_active, createdAt: row.created_at };
+}
+function mapCouponToDB(c, accountId) {
+  return { id: c.id, account_id: accountId, code: c.code, discount_percent: c.discountPercent, is_active: c.isActive !== false, created_at: c.createdAt || new Date().toISOString() };
+}
+function mapPostaOrderFromDB(row) {
+  return {
+    id: row.id, orderNo: row.order_no || "", clientName: row.client_name || "", clientSurname: row.client_surname || "",
+    clientPhone: row.client_phone || "", city: row.city || "", country: row.country || "", address: row.address || "",
+    description: row.description || "", price: Number(row.price) || 0, weight: row.weight || "", notes: row.notes || "",
+    status: row.status || "procesuara", createdAt: row.created_at, updatedAt: row.updated_at,
+  };
+}
+function mapPostaOrderToDB(o, accountId) {
+  return {
+    id: o.id, account_id: accountId, order_no: o.orderNo || null, client_name: o.clientName || null,
+    client_surname: o.clientSurname || null, client_phone: o.clientPhone || null, city: o.city || null,
+    country: o.country || null, address: o.address || null, description: o.description || null,
+    price: o.price || 0, weight: o.weight || null, notes: o.notes || null, status: o.status || "procesuara",
+    created_at: o.createdAt || new Date().toISOString(), updated_at: new Date().toISOString(),
+  };
+}
 async function loadArkaData(accountId) {
   try {
-    const [prodRes, saleRes, warrRes, debtRes] = await Promise.all([
+    const [prodRes, saleRes, warrRes, debtRes, couponRes, postaRes] = await Promise.all([
       supabase.from('products').select('*').eq('account_id', accountId).order('created_at', { ascending: false }),
       supabase.from('sales').select('*').eq('account_id', accountId).order('created_at', { ascending: false }),
       supabase.from('warranties').select('*').eq('account_id', accountId).order('created_at', { ascending: false }),
       supabase.from('debts').select('*').eq('account_id', accountId).order('created_at', { ascending: false }),
+      supabase.from('coupons').select('*').eq('account_id', accountId).order('created_at', { ascending: false }),
+      supabase.from('posta_orders').select('*').eq('account_id', accountId).order('created_at', { ascending: false }),
     ]);
     return {
       products: (prodRes.data || []).map(mapProductFromDB),
       sales: (saleRes.data || []).map(mapSaleFromDB),
       warranties: (warrRes.data || []).map(mapWarrantyFromDB),
       debts: (debtRes.data || []).map(mapDebtFromDB),
+      coupons: (couponRes.data || []).map(mapCouponFromDB),
+      postaOrders: (postaRes.data || []).map(mapPostaOrderFromDB),
     };
   } catch (e) {
     console.error('loadArkaData failed:', e);
-    return { products: [], sales: [], warranties: [], debts: [] };
+    return { products: [], sales: [], warranties: [], debts: [], coupons: [], postaOrders: [] };
   }
 }
 
@@ -4398,6 +4494,320 @@ function POSView({ T, business, products, onSale, sales, warranties, onAddWarran
   );
 }
 
+// ============================================================
+// POSTA MODULE
+// ============================================================
+const POSTA_STATUSES = [
+  { key: "procesuara", label: "Procesuara", color: "#3B82F6" },
+  { key: "derguar", label: "Dërguar", color: "#F59E0B" },
+  { key: "dorezuar", label: "Dorëzuar", color: "#10B981" },
+  { key: "kthyer", label: "Kthyer", color: "#EF4444" },
+];
+
+function printPostaOrder(order, business) {
+  const statusLabel = POSTA_STATUSES.find(s => s.key === order.status)?.label || order.status;
+  const qrUrl = `${window.location.origin}${window.location.pathname}?posta=${order.id}`;
+  const win = window.open("", "_blank", "width=900,height=500");
+  if (!win) return;
+  win.document.write(`<!DOCTYPE html><html><head><meta charset="UTF-8">
+  <title>Posta #${order.orderNo}</title>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"><\/script>
+  <style>
+    @page { size: 21cm 10cm landscape; margin: 0; }
+    body { margin: 0; padding: 0; font-family: Arial, sans-serif; width: 21cm; height: 10cm; display: flex; align-items: stretch; }
+    .left { flex: 1; padding: 14px 16px; display: flex; flex-direction: column; gap: 4px; }
+    .right { width: 130px; display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 10px; border-left: 2px dashed #ccc; gap: 6px; }
+    h1 { font-size: 15px; font-weight: 900; margin: 0 0 6px; }
+    .row { display: flex; gap: 6px; font-size: 11px; }
+    .lbl { color: #666; min-width: 80px; }
+    .val { font-weight: 700; }
+    .price { font-size: 20px; font-weight: 900; color: #1E40AF; margin-top: auto; }
+    .status { font-size: 10px; background: #DBEAFE; color: #1E40AF; border-radius: 4px; padding: 2px 6px; display: inline-block; margin-bottom: 4px; }
+    .qr-label { font-size: 9px; color: #666; text-align: center; }
+    .biz { font-size: 10px; color: #888; margin-bottom: 6px; }
+    @media print { body { -webkit-print-color-adjust: exact; } }
+  </style>
+</head><body>
+  <div class="left">
+    <div class="biz">${business?.name || ""} ${business?.phone ? "| Tel: " + business.phone : ""}</div>
+    <h1>Porosi #${order.orderNo || order.id.slice(-6).toUpperCase()}</h1>
+    <div class="row"><span class="lbl">Emri:</span><span class="val">${order.clientName} ${order.clientSurname}</span></div>
+    <div class="row"><span class="lbl">Telefon:</span><span class="val">${order.clientPhone || "—"}</span></div>
+    <div class="row"><span class="lbl">Qyteti:</span><span class="val">${order.city}${order.country ? ", " + order.country : ""}</span></div>
+    <div class="row"><span class="lbl">Adresa:</span><span class="val">${order.address || "—"}</span></div>
+    ${order.description ? `<div class="row"><span class="lbl">Përshkrimi:</span><span class="val">${order.description}</span></div>` : ""}
+    ${order.weight ? `<div class="row"><span class="lbl">Pesha:</span><span class="val">${order.weight}</span></div>` : ""}
+    <div class="price">€${Number(order.price).toFixed(2)}</div>
+  </div>
+  <div class="right">
+    <div class="status">${statusLabel}</div>
+    <div id="qr"></div>
+    <div class="qr-label">Skanoni për status</div>
+  </div>
+  <script>
+    new QRCode(document.getElementById("qr"), { text: "${qrUrl}", width: 90, height: 90, correctLevel: QRCode.CorrectLevel.M });
+    setTimeout(() => { window.print(); }, 600);
+  <\/script>
+</body></html>`);
+  win.document.close();
+}
+
+function PostaOrderForm({ T, initial, onSave, onClose }) {
+  const [form, setForm] = React.useState(initial || {
+    clientName: "", clientSurname: "", clientPhone: "", city: "", country: "", address: "",
+    description: "", price: "", weight: "", notes: "", status: "procesuara",
+  });
+  const set = (k, v) => setForm(f => ({ ...f, [k]: v }));
+  const FI = ({ label, field, type = "text", placeholder, required }) => (
+    <div style={{ display: "flex", flexDirection: "column", gap: 4 }}>
+      <label style={{ fontSize: 12, fontWeight: 600, color: T.textMuted }}>{label}{required && " *"}</label>
+      <input
+        type={type}
+        value={form[field] || ""}
+        onChange={e => set(field, e.target.value)}
+        placeholder={placeholder || ""}
+        style={{ padding: "9px 12px", borderRadius: 10, border: `1.5px solid ${T.border}`, fontSize: 13, background: T.inputBg || T.surface, color: T.text, outline: "none", fontFamily: "inherit" }}
+      />
+    </div>
+  );
+  const canSave = form.clientName.trim() && form.city.trim();
+  return (
+    <div style={{ background: T.surface, borderRadius: 20, padding: 24, border: `1.5px solid ${T.border}` }}>
+      <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 20 }}>
+        <h3 style={{ margin: 0, fontSize: 17, fontWeight: 800, color: T.text }}>{initial ? "Edito Porosi" : "Porosi e Re"}</h3>
+        <button onClick={onClose} style={{ background: "none", border: "none", cursor: "pointer", color: T.textMuted, fontSize: 20 }}>✕</button>
+      </div>
+      <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 12, marginBottom: 12 }}>
+        <FI label="Emri" field="clientName" required placeholder="p.sh. Arben" />
+        <FI label="Mbiemri" field="clientSurname" placeholder="p.sh. Krasniqi" />
+        <FI label="Telefon" field="clientPhone" placeholder="+383..." />
+        <FI label="Qyteti" field="city" required placeholder="p.sh. Prishtinë" />
+        <FI label="Shteti" field="country" placeholder="p.sh. Kosovë" />
+        <FI label="Adresa" field="address" placeholder="Rruga, Nr..." />
+        <FI label="Përshkrim" field="description" placeholder="Produkt..." />
+        <FI label="Çmimi (€)" field="price" type="number" placeholder="0.00" />
+        <FI label="Pesha" field="weight" placeholder="kg..." />
+        <FI label="Shënime" field="notes" placeholder="Shënim opsional..." />
+      </div>
+      {initial && (
+        <div style={{ marginBottom: 12 }}>
+          <label style={{ fontSize: 12, fontWeight: 600, color: T.textMuted }}>Statusi</label>
+          <div style={{ display: "flex", gap: 8, marginTop: 6, flexWrap: "wrap" }}>
+            {POSTA_STATUSES.map(s => (
+              <button key={s.key} onClick={() => set("status", s.key)}
+                style={{ padding: "6px 14px", borderRadius: 8, border: `1.5px solid ${form.status === s.key ? s.color : T.border}`, background: form.status === s.key ? s.color : T.surface, color: form.status === s.key ? "#fff" : T.textMuted, fontWeight: 600, fontSize: 12, cursor: "pointer" }}>
+                {s.label}
+              </button>
+            ))}
+          </div>
+        </div>
+      )}
+      <div style={{ display: "flex", gap: 10, justifyContent: "flex-end" }}>
+        <button onClick={onClose} style={{ padding: "10px 20px", borderRadius: 10, border: `1.5px solid ${T.border}`, background: T.surfaceAlt, color: T.textMuted, fontWeight: 600, fontSize: 13, cursor: "pointer" }}>Anulo</button>
+        <button onClick={() => canSave && onSave(form)} disabled={!canSave}
+          style={{ padding: "10px 20px", borderRadius: 10, border: "none", background: canSave ? "#3B82F6" : T.border, color: "#fff", fontWeight: 700, fontSize: 13, cursor: canSave ? "pointer" : "not-allowed" }}>
+          {initial ? "Ruaj ndryshimet" : "Krijo porosi"}
+        </button>
+      </div>
+    </div>
+  );
+}
+
+function PostaPage({ T, business, orders, onAdd, onUpdate, onDelete }) {
+  const [view, setView] = React.useState("list"); // list | new | detail
+  const [selected, setSelected] = React.useState(null);
+  const [filter, setFilter] = React.useState("all");
+  const [search, setSearch] = React.useState("");
+
+  const genOrderNo = () => {
+    const d = new Date();
+    return `PS${d.getFullYear().toString().slice(-2)}${String(d.getMonth()+1).padStart(2,"0")}${String(d.getDate()).padStart(2,"0")}-${Math.floor(Math.random()*9000+1000)}`;
+  };
+
+  const filtered = (orders || []).filter(o => {
+    if (filter !== "all" && o.status !== filter) return false;
+    if (search) {
+      const s = search.toLowerCase();
+      return (o.clientName + " " + o.clientSurname).toLowerCase().includes(s) ||
+        (o.clientPhone || "").includes(s) || (o.orderNo || "").toLowerCase().includes(s) ||
+        (o.city || "").toLowerCase().includes(s);
+    }
+    return true;
+  });
+
+  if (view === "new") {
+    return (
+      <div>
+        <button onClick={() => setView("list")} style={{ background: T.surfaceAlt, border: `1px solid ${T.border}`, borderRadius: 8, padding: "6px 14px", cursor: "pointer", fontSize: 13, color: T.textMuted, marginBottom: 16 }}>← Kthehu</button>
+        <PostaOrderForm T={T} onClose={() => setView("list")} onSave={(f) => {
+          const id = crypto.randomUUID ? crypto.randomUUID() : Date.now().toString(36);
+          const newOrder = { id, orderNo: genOrderNo(), ...f, price: Number(f.price) || 0, status: "procesuara", createdAt: new Date().toISOString(), updatedAt: new Date().toISOString() };
+          onAdd(newOrder);
+          setView("list");
+        }} />
+      </div>
+    );
+  }
+
+  if (view === "detail" && selected) {
+    const order = (orders || []).find(o => o.id === selected.id) || selected;
+    return (
+      <div>
+        <button onClick={() => { setView("list"); setSelected(null); }} style={{ background: T.surfaceAlt, border: `1px solid ${T.border}`, borderRadius: 8, padding: "6px 14px", cursor: "pointer", fontSize: 13, color: T.textMuted, marginBottom: 16 }}>← Kthehu</button>
+        <PostaOrderForm T={T} initial={order} onClose={() => { setView("list"); setSelected(null); }} onSave={(f) => {
+          const updated = { ...order, ...f, price: Number(f.price) || 0, updatedAt: new Date().toISOString() };
+          onUpdate(updated);
+          setSelected(updated);
+          setView("list");
+        }} />
+        <div style={{ display: "flex", gap: 10, marginTop: 12 }}>
+          <button onClick={() => printPostaOrder(order, business)}
+            style={{ padding: "10px 20px", borderRadius: 10, border: "none", background: "#3B82F6", color: "#fff", fontWeight: 700, fontSize: 13, cursor: "pointer", display: "flex", alignItems: "center", gap: 6 }}>
+            🖨️ Printo Kuponin
+          </button>
+          <button onClick={() => {
+            const url = `${window.location.origin}${window.location.pathname}?posta=${order.id}`;
+            navigator.clipboard?.writeText(url);
+            window.open(url, "_blank");
+          }} style={{ padding: "10px 20px", borderRadius: 10, border: `1.5px solid ${T.border}`, background: T.surface, color: T.text, fontWeight: 600, fontSize: 13, cursor: "pointer", display: "flex", alignItems: "center", gap: 6 }}>
+            🔗 Faqja e statusit
+          </button>
+          <button onClick={() => { if (window.confirm("Fshi këtë porosi?")) { onDelete(order.id); setView("list"); setSelected(null); } }}
+            style={{ padding: "10px 16px", borderRadius: 10, border: "none", background: "#FEE2E2", color: "#EF4444", fontWeight: 700, fontSize: 13, cursor: "pointer" }}>
+            🗑️
+          </button>
+        </div>
+      </div>
+    );
+  }
+
+  // List view
+  const statusCounts = {};
+  POSTA_STATUSES.forEach(s => { statusCounts[s.key] = (orders || []).filter(o => o.status === s.key).length; });
+  return (
+    <div style={{ animation: "slideUp .2s ease" }}>
+      <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 20 }}>
+        <h2 style={{ margin: 0, fontSize: 22, fontWeight: 800, color: T.text }}>📦 Posta</h2>
+        <button onClick={() => setView("new")}
+          style={{ padding: "10px 20px", borderRadius: 12, border: "none", background: "#3B82F6", color: "#fff", fontWeight: 700, fontSize: 14, cursor: "pointer", display: "flex", alignItems: "center", gap: 6 }}>
+          + Porosi e re
+        </button>
+      </div>
+
+      {/* Stats */}
+      <div style={{ display: "flex", gap: 12, marginBottom: 20, flexWrap: "wrap" }}>
+        {[{ label: "Gjithsej", count: (orders || []).length, color: "#6366F1" }, ...POSTA_STATUSES.map(s => ({ label: s.label, count: statusCounts[s.key] || 0, color: s.color }))].map(st => (
+          <div key={st.label} style={{ background: T.surface, border: `1.5px solid ${T.border}`, borderRadius: 14, padding: "12px 20px", textAlign: "center", minWidth: 90 }}>
+            <div style={{ fontSize: 22, fontWeight: 800, color: st.color }}>{st.count}</div>
+            <div style={{ fontSize: 11, color: T.textMuted, fontWeight: 600 }}>{st.label}</div>
+          </div>
+        ))}
+      </div>
+
+      {/* Filter + Search */}
+      <div style={{ display: "flex", gap: 10, marginBottom: 16, flexWrap: "wrap" }}>
+        <input value={search} onChange={e => setSearch(e.target.value)} placeholder="Kërko emër, telefon, nr. porosie..."
+          style={{ flex: 1, minWidth: 200, padding: "9px 14px", borderRadius: 10, border: `1.5px solid ${T.border}`, fontSize: 13, background: T.surface, color: T.text, outline: "none" }} />
+        <select value={filter} onChange={e => setFilter(e.target.value)}
+          style={{ padding: "9px 14px", borderRadius: 10, border: `1.5px solid ${T.border}`, fontSize: 13, background: T.surface, color: T.text }}>
+          <option value="all">Të gjitha</option>
+          {POSTA_STATUSES.map(s => <option key={s.key} value={s.key}>{s.label}</option>)}
+        </select>
+      </div>
+
+      {/* Orders list */}
+      {filtered.length === 0 ? (
+        <div style={{ textAlign: "center", padding: "60px 20px", color: T.textMuted }}>
+          <div style={{ fontSize: 48, marginBottom: 12 }}>📦</div>
+          <div style={{ fontSize: 15, fontWeight: 600 }}>Nuk ka porosi</div>
+        </div>
+      ) : (
+        <div style={{ display: "flex", flexDirection: "column", gap: 8 }}>
+          {filtered.map(o => {
+            const st = POSTA_STATUSES.find(s => s.key === o.status) || POSTA_STATUSES[0];
+            return (
+              <div key={o.id} onClick={() => { setSelected(o); setView("detail"); }}
+                style={{ background: T.surface, border: `1.5px solid ${T.border}`, borderRadius: 14, padding: "14px 18px", cursor: "pointer", display: "flex", alignItems: "center", justifyContent: "space-between", gap: 12, transition: "box-shadow .15s" }}
+                onMouseEnter={e => e.currentTarget.style.boxShadow = "0 4px 16px rgba(0,0,0,.08)"}
+                onMouseLeave={e => e.currentTarget.style.boxShadow = "none"}>
+                <div style={{ flex: 1 }}>
+                  <div style={{ display: "flex", alignItems: "center", gap: 8, marginBottom: 4 }}>
+                    <span style={{ fontWeight: 700, fontSize: 14, color: T.text }}>{o.clientName} {o.clientSurname}</span>
+                    <span style={{ fontSize: 11, color: "#64748b" }}>#{o.orderNo || o.id.slice(-6).toUpperCase()}</span>
+                  </div>
+                  <div style={{ fontSize: 12, color: T.textMuted }}>{o.city}{o.country ? ", " + o.country : ""} {o.clientPhone ? "• " + o.clientPhone : ""}</div>
+                </div>
+                <div style={{ textAlign: "right" }}>
+                  <div style={{ fontWeight: 800, fontSize: 16, color: "#1E40AF" }}>€{Number(o.price).toFixed(2)}</div>
+                  <span style={{ fontSize: 11, fontWeight: 600, padding: "2px 8px", borderRadius: 6, background: st.color + "20", color: st.color }}>{st.label}</span>
+                </div>
+              </div>
+            );
+          })}
+        </div>
+      )}
+    </div>
+  );
+}
+
+// Public status page for posta orders (QR scan)
+function PostaStatusPublicPage({ orderId, onBack }) {
+  const [order, setOrder] = React.useState(null);
+  const [biz, setBiz] = React.useState(null);
+  const [loading, setLoading] = React.useState(true);
+  React.useEffect(() => {
+    (async () => {
+      try {
+        const { data: o } = await supabase.from('posta_orders').select('*').eq('id', orderId).single();
+        if (o) {
+          setOrder(mapPostaOrderFromDB(o));
+          const { data: a } = await supabase.from('accounts').select('name,phone,city').eq('id', o.account_id).single();
+          if (a) setBiz(a);
+        }
+      } catch(e) {}
+      setLoading(false);
+    })();
+  }, [orderId]);
+
+  if (loading) return <div style={{ minHeight: "100vh", display: "flex", alignItems: "center", justifyContent: "center", fontFamily: "DM Sans, sans-serif", fontSize: 16, color: "#64748b" }}>Duke ngarkuar...</div>;
+  if (!order) return <div style={{ minHeight: "100vh", display: "flex", alignItems: "center", justifyContent: "center", fontFamily: "DM Sans, sans-serif", fontSize: 16, color: "#EF4444" }}>Porosia nuk u gjet.</div>;
+
+  const st = POSTA_STATUSES.find(s => s.key === order.status) || POSTA_STATUSES[0];
+  const progress = POSTA_STATUSES.findIndex(s => s.key === order.status);
+  return (
+    <div style={{ minHeight: "100vh", background: "#F8FAFC", fontFamily: "DM Sans, sans-serif", display: "flex", flexDirection: "column", alignItems: "center", padding: "40px 16px" }}>
+      <div style={{ width: "100%", maxWidth: 480, background: "#fff", borderRadius: 20, padding: 28, boxShadow: "0 4px 24px rgba(0,0,0,.08)" }}>
+        {biz && <div style={{ fontSize: 13, color: "#64748b", marginBottom: 4 }}>{biz.name}</div>}
+        <h1 style={{ fontSize: 22, fontWeight: 900, margin: "0 0 4px", color: "#0F172A" }}>Porosia #{order.orderNo || order.id.slice(-6).toUpperCase()}</h1>
+        <div style={{ fontSize: 13, color: "#64748b", marginBottom: 20 }}>{new Date(order.createdAt).toLocaleDateString("sq-AL")}</div>
+        {/* Status bar */}
+        <div style={{ display: "flex", alignItems: "center", gap: 0, marginBottom: 24 }}>
+          {POSTA_STATUSES.map((s, i) => (
+            <React.Fragment key={s.key}>
+              <div style={{ textAlign: "center", flex: 1 }}>
+                <div style={{ width: 32, height: 32, borderRadius: "50%", background: i <= progress ? s.color : "#E2E8F0", color: "#fff", display: "flex", alignItems: "center", justifyContent: "center", margin: "0 auto 4px", fontWeight: 700, fontSize: 12, transition: "background .3s" }}>
+                  {i < progress ? "✓" : i + 1}
+                </div>
+                <div style={{ fontSize: 10, color: i <= progress ? s.color : "#94A3B8", fontWeight: 600 }}>{s.label}</div>
+              </div>
+              {i < POSTA_STATUSES.length - 1 && <div style={{ flex: 1, height: 2, background: i < progress ? st.color : "#E2E8F0", marginBottom: 18 }} />}
+            </React.Fragment>
+          ))}
+        </div>
+        <div style={{ background: st.color + "15", border: `1.5px solid ${st.color}30`, borderRadius: 12, padding: "12px 16px", marginBottom: 20, textAlign: "center" }}>
+          <div style={{ fontWeight: 800, fontSize: 18, color: st.color }}>{st.label}</div>
+        </div>
+        {[["Emri", order.clientName + " " + order.clientSurname], ["Telefon", order.clientPhone], ["Qyteti", order.city + (order.country ? ", " + order.country : "")], ["Adresa", order.address], ["Çmimi", "€" + Number(order.price).toFixed(2)], ["Pesha", order.weight]].filter(([,v]) => v && v.trim()).map(([l, v]) => (
+          <div key={l} style={{ display: "flex", justifyContent: "space-between", padding: "8px 0", borderBottom: "1px solid #F1F5F9", fontSize: 14 }}>
+            <span style={{ color: "#64748b", fontWeight: 600 }}>{l}</span>
+            <span style={{ color: "#0F172A", fontWeight: 700 }}>{v}</span>
+          </div>
+        ))}
+      </div>
+    </div>
+  );
+}
+
 export default function DataPhone() {
   // accounts is shared — both admin and businesses share this list
   const [accounts, setAccounts] = useState([]);
@@ -4425,6 +4835,12 @@ export default function DataPhone() {
     if (jobId) {
       setPage('jobStatus');
       setPageParam(jobId);
+      return;
+    }
+    const postaId = params.get('posta');
+    if (postaId) {
+      setPage('postaStatus');
+      setPageParam(postaId);
       return;
     }
     const savedAdmin = localStorage.getItem('prophone_is_admin');
@@ -4498,6 +4914,8 @@ export default function DataPhone() {
       sales: arka.sales,
       warranties: arka.warranties,
       debts: arka.debts,
+      coupons: arka.coupons || [],
+      postaOrders: arka.postaOrders || [],
     }));
     prevDataRef.current = {
       clients: loaded.clients,
@@ -4507,6 +4925,8 @@ export default function DataPhone() {
       sales: arka.sales,
       warranties: arka.warranties,
       debts: arka.debts,
+      coupons: arka.coupons || [],
+      postaOrders: arka.postaOrders || [],
     };
     setTimeout(() => { syncingRef.current = false; }, 100);
   };
@@ -4553,20 +4973,26 @@ export default function DataPhone() {
     const salesDiff = diffById(prev.sales || [], data.sales || []);
     const warrDiff = diffById(prev.warranties || [], data.warranties || []);
     const debtsDiff = diffById(prev.debts || [], data.debts || []);
+    const couponsDiff = diffById(prev.coupons || [], data.coupons || []);
+    const postaDiff = diffById(prev.postaOrders || [], data.postaOrders || []);
     const hasChanges =
       productsDiff.added.length || productsDiff.removed.length || productsDiff.changed.length ||
       salesDiff.added.length || salesDiff.removed.length || salesDiff.changed.length ||
       warrDiff.added.length || warrDiff.removed.length || warrDiff.changed.length ||
-      debtsDiff.added.length || debtsDiff.removed.length || debtsDiff.changed.length;
+      debtsDiff.added.length || debtsDiff.removed.length || debtsDiff.changed.length ||
+      couponsDiff.added.length || couponsDiff.removed.length || couponsDiff.changed.length ||
+      postaDiff.added.length || postaDiff.removed.length || postaDiff.changed.length;
     if (!hasChanges) return;
     (async () => {
       await syncEntity('products', mapProductToDB, accountId, productsDiff);
       await syncEntity('sales', mapSaleToDB, accountId, salesDiff);
       await syncEntity('warranties', mapWarrantyToDB, accountId, warrDiff);
       await syncEntity('debts', mapDebtToDB, accountId, debtsDiff);
-      prevDataRef.current = { ...prevDataRef.current, products: data.products, sales: data.sales, warranties: data.warranties, debts: data.debts };
+      await syncEntity('coupons', mapCouponToDB, accountId, couponsDiff);
+      await syncEntity('posta_orders', mapPostaOrderToDB, accountId, postaDiff);
+      prevDataRef.current = { ...prevDataRef.current, products: data.products, sales: data.sales, warranties: data.warranties, debts: data.debts, coupons: data.coupons, postaOrders: data.postaOrders };
     })();
-  }, [data.products, data.sales, data.warranties, data.debts, data.business]);
+  }, [data.products, data.sales, data.warranties, data.debts, data.coupons, data.postaOrders, data.business]);
 
   // Load all accounts when admin logs in
   useEffect(() => {
@@ -4593,6 +5019,30 @@ export default function DataPhone() {
       prevAccountsRef.current = accounts;
     })();
   }, [accounts, isAdmin]);
+
+  // Auto-refresh business account from Supabase every 30s + on window focus
+  // This picks up admin changes (hasPosta, hasArka, status, expiry) without re-login
+  useEffect(() => {
+    if (!data.business?.id) return;
+    const refresh = async () => {
+      try {
+        const { data: acc, error } = await supabase.from('accounts').select('*').eq('id', data.business.id).single();
+        if (!error && acc) {
+          const fresh = mapAccountFromDB(acc);
+          const fields = ['hasArka','hasPosta','status','expiryDate','arkaPin'];
+          const changed = fields.some(f => fresh[f] !== data.business[f]);
+          if (changed) {
+            syncingRef.current = true;
+            setData(d => ({ ...d, business: { ...d.business, ...fresh } }));
+            setTimeout(() => { syncingRef.current = false; }, 100);
+          }
+        }
+      } catch(e) {}
+    };
+    const interval = setInterval(refresh, 30000);
+    window.addEventListener('focus', refresh);
+    return () => { clearInterval(interval); window.removeEventListener('focus', refresh); };
+  }, [data.business?.id]);
 
   const handleRegister = async (biz) => {
     try {
@@ -4861,6 +5311,9 @@ export default function DataPhone() {
   if (page === "jobStatus" && pageParam) return (
     <JobStatusPage jobId={pageParam} data={data} onBack={() => setPage("auth")} T={T} />
   );
+  if (page === "postaStatus" && pageParam) return (
+    <PostaStatusPublicPage orderId={pageParam} onBack={() => setPage("auth")} />
+  );
   if (page === "auth") return (
     <><style>{styles}</style>
     <AuthPage onRegister={handleRegister} onLogin={handleLogin} accounts={accounts} regSuccess={regSuccess} onGoLogin={() => { setRegSuccess(false); }} />
@@ -4875,7 +5328,7 @@ export default function DataPhone() {
           <div style={{ display: "flex", alignItems: "center", gap: 24 }}>
             <div style={{ fontWeight: 800, fontSize: 20, color: T.accent, letterSpacing: -0.5, display: "flex", alignItems: "center", gap: 8 }}><img src="./icon.png" alt="" style={{ width: 28, height: 28, objectFit: "contain" }} />DataPOS</div>
             <div className="desktop-nav-tabs" style={{ display: "flex", gap: 4 }}>
-              {(data.business?.hasArka ? [NAV_BASE[0], NAV_BASE[1], NAV_BASE[2], NAV_ARKA, NAV_BASE[3]] : NAV_BASE).map(item => (
+              {(() => { let n = [NAV_BASE[0], NAV_BASE[1], NAV_BASE[2]]; if (data.business?.hasArka) n.push(NAV_ARKA); if (data.business?.hasPosta) n.push(NAV_POSTA); n.push(NAV_BASE[3]); return n; })().map(item => (
                 <button key={item.key} onClick={() => navigate(item.key)} style={{ padding: "8px 18px", borderRadius: 10, fontSize: 13, fontWeight: 600, border: "none", cursor: "pointer", transition: "all .2s", background: page === item.key ? T.accent : "transparent", color: page === item.key ? "#fff" : T.textMuted, position: "relative" }}
                   onMouseEnter={e => { if (page !== item.key) e.target.style.background = T.surfaceAlt; }} onMouseLeave={e => { if (page !== item.key) e.target.style.background = "transparent"; }}>
                   {item.label}
@@ -4990,6 +5443,14 @@ export default function DataPhone() {
               )}
             </>
           )}
+          {page === "posta" && data.business?.hasPosta && (
+            <PostaPage T={T} business={data.business}
+              orders={data.postaOrders || []}
+              onAdd={(o) => setData(d => ({ ...d, postaOrders: [o, ...(d.postaOrders || [])] }))}
+              onUpdate={(o) => setData(d => ({ ...d, postaOrders: (d.postaOrders || []).map(x => x.id === o.id ? o : x) }))}
+              onDelete={(id) => setData(d => ({ ...d, postaOrders: (d.postaOrders || []).filter(x => x.id !== id) }))}
+            />
+          )}
         </div>
       </div>
       <Toast message={toast.msg} visible={toast.show} />
@@ -5040,4 +5501,4 @@ export default function DataPhone() {
 
 
 
-
+

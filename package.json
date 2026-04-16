@@ -1,5 +1,6 @@
 {
   "name": "prophone",
+  "homepage": "./",
   "version": "0.1.0",
   "private": true,
   "dependencies": {
@@ -19,26 +20,8 @@
     "build": "react-scripts build",
     "test": "react-scripts test",
     "eject": "react-scripts eject",
-    "electron-dev": "set ELECTRON_DEV=true&& concurrently \"npm start\" \"wait-on http://localhost:3000 && electron .\"",
-    "electron-build": "npm run build && electron-builder --win"
-  },
-  "eslintConfig": {
-    "extends": [
-      "react-app",
-      "react-app/jest"
-    ]
-  },
-  "browserslist": {
-    "production": [
-      ">0.2%",
-      "not dead",
-      "not op_mini all"
-    ],
-    "development": [
-      "last 1 chrome version",
-      "last 1 firefox version",
-      "last 1 safari version"
-    ]
+    "electron-dev": "set ELECTRON_DEV=true",
+    "electron-build": "npm run build"
   },
   "devDependencies": {
     "concurrently": "^9.2.1",
@@ -49,7 +32,6 @@
     "wait-on": "^9.0.5"
   },
   "main": "electron/main.js",
-  
   "author": "ProPhone",
   "description": "ProPhone - Sistemi i menaxhimit te riparimeve",
   "build": {
@@ -85,5 +67,17 @@
     "extraMetadata": {
       "main": "electron/main.js"
     }
+  },
+  "browserslist": {
+    "production": [
+      ">0.2%",
+      "not dead",
+      "not op_mini all"
+    ],
+    "development": [
+      "last 1 chrome version",
+      "last 1 firefox version",
+      "last 1 safari version"
+    ]
   }
 }

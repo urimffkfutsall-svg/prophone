@@ -21,7 +21,7 @@ function createWindow() {
   });
 
   // Load the app
-  const isDev = process.env.ELECTRON_DEV === 'true' || !app.isPackaged;
+  const isDev = process.env.ELECTRON_DEV === 'true';
   if (isDev) {
     mainWindow.loadURL('http://localhost:3000');
   } else {

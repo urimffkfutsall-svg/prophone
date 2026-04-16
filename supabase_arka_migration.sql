@@ -91,3 +91,57 @@ CREATE TABLE IF NOT EXISTS warranties (
   created_at TIMESTAMPTZ DEFAULT NOW()
 );
 CREATE INDEX IF NOT EXISTS warranties_account_idx ON warranties(account_id);
+
+-- ============================================================
+-- Posta + Coupons Migration (shto pas migrimeve ekzistuese)
+-- ============================================================
+
+-- 6) Shto kolonen has_posta te accounts
+ALTER TABLE accounts
+  ADD COLUMN IF NOT EXISTS has_posta BOOLEAN DEFAULT FALSE;
+
+-- 7) Tabela coupons — kupone zbritje per biznesin
+CREATE TABLE IF NOT EXISTS coupons (
+  id TEXT PRIMARY KEY,
+  account_id UUID NOT NULL REFERENCES accounts(id) ON DELETE CASCADE,
+  code TEXT NOT NULL,
+  discount_percent NUMERIC(5,2) NOT NULL DEFAULT 0,
+  is_active BOOLEAN DEFAULT TRUE,
+  created_at TIMESTAMPTZ DEFAULT NOW()
+);
+CREATE INDEX IF NOT EXISTS coupons_account_idx ON coupons(account_id);
+CREATE INDEX IF NOT EXISTS coupons_code_idx ON coupons(code);
+
+-- 8) Tabela posta_orders — porosite e postës
+CREATE TABLE IF NOT EXISTS posta_orders (
+  id TEXT PRIMARY KEY,
+  account_id UUID NOT NULL REFERENCES accounts(id) ON DELETE CASCADE,
+  order_no TEXT,
+  client_name TEXT,
+  client_surname TEXT,
+  client_phone TEXT,
+  city TEXT,
+  country TEXT,
+  address TEXT,
+  description TEXT,
+  price NUMERIC(10,2) DEFAULT 0,
+  weight TEXT,
+  notes TEXT,
+  status TEXT DEFAULT 'procesuara',
+  created_at TIMESTAMPTZ DEFAULT NOW(),
+  updated_at TIMESTAMPTZ DEFAULT NOW()
+);
+CREATE INDEX IF NOT EXISTS posta_orders_account_idx ON posta_orders(account_id);
+CREATE INDEX IF NOT EXISTS posta_orders_status_idx ON posta_orders(status);
+
+-- RLS (Row Level Security) — lejo leximin publik te posta_orders per faqen e statusit
+ALTER TABLE posta_orders ENABLE ROW LEVEL SECURITY;
+DO $$
+BEGIN
+  IF NOT EXISTS (
+    SELECT 1 FROM pg_policies
+    WHERE tablename = 'posta_orders' AND policyname = 'Public read posta orders by id'
+  ) THEN
+    EXECUTE 'CREATE POLICY "Public read posta orders by id" ON posta_orders FOR SELECT USING (true)';
+  END IF;
+END $$;
