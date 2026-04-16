@@ -544,15 +544,9 @@ function AuthPage({ onRegister, onLogin, accounts, regSuccess, onGoLogin }) {
   };
   const handleLogin = () => {
     if (!email.trim() || !password.trim()) { setError("Shkruani emailin dhe fjalekalimin"); return; }
-    // Check admin first
-    if (email.trim() === ADMIN_CREDENTIALS.email && password.trim() === ADMIN_CREDENTIALS.password) {
-      setError(""); onLogin({ email: ADMIN_CREDENTIALS.email, password: ADMIN_CREDENTIALS.password, role: "admin" });
-      return;
-    }
-    const account = accounts.find(a => a.email === email.trim() && a.password === password.trim());
-    if (!account) { setError("Email ose fjalekalim i gabuar"); return; }
-    if (getAccountStatus(account) === "suspended") { setError("Llogaria juaj është pezulluar. Kontaktoni administratorin."); return; }
-    setError(""); onLogin(account, rememberMe);
+    // Pass directly to DataPhone handleLogin which queries Supabase
+    setError("");
+    onLogin({ email: email.trim(), password: password.trim() }, rememberMe);
   };
 
   return (
@@ -4506,7 +4500,10 @@ const POSTA_STATUSES = [
 
 function printPostaOrder(order, business) {
   const statusLabel = POSTA_STATUSES.find(s => s.key === order.status)?.label || order.status;
-  const qrUrl = `${window.location.origin}${window.location.pathname}?posta=${order.id}`;
+  const _base = window.location.protocol === 'file:'
+    ? (process.env.REACT_APP_PUBLIC_URL || 'https://prophone.vercel.app')
+    : (window.location.origin + window.location.pathname.replace(/\/$/, ''));
+  const qrUrl = `${_base}?posta=${order.id}`;
   const win = window.open("", "_blank", "width=900,height=500");
   if (!win) return;
   win.document.write(`<!DOCTYPE html><html><head><meta charset="UTF-8">
@@ -4666,7 +4663,10 @@ function PostaPage({ T, business, orders, onAdd, onUpdate, onDelete }) {
             🖨️ Printo Kuponin
           </button>
           <button onClick={() => {
-            const url = `${window.location.origin}${window.location.pathname}?posta=${order.id}`;
+            const _b = window.location.protocol === 'file:'
+              ? (process.env.REACT_APP_PUBLIC_URL || 'https://prophone.vercel.app')
+              : (window.location.origin + window.location.pathname.replace(/\/$/, ''));
+            const url = `${_b}?posta=${order.id}`;
             navigator.clipboard?.writeText(url);
             window.open(url, "_blank");
           }} style={{ padding: "10px 20px", borderRadius: 10, border: `1.5px solid ${T.border}`, background: T.surface, color: T.text, fontWeight: 600, fontSize: 13, cursor: "pointer", display: "flex", alignItems: "center", gap: 6 }}>
