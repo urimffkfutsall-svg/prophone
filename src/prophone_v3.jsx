@@ -1128,7 +1128,7 @@ function JobDetail({ data, setData, jobId, onNavigate, T }) {
           <Btn variant="primary" size="sm" onClick={() => window.open(`https://wa.me/${client?.phone?.replace(/\s/g, "")}`, "_blank")} t={T}>WhatsApp</Btn>
         </div>
       </div>
-      <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 20 }}>
+      <div className="job-detail-grid" style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 20 }}>
         <div style={{ background: T.surface, borderRadius: 20, padding: 28, border: `1.5px solid ${T.border}` }}>
           <div style={{ fontSize: 12, color: T.textFaint, fontWeight: 600, textTransform: "uppercase" }}>NR.PUNEVE TE KLIENTIT: {data.jobs.filter(j => j.clientId === job.clientId).length}</div>
           <div style={{ display: "flex", alignItems: "center", gap: 12, marginTop: 8, marginBottom: 4 }}>
@@ -1714,7 +1714,7 @@ function AdminPanel({ accounts, setAccounts, onLogout }) {
           </div>
         </div>
 
-        <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 20, marginBottom: 20 }}>
+        <div className="admin-detail-grid" style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 20, marginBottom: 20 }}>
           {/* Info card */}
           <div style={{ background: T.surface, borderRadius: 20, padding: 24, border: `1.5px solid ${T.border}` }}>
             <h3 style={{ margin: "0 0 16px", fontSize: 15, fontWeight: 700, color: T.text }}>Informacioni i firmes</h3>
@@ -4574,7 +4574,7 @@ function PostaOrderForm({ T, initial, onSave, onClose }) {
         <h3 style={{ margin: 0, fontSize: 17, fontWeight: 800, color: T.text }}>{initial ? "Edito Porosi" : "Porosi e Re"}</h3>
         <button onClick={onClose} style={{ background: "none", border: "none", cursor: "pointer", color: T.textMuted, fontSize: 20 }}>✕</button>
       </div>
-      <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 12, marginBottom: 12 }}>
+      <div className="posta-form-grid" style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 12, marginBottom: 12 }}>
         <FI label="Emri" field="clientName" required placeholder="p.sh. Arben" />
         <FI label="Mbiemri" field="clientSurname" placeholder="p.sh. Krasniqi" />
         <FI label="Telefon" field="clientPhone" placeholder="+383..." />
@@ -5169,126 +5169,122 @@ export default function DataPhone() {
     /* Desktop: hide bottom nav */
     .mobile-bottom-nav { display: none; }
 
-    /* ===== MOBILE RESPONSIVE ===== */
-    @media (max-width: 640px) {
-      /* Hide desktop nav tabs */
-      .desktop-nav-tabs { display: none !important; }
-      /* Hide desktop right controls except menu */
-      .desktop-stale-btn { display: none !important; }
-      /* Show bottom nav */
-      .mobile-bottom-nav { display: flex !important; }
-      /* Reduce nav padding */
-      nav { padding: 10px 16px !important; }
-      /* Main content padding */
-      .main-content { padding: 16px 12px 90px !important; }
-      /* StatCards grid */
-      .stat-cards-grid { 
-        display: grid !important;
-        grid-template-columns: repeat(2, 1fr) !important;
-        gap: 8px !important;
-      }
-      .stat-cards-grid > div {
-        min-width: unset !important;
-        padding: 12px 8px !important;
-      }
-      .stat-cards-grid > div > div:last-child {
-        font-size: 22px !important;
-      }
-      /* Jobs table -> cards */
-      .jobs-table-header { display: none !important; }
-      .jobs-table-row {
-        display: flex !important;
-        flex-direction: column !important;
-        padding: 14px 16px !important;
-        gap: 8px !important;
-        border-radius: 12px !important;
-        margin-bottom: 8px !important;
-        border: 1.5px solid ${T.border} !important;
-        background: ${T.surface} !important;
-      }
-      .jobs-table-row > span:first-child {
-        font-size: 15px !important;
-        font-weight: 700 !important;
-      }
-      /* Clients table -> cards */
-      .clients-table-header { display: none !important; }
-      .clients-table-row {
-        display: flex !important;
-        flex-wrap: wrap !important;
-        padding: 14px 16px !important;
-        gap: 6px 16px !important;
-        border-radius: 12px !important;
-        margin-bottom: 8px !important;
-        border: 1.5px solid ${T.border} !important;
-        background: ${T.surface} !important;
-      }
-      .clients-table-row > span:first-child {
-        width: 100% !important;
-        font-size: 15px !important;
-      }
-      /* Workers table -> cards */
-      .workers-table-header { display: none !important; }
-      .workers-table-row {
-        display: flex !important;
-        flex-wrap: wrap !important;
-        padding: 14px 16px !important;
-        gap: 6px 16px !important;
-        border-radius: 12px !important;
-        margin-bottom: 8px !important;
-        border: 1.5px solid ${T.border} !important;
-        background: ${T.surface} !important;
-      }
-      /* Settings grid -> 1 col */
-      .settings-grid-2col {
-        grid-template-columns: 1fr !important;
-      }
-      /* Modal width */
-      .modal-content {
-        width: calc(100vw - 32px) !important;
-        max-width: 100% !important;
-        max-height: 90vh !important;
-      }
-      /* Page titles */
-      h2 { font-size: 20px !important; }
-      /* Dashboard header buttons */
-      .dashboard-header {
-        flex-direction: column !important;
-        align-items: flex-start !important;
-        gap: 12px !important;
-      }
-      .dashboard-header > div:last-child {
-        width: 100% !important;
-        display: flex !important;
-        gap: 8px !important;
-      }
-      .dashboard-header > div:last-child > button {
-        flex: 1 !important;
-        justify-content: center !important;
-      }
-      /* Status breakdown cards */
-      .status-breakdown {
-        grid-template-columns: repeat(2, 1fr) !important;
-      }
-      /* CreateJob form */
-      .create-job-grid {
-        grid-template-columns: 1fr !important;
-      }
-      /* Job detail grid */
-      .job-detail-grid {
-        grid-template-columns: 1fr !important;
-      }
-      /* Report grid */
-      .report-grid {
-        grid-template-columns: 1fr !important;
-      }
-      /* Top4 clients flex */
-      .top4-clients {
-        flex-direction: column !important;
-      }
-      .top4-clients > div {
-        width: 100% !important;
-      }
+    /* ===== BASE MOBILE FIX ===== */
+    html, body, #root {
+      width: 100%;
+      max-width: 100vw;
+      overflow-x: hidden;
+      -webkit-tap-highlight-color: transparent;
+      -webkit-touch-callout: none;
     }
+    * { -webkit-text-size-adjust: 100%; }
+    input, select, textarea, button {
+      font-size: 16px !important; /* Prevents iOS zoom on focus */
+      font-family: inherit;
+    }
+    button { touch-action: manipulation; }
+
+    /* ===== MOBILE ===== */
+    @media (max-width: 640px) {
+      .desktop-nav-tabs { display: none !important; }
+      .desktop-stale-btn { display: none !important; }
+      .mobile-bottom-nav { display: flex !important; }
+
+      nav { padding: 10px 14px !important; padding-top: max(10px, env(safe-area-inset-top)) !important; }
+      .main-content { padding: 14px 12px 90px !important; padding-bottom: max(90px, calc(70px + env(safe-area-inset-bottom))) !important; }
+
+      /* Stat cards 2x2 grid */
+      .stat-cards-grid { display: grid !important; grid-template-columns: repeat(2,1fr) !important; gap: 8px !important; }
+      .stat-cards-grid > div { min-width: unset !important; padding: 12px 8px !important; }
+      .stat-cards-grid > div > div:last-child { font-size: 22px !important; }
+
+      /* Tables → card layout */
+      .jobs-table-header, .clients-table-header, .workers-table-header { display: none !important; }
+      .jobs-table-row { display: flex !important; flex-direction: column !important; padding: 14px 16px !important; gap: 8px !important; border-radius: 12px !important; margin-bottom: 8px !important; border: 1.5px solid ${T.border} !important; background: ${T.surface} !important; }
+      .jobs-table-row > span:first-child { font-size: 15px !important; font-weight: 700 !important; }
+      .clients-table-row, .workers-table-row { display: flex !important; flex-wrap: wrap !important; padding: 14px 16px !important; gap: 6px 16px !important; border-radius: 12px !important; margin-bottom: 8px !important; border: 1.5px solid ${T.border} !important; background: ${T.surface} !important; }
+      .clients-table-row > span:first-child { width: 100% !important; font-size: 15px !important; }
+
+      /* All 2-col grids → 1 col */
+      .settings-grid-2col, .create-job-grid, .job-detail-grid, .report-grid, .posta-form-grid { grid-template-columns: 1fr !important; }
+
+      /* Status breakdown 2 col */
+      .status-breakdown { grid-template-columns: repeat(2,1fr) !important; }
+
+      /* Top clients */
+      .top4-clients { flex-direction: column !important; }
+      .top4-clients > div { width: 100% !important; }
+
+      /* Modal */
+      .modal-content { width: calc(100vw - 24px) !important; max-width: 100% !important; max-height: 92vh !important; overflow-y: auto !important; }
+
+      /* Typography */
+      h2 { font-size: 20px !important; }
+
+      /* Dashboard header */
+      .dashboard-header { flex-direction: column !important; align-items: flex-start !important; gap: 10px !important; }
+      .dashboard-header > div:last-child { width: 100% !important; display: flex !important; gap: 8px !important; }
+      .dashboard-header > div:last-child > button { flex: 1 !important; justify-content: center !important; }
+
+      /* Admin detail 2-col → 1 col */
+      .admin-detail-grid { grid-template-columns: 1fr !important; }
+
+      /* Arka landing grid */
+      .arka-landing-grid { grid-template-columns: repeat(2,1fr) !important; }
+
+      /* POS layout stack */
+      .pos-layout { flex-direction: column !important; }
+      .pos-cart { min-width: unset !important; width: 100% !important; }
+      .pos-products { width: 100% !important; }
+
+      /* Buttons full-width */
+      .btn-full-mobile { width: 100% !important; }
+
+      /* Debt/warranty card grids */
+      .debt-grid, .warranty-grid { grid-template-columns: 1fr !important; }
+    }
+
+    /* Extra small (SE, older phones) */
+    @media (max-width: 375px) {
+      .main-content { padding: 12px 10px 88px !important; }
+      .stat-cards-grid > div { padding: 10px 6px !important; }
+      .stat-cards-grid > div > div:last-child { font-size: 18px !important; }
+    }
+
+    /* ===== BOTTOM NAV ===== */
+    .mobile-bottom-nav {
+      position: fixed;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      height: 64px;
+      padding-bottom: env(safe-area-inset-bottom);
+      background: ${T.nav};
+      border-top: 1.5px solid ${T.border};
+      display: flex;
+      align-items: center;
+      justify-content: space-around;
+      z-index: 200;
+      box-shadow: 0 -4px 20px rgba(0,0,0,.08);
+    }
+    .mobile-bottom-nav button {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 3px;
+      background: none;
+      border: none;
+      cursor: pointer;
+      padding: 8px 4px;
+      min-height: 56px;
+      transition: opacity .15s;
+    }
+    .mobile-bottom-nav button:active { opacity: 0.6; }
+    .mobile-bottom-nav .nav-icon { font-size: 20px; line-height: 1; }
+    .mobile-bottom-nav .nav-label { font-size: 10px; font-weight: 600; color: ${T.textMuted}; }
+    .mobile-bottom-nav button.active .nav-label { color: ${T.accent}; }
   `;
 
 
@@ -5453,6 +5449,22 @@ export default function DataPhone() {
           )}
         </div>
       </div>
+      {/* Mobile bottom navigation */}
+      <nav className="mobile-bottom-nav">
+        {(() => {
+          let n = [NAV_BASE[0], NAV_BASE[1], NAV_BASE[2]];
+          if (data.business?.hasArka) n.push(NAV_ARKA);
+          if (data.business?.hasPosta) n.push(NAV_POSTA);
+          n.push(NAV_BASE[3]);
+          const icons = { dashboard: "🏠", workers: "👷", clients: "👥", arka: "🧾", posta: "📦", business: "⚙️" };
+          return n.map(item => (
+            <button key={item.key} onClick={() => navigate(item.key)} className={page === item.key ? "active" : ""}>
+              <span className="nav-icon" style={{ filter: page === item.key ? "none" : "grayscale(1) opacity(.55)" }}>{icons[item.key] || "•"}</span>
+              <span className="nav-label" style={{ color: page === item.key ? T.accent : T.textMuted }}>{item.label}</span>
+            </button>
+          ));
+        })()}
+      </nav>
       <Toast message={toast.msg} visible={toast.show} />
       {menuOpen && <div style={{ position: "fixed", inset: 0, zIndex: 99 }} onClick={() => setMenuOpen(false)} />}
       {arkaPinOpen && data.business?.arkaPin && (
