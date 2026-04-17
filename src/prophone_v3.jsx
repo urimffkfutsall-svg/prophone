@@ -1,7 +1,7 @@
 ﻿/* eslint-disable */
 import { supabase } from "./supabase";
 import { QRCodeSVG } from "qrcode.react";
-import { useState, useEffect, useCallback, useRef } from "react";
+import React, { useState, useEffect, useCallback, useRef } from "react";
 
 // ============================================================
 // DataPhone v2 - Mobile Repair Shop Management System
