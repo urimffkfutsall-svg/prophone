@@ -5066,6 +5066,7 @@ export default function DataPhone() {
         registered_at: now.toISOString(),
         trial_start: now.toISOString(),
         expiry_date: expiry.toISOString(),
+        is_verified: false,
       };
       const { data: inserted, error } = await supabase.from('accounts').insert(insertRow).select().single();
       if (error) {
@@ -5081,6 +5082,19 @@ export default function DataPhone() {
       setTimeout(() => { syncingRef.current = false; }, 100);
       setRegSuccess(true);
       showToast("Regjistrimi u krye me sukses!");
+      // Dergo email verifikimi nepermjet Supabase Auth
+      try {
+        await supabase.auth.signUp({
+          email: biz.email.trim(),
+          password: biz.password,
+          options: {
+            emailRedirectTo: window.location.origin + "/#/verify",
+            data: { firm_name: biz.name }
+          }
+        });
+      } catch (authErr) {
+        console.warn("Auth signup warning:", authErr);
+      }
     } catch (e) {
       console.error(e);
       showToast("Gabim: " + e.message);
@@ -5106,6 +5120,11 @@ export default function DataPhone() {
         .maybeSingle();
       if (error || !rows) {
         showToast("Email ose fjalëkalim i gabuar");
+        return;
+      }
+      // Bllokoje kyqjen nese email-i nuk eshte verifikuar
+      if (rows.is_verified === false) {
+        showToast("Verifikoni email-in tuaj para kyqjes. Kontrolloni inbox-in.");
         return;
       }
       const fresh = mapAccountFromDB(rows);
