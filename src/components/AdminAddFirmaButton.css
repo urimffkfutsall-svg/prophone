@@ -113,3 +113,5 @@
 }
 .aaf-btn-submit:hover:not(:disabled) { transform: translateY(-1px); box-shadow: 0 6px 18px rgba(99,102,241,.4); }
 .aaf-btn-submit:disabled { background: #a5b4fc; cursor: wait; }
+.aaf-firm-header { display: flex; justify-content: space-between; align-items: center; gap: 16px; margin-bottom: 20px; flex-wrap: wrap; }
+.aaf-firm-header h2 { margin: 0 !important; text-align: left !important; flex: 1; }
