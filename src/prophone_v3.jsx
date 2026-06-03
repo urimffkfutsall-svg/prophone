@@ -59,18 +59,18 @@ const THEME = {
 };
 
 const STATUSES = [
-  { key: "new", label: "I Pranuar nÃ« Servis", color: "#EF4444", bg: "#FEE2E2" },
-  { key: "ne_proces", label: "NÃ« Proces", color: "#D97706", bg: "#FEF3C7" },
+  { key: "new", label: "I Pranuar nÃƒÂ« Servis", color: "#EF4444", bg: "#FEE2E2" },
+  { key: "ne_proces", label: "NÃƒÂ« Proces", color: "#D97706", bg: "#FEF3C7" },
   { key: "gati", label: "Gati", color: "#2563EB", bg: "#DBEAFE" },
-  { key: "perfunduar", label: "PÃ«rfunduar", color: "#059669", bg: "#D1FAE5" },
-  { key: "i_marre", label: "I MarrÃ« nga Servisi", color: "#7C3AED", bg: "#EDE9FE" },
+  { key: "perfunduar", label: "PÃƒÂ«rfunduar", color: "#059669", bg: "#D1FAE5" },
+  { key: "i_marre", label: "I MarrÃƒÂ« nga Servisi", color: "#7C3AED", bg: "#EDE9FE" },
   { key: "nuk_merret", label: "Nuk Rregullohet", color: "#475569", bg: "#F1F5F9" },
 ];
 
 const COUNTRIES = [
-  { name: "KosovÃ«", cities: ["PrishtinÃ«","Gjilan","Prizren","PejÃ«","Ferizaj","MitrovicÃ«","GjakovÃ«","PodujevÃ«","Vushtrri","SuharekÃ«","Rahovec","Drenas","Lipjan","MalishevÃ«","KamenicÃ«","Viti","DeÃ§an","Istog","KlinÃ«","Skenderaj","Dragash","FushÃ« KosovÃ«","KaÃ§anik","Shtime","Obiliq","NovobÃ«rdÃ«","Zubin Potok","Leposaviq","ShtÃ«rpcÃ«","GraÃ§anicÃ«","Ranillug","Partesh","Kllokot","MamushÃ«","Junik","Hani i Elezit"] },
-  { name: "ShqipÃ«ri", cities: ["TiranÃ«","DurrÃ«s","VlorÃ«","ShkodÃ«r","Elbasan","KorÃ§Ã«","Fier","Berat","LushnjÃ«","Pogradec","KavajÃ«","KukÃ«s","SarandÃ«","LezhÃ«","GjirokastÃ«r","Peshkopi","Burrel","LaÃ§","KrujÃ«","Librazhd"] },
-  { name: "Maqedoni e Veriut", cities: ["Shkup","TetovÃ«","Gostivar","KumanovÃ«","StrumicÃ«","OhÃ«r","Manastir","Prilep","Veles","Shtip","KÃ«rÃ§ovÃ«"] },
+  { name: "KosovÃƒÂ«", cities: ["PrishtinÃƒÂ«","Gjilan","Prizren","PejÃƒÂ«","Ferizaj","MitrovicÃƒÂ«","GjakovÃƒÂ«","PodujevÃƒÂ«","Vushtrri","SuharekÃƒÂ«","Rahovec","Drenas","Lipjan","MalishevÃƒÂ«","KamenicÃƒÂ«","Viti","DeÃƒÂ§an","Istog","KlinÃƒÂ«","Skenderaj","Dragash","FushÃƒÂ« KosovÃƒÂ«","KaÃƒÂ§anik","Shtime","Obiliq","NovobÃƒÂ«rdÃƒÂ«","Zubin Potok","Leposaviq","ShtÃƒÂ«rpcÃƒÂ«","GraÃƒÂ§anicÃƒÂ«","Ranillug","Partesh","Kllokot","MamushÃƒÂ«","Junik","Hani i Elezit"] },
+  { name: "ShqipÃƒÂ«ri", cities: ["TiranÃƒÂ«","DurrÃƒÂ«s","VlorÃƒÂ«","ShkodÃƒÂ«r","Elbasan","KorÃƒÂ§ÃƒÂ«","Fier","Berat","LushnjÃƒÂ«","Pogradec","KavajÃƒÂ«","KukÃƒÂ«s","SarandÃƒÂ«","LezhÃƒÂ«","GjirokastÃƒÂ«r","Peshkopi","Burrel","LaÃƒÂ§","KrujÃƒÂ«","Librazhd"] },
+  { name: "Maqedoni e Veriut", cities: ["Shkup","TetovÃƒÂ«","Gostivar","KumanovÃƒÂ«","StrumicÃƒÂ«","OhÃƒÂ«r","Manastir","Prilep","Veles","Shtip","KÃƒÂ«rÃƒÂ§ovÃƒÂ«"] },
 ];
 
 let idCounter = Date.now();
@@ -78,7 +78,7 @@ const uid = () => {
   if (typeof crypto !== 'undefined' && crypto.randomUUID) {
     return crypto.randomUUID();
   }
-  // Fallback pÃ«r browsera tÃ« vjetÃ«r: gjenero UUID v4 manualisht
+  // Fallback pÃƒÂ«r browsera tÃƒÂ« vjetÃƒÂ«r: gjenero UUID v4 manualisht
   return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, c => {
     const r = Math.random() * 16 | 0;
     const v = c === 'x' ? r : (r & 0x3 | 0x8);
@@ -156,7 +156,7 @@ const Ic = {
 const DEFAULT_DATA = { business: null, workers: [], clients: [], jobs: [], messages: [], history: [], products: [], sales: [], warranties: [], debts: [], coupons: [], postaOrders: [] };
 const NAV_BASE = [{ key: "dashboard", label: "Ballina" }, { key: "workers", label: "Puntoret" }, { key: "clients", label: "Klientat" }, { key: "business", label: "Biznesi" }];
 const NAV_ARKA = { key: "arka", label: "Arka" };
-const NAV_POSTA = { key: "posta", label: "ðŸ“¦ Posta" };
+const NAV_POSTA = { key: "posta", label: "Ã°Å¸â€œÂ¦ Posta" };
 // Legacy fallback for any old references
 const NAV = NAV_BASE;
 
@@ -171,10 +171,10 @@ const ADMIN_CREDENTIALS = {
 };
 
 const SUBSCRIPTION_PLANS = [
-  { key: "1m",  label: "1 Muaj",   days: 30,  price: "9.99â‚¬" },
-  { key: "3m",  label: "3 Muaj",   days: 90,  price: "24.99â‚¬" },
-  { key: "6m",  label: "6 Muaj",   days: 180, price: "44.99â‚¬" },
-  { key: "12m", label: "12 Muaj",  days: 365, price: "79.99â‚¬" },
+  { key: "1m",  label: "1 Muaj",   days: 30,  price: "9.99Ã¢â€šÂ¬" },
+  { key: "3m",  label: "3 Muaj",   days: 90,  price: "24.99Ã¢â€šÂ¬" },
+  { key: "6m",  label: "6 Muaj",   days: 180, price: "44.99Ã¢â€šÂ¬" },
+  { key: "12m", label: "12 Muaj",  days: 365, price: "79.99Ã¢â€šÂ¬" },
 ];
 
 const addSubscriptionDays = (account, days) => {
@@ -302,7 +302,7 @@ function StaleAlert({ jobs, onNavigate, t }) {
     <div style={{ background: `linear-gradient(135deg, #7C3AED15, #DC262615)`, border: `1.5px solid #DC262640`, borderRadius: 12, padding: "12px 20px", marginBottom: 16, display: "flex", alignItems: "center", gap: 12, cursor: "pointer" }} onClick={() => onNavigate("dashboard")}>
       <span style={{ color: "#DC2626", display: "flex" }}>{Ic.warn(18)}</span>
       <div>
-        <span style={{ fontWeight: 700, fontSize: 13, color: "#DC2626" }}>{stale.length} punÃ« tÃ« vjetra (3+ ditÃ«)</span>
+        <span style={{ fontWeight: 700, fontSize: 13, color: "#DC2626" }}>{stale.length} punÃƒÂ« tÃƒÂ« vjetra (3+ ditÃƒÂ«)</span>
         <span style={{ fontSize: 12, color: T.textMuted, marginLeft: 8 }}>Kliket per t'i pare</span>
       </div>
       <div style={{ marginLeft: "auto", display: "flex", gap: 6, flexWrap: "wrap" }}>
@@ -350,9 +350,9 @@ function PrintCouponConfirm({ job, client, worker, business, onClose }) {
     return (
       <div style={{ position: "fixed", inset: 0, zIndex: 1000, background: "rgba(15,20,30,0.55)", backdropFilter: "blur(4px)", display: "flex", alignItems: "center", justifyContent: "center" }} onClick={onClose}>
         <div onClick={e => e.stopPropagation()} style={{ background: "#fff", borderRadius: 20, padding: 36, width: "90%", maxWidth: 380, textAlign: "center", boxShadow: "0 24px 80px rgba(0,0,0,.2)" }}>
-          <div style={{ fontSize: 48, marginBottom: 12 }}>ðŸ–¨ï¸</div>
-          <h3 style={{ margin: "0 0 8px", fontSize: 20, fontWeight: 800 }}>DÃ«shironi tÃ« printoni kuponin?</h3>
-          <p style={{ color: "#64748b", fontSize: 14, marginBottom: 24 }}>Puna u shtua me sukses! Mund tÃ« printoni kuponin tani.</p>
+          <div style={{ fontSize: 48, marginBottom: 12 }}>Ã°Å¸â€“Â¨Ã¯Â¸Â</div>
+          <h3 style={{ margin: "0 0 8px", fontSize: 20, fontWeight: 800 }}>DÃƒÂ«shironi tÃƒÂ« printoni kuponin?</h3>
+          <p style={{ color: "#64748b", fontSize: 14, marginBottom: 24 }}>Puna u shtua me sukses! Mund tÃƒÂ« printoni kuponin tani.</p>
           <div style={{ display: "flex", gap: 12, justifyContent: "center" }}>
             <button onClick={onClose} style={{ background: "#f1f5f9", color: "#64748b", border: "none", borderRadius: 12, padding: "12px 28px", cursor: "pointer", fontWeight: 600, fontSize: 14 }}>Jo, vazhdo</button>
             <button onClick={() => setConfirmed(true)} style={{ background: "linear-gradient(135deg,#0EA5E9,#0369A1)", color: "#fff", border: "none", borderRadius: 12, padding: "12px 28px", cursor: "pointer", fontWeight: 700, fontSize: 14 }}>Po, printo!</button>
@@ -395,7 +395,7 @@ function PrintCoupon({ job, client, worker, business, onClose }) {
                 {business?.phone && <div style={{ fontSize: 9, color: "#64748b" }}>Tel: {business.phone}</div>}
               </div>
               <div style={{ textAlign: "center", fontSize: 11, fontWeight: 800, textTransform: "uppercase", letterSpacing: 1, marginBottom: 6 }}>Kupon Pranues</div>
-              {[["Nr. Punes", `#${job.id.slice(-6)}`], ["Klienti", client?.name || "â€”"], ["Telefon", client?.phone || "â€”"], ["Modeli", job.phoneModel], ["IMEI", job.imei || "â€”"], ["Kodi", job.code || "â€”"], ["Cmimi", job.price ? `${job.price}â‚¬` : "â€”"], ["Data", fmtDate(job.createdAt)], ["Puntori", worker?.name || "â€”"]].map(([l, v]) => (
+              {[["Nr. Punes", `#${job.id.slice(-6)}`], ["Klienti", client?.name || "Ã¢â‚¬â€"], ["Telefon", client?.phone || "Ã¢â‚¬â€"], ["Modeli", job.phoneModel], ["IMEI", job.imei || "Ã¢â‚¬â€"], ["Kodi", job.code || "Ã¢â‚¬â€"], ["Cmimi", job.price ? `${job.price}Ã¢â€šÂ¬` : "Ã¢â‚¬â€"], ["Data", fmtDate(job.createdAt)], ["Puntori", worker?.name || "Ã¢â‚¬â€"]].map(([l, v]) => (
                 <div key={l} style={{ display: "flex", justifyContent: "space-between", padding: "3px 0", borderBottom: "1px dashed #e2e8f0" }}>
                   <span style={{ fontWeight: 600, color: "#64748b" }}>{l}:</span>
                   <span style={{ fontWeight: 700, fontSize: 11 }}>{v}</span>
@@ -406,7 +406,7 @@ function PrintCoupon({ job, client, worker, business, onClose }) {
                 <div style={{ fontSize: 10, lineHeight: 1.4, padding: "4px 6px", background: "#f8fafc", borderRadius: 4, border: "1px solid #e2e8f0" }}>{job.description}</div>
               </div>
               {job.showNotesOnCoupon && job.notes && <div style={{ marginBottom: 4 }}>
-                <div style={{ fontWeight: 700, fontSize: 10, color: "#64748b", marginBottom: 3 }}>ShÃ«nime shtesÃ«:</div>
+                <div style={{ fontWeight: 700, fontSize: 10, color: "#64748b", marginBottom: 3 }}>ShÃƒÂ«nime shtesÃƒÂ«:</div>
                 <div style={{ fontSize: 10, lineHeight: 1.4, padding: "4px 6px", background: "#f0f9ff", borderRadius: 4, border: "1px solid #bae6fd" }}>{job.notes}</div>
               </div>}
 
@@ -422,14 +422,14 @@ function PrintCoupon({ job, client, worker, business, onClose }) {
             </div>
             <div style={{ padding: "8px 12px", background: "#fafafa" }}>
               <div style={{ textAlign: "center", fontSize: 11, fontWeight: 800, textTransform: "uppercase", letterSpacing: 0.5, marginBottom: 8 }}>Kopja e Servisit</div>
-              {[["Nr", `#${job.id.slice(-6)}`], ["Klienti", client?.name || "â€”"], ["Tel", client?.phone || "â€”"], ["Modeli", job.phoneModel], ["Kodi", job.code || "â€”"], ["Cmimi", job.price ? `${job.price}â‚¬` : "â€”"]].map(([l, v]) => (
+              {[["Nr", `#${job.id.slice(-6)}`], ["Klienti", client?.name || "Ã¢â‚¬â€"], ["Tel", client?.phone || "Ã¢â‚¬â€"], ["Modeli", job.phoneModel], ["Kodi", job.code || "Ã¢â‚¬â€"], ["Cmimi", job.price ? `${job.price}Ã¢â€šÂ¬` : "Ã¢â‚¬â€"]].map(([l, v]) => (
                 <div key={l} style={{ display: "flex", justifyContent: "space-between", padding: "2px 0", fontSize: 10 }}>
                   <span style={{ fontWeight: 600, color: "#64748b" }}>{l}:</span>
                   <span style={{ fontWeight: 700 }}>{v}</span>
                 </div>
               ))}
               <div style={{ fontSize: 9, color: "#64748b", marginTop: 4 }}><strong>Defekti:</strong> {job.description}</div>
-              {job.showNotesOnCoupon && job.notes && <div style={{ fontSize: 8, color: "#1e40af", marginTop: 2 }}><strong>ShÃ«nim:</strong> {job.notes}</div>}
+              {job.showNotesOnCoupon && job.notes && <div style={{ fontSize: 8, color: "#1e40af", marginTop: 2 }}><strong>ShÃƒÂ«nim:</strong> {job.notes}</div>}
               <div style={{ textAlign: "center", marginTop: 6 }}><QRCodeSVG value={qrData} size={50} /></div>
               {business?.couponNotes && <div style={{ marginTop: 4, fontSize: 8, lineHeight: 1.3, color: "#475569", textAlign: "center" }}>{business.couponNotes}</div>}
             </div>
@@ -471,7 +471,7 @@ function ClientStatusView({ job: initialJob, client: initialClient, worker: init
     setRefreshing(false);
   };
 
-  // Auto-refresh Ã§do 30 sekonda
+  // Auto-refresh ÃƒÂ§do 30 sekonda
   useEffect(() => {
     refreshFromSupabase();
     const interval = setInterval(refreshFromSupabase, 30000);
@@ -500,7 +500,7 @@ function ClientStatusView({ job: initialJob, client: initialClient, worker: init
           <div style={{ display: "flex", gap: 4, marginBottom: 24 }}>
             {progressStatuses.map((s, i) => <div key={s.key} style={{ flex: 1, height: 6, borderRadius: 3, background: i <= currentIdx ? s.color : "#e2e8f0", transition: "background .3s" }} />)}
           </div>
-          {[["Nr. Punes", `#${job.id.slice(-6)}`], ["Klienti", client?.name || "â€”"], ["Telefoni", client?.phone || "â€”"], ["Modeli", job.phoneModel], ["IMEI", job.imei || "â€”"], ["Kodi", job.code || "â€”"], ["Cmimi", job.price ? job.price + "â‚¬" : "â€”"], ["Data pranimit", fmtDate(job.createdAt)], ["Tekniku", worker?.name || "â€”"]].map(([l, v]) => (
+          {[["Nr. Punes", `#${job.id.slice(-6)}`], ["Klienti", client?.name || "Ã¢â‚¬â€"], ["Telefoni", client?.phone || "Ã¢â‚¬â€"], ["Modeli", job.phoneModel], ["IMEI", job.imei || "Ã¢â‚¬â€"], ["Kodi", job.code || "Ã¢â‚¬â€"], ["Cmimi", job.price ? job.price + "Ã¢â€šÂ¬" : "Ã¢â‚¬â€"], ["Data pranimit", fmtDate(job.createdAt)], ["Tekniku", worker?.name || "Ã¢â‚¬â€"]].map(([l, v]) => (
             <div key={l} style={{ display: "flex", justifyContent: "space-between", padding: "10px 0", borderBottom: "1px solid #f1f5f9", fontSize: 14 }}>
               <span style={{ color: "#64748b", fontWeight: 600 }}>{l}</span>
               <span style={{ fontWeight: 700 }}>{v}</span>
@@ -514,7 +514,7 @@ function ClientStatusView({ job: initialJob, client: initialClient, worker: init
         {business && <div style={{ background: "#fff", borderRadius: 16, padding: 16, textAlign: "center" }}><div style={{ fontWeight: 700, fontSize: 14 }}>{business.name}</div>{business.phone && <div style={{ fontSize: 12, color: "#64748b", marginTop: 2 }}>Tel: {business.phone}</div>}</div>}
         <div style={{ textAlign: "center", marginTop: 16, display: "flex", gap: 10, justifyContent: "center" }}>
           <button onClick={refreshFromSupabase} disabled={refreshing} style={{ background: refreshing ? "#e2e8f0" : "linear-gradient(135deg,#0EA5E9,#0369A1)", color: refreshing ? "#94a3b8" : "#fff", border: "none", borderRadius: 10, padding: "10px 24px", cursor: refreshing ? "not-allowed" : "pointer", fontWeight: 700, fontSize: 13, display: "flex", alignItems: "center", gap: 6 }}>
-            {refreshing ? "Duke u rifreskuar..." : "ðŸ”„ Rifresko Statusin"}
+            {refreshing ? "Duke u rifreskuar..." : "Ã°Å¸â€â€ž Rifresko Statusin"}
           </button>
         </div>
         {lastRefresh && <div style={{ textAlign: "center", fontSize: 11, color: "#94a3b8", marginTop: 8 }}>Rifreskuar: {fmtTime24(lastRefresh)}</div>}
@@ -571,9 +571,9 @@ function AuthPage({ onRegister, onLogin, accounts, regSuccess, onGoLogin }) {
             </div>
             {regSuccess ? (
                 <div style={{ background: "#D1FAE5", border: "1.5px solid #059669", borderRadius: 12, padding: "20px 16px", textAlign: "center", marginTop: 8 }}>
-                  <div style={{ fontSize: 32, marginBottom: 8 }}>âœ…</div>
+                  <div style={{ fontSize: 32, marginBottom: 8 }}>Ã¢Å“â€¦</div>
                   <div style={{ fontWeight: 800, color: "#059669", fontSize: 16, marginBottom: 4 }}>U regjistruat me sukses!</div>
-                  <div style={{ color: "#065f46", fontSize: 13, marginBottom: 16 }}>Tani mund tÃ« kyqeni me llogarinÃ« tuaj.</div>
+                  <div style={{ color: "#065f46", fontSize: 13, marginBottom: 16 }}>Tani mund tÃƒÂ« kyqeni me llogarinÃƒÂ« tuaj.</div>
                   <Btn onClick={() => { onGoLogin(); setMode("login"); setError(""); }} variant="success" size="lg" style={{ width: "100%", justifyContent: "center" }} t={T}>KYQU TANI</Btn>
                 </div>
               ) : (
@@ -590,7 +590,7 @@ function AuthPage({ onRegister, onLogin, accounts, regSuccess, onGoLogin }) {
             <Input label="Fjalekalimi" value={password} onChange={setPassword} placeholder="Shkruaj fjalekalimin" type="password" required t={T} />
             <div style={{ display: "flex", alignItems: "center", gap: 8, margin: "12px 0 4px" }}>
               <input type="checkbox" id="rememberMe" checked={rememberMe} onChange={e => setRememberMe(e.target.checked)} style={{ width: 18, height: 18, cursor: "pointer", accentColor: "#0EA5E9" }} />
-              <label htmlFor="rememberMe" style={{ fontSize: 13, color: "#64748b", cursor: "pointer", userSelect: "none" }}>MÃ« mbaj mend</label>
+              <label htmlFor="rememberMe" style={{ fontSize: 13, color: "#64748b", cursor: "pointer", userSelect: "none" }}>MÃƒÂ« mbaj mend</label>
             </div>
             <Btn onClick={handleLogin} variant="primary" size="lg" disabled={!email.trim() || !password.trim()} style={{ width: "100%", justifyContent: "center", marginTop: 8 }} t={T} data-enter="1">KYQU</Btn>
             <div style={{ textAlign: "center", marginTop: 20 }}>
@@ -666,7 +666,7 @@ function Dashboard({ data, setData, onNavigate, currentWorker, T }) {
           { label: "Te gjitha punet", val: data.jobs.length, color: T.accent },
           { label: "Aktive", val: data.jobs.filter(j => !["perfunduar","nuk_merret"].includes(j.status)).length, color: "#D97706" },
           { label: "Perfunduara", val: data.jobs.filter(j => j.status === "perfunduar").length, color: T.success },
-          { label: "Te ardhura (â‚¬)", val: `${totalRevenue.toFixed(2)}â‚¬`, color: "#8B5CF6" },
+          { label: "Te ardhura (Ã¢â€šÂ¬)", val: `${totalRevenue.toFixed(2)}Ã¢â€šÂ¬`, color: "#8B5CF6" },
         ].map(item => (
           <div key={item.label} style={{ background: T.surface, border: `1.5px solid ${T.border}`, borderRadius: 14, padding: "16px 20px" }}>
             <div style={{ fontSize: 11, fontWeight: 600, color: T.textMuted, textTransform: "uppercase", letterSpacing: 0.5 }}>{item.label}</div>
@@ -698,7 +698,7 @@ function Dashboard({ data, setData, onNavigate, currentWorker, T }) {
         </div>
 
         <div style={{ display: "grid", gridTemplateColumns: "1.5fr 1fr 1fr 1fr 1.5fr 0.8fr 0.8fr 1.2fr 0.8fr", padding: "10px 16px", fontSize: 12, fontWeight: 700, color: T.textMuted, textTransform: "uppercase", letterSpacing: 0.5, borderBottom: `2px solid ${T.border}` }}>
-          <span>Klienti</span><span>Status</span><span>Telefoni</span><span>IMEI</span><span>Pershkrimi</span><span>Puntori</span><span>Ã‡mimi</span><span>Data pranimit</span><span>Action</span>
+          <span>Klienti</span><span>Status</span><span>Telefoni</span><span>IMEI</span><span>Pershkrimi</span><span>Puntori</span><span>Ãƒâ€¡mimi</span><span>Data pranimit</span><span>Action</span>
         </div>
         {filteredJobs.length === 0 ? (
           <div style={{ textAlign: "center", padding: "40px 0", color: T.textFaint, fontSize: 14 }}>Ska asnje rezultat!</div>
@@ -712,14 +712,14 @@ function Dashboard({ data, setData, onNavigate, currentWorker, T }) {
               onClick={() => onNavigate("jobDetail", job.id)}>
               <span style={{ fontWeight: 600, color: T.text, display: "flex", alignItems: "center", gap: 6 }}>
                 {stale && <span title={`${daysOld(job.createdAt)} dite`} style={{ color: "#DC2626", display: "flex" }}>{Ic.warn(12)}</span>}
-                {cl?.name || "â€”"}
+                {cl?.name || "Ã¢â‚¬â€"}
               </span>
               <span><Badge status={job.status} t={T} /></span>
               <span style={{ color: T.textMuted }}>{job.phoneModel}</span>
               <span style={{ color: job.imei ? T.textMuted : T.danger, display: "flex", alignItems: "center" }}>{job.imei || Ic.xred(12)}</span>
               <span style={{ color: T.textMuted, overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>{job.description}</span>
-              <span style={{ color: T.textMuted }}>{wk?.name || "â€”"}</span>
-              <span style={{ color: job.price ? T.success : T.textFaint, fontWeight: job.price ? 700 : 400 }}>{job.price ? `${job.price}â‚¬` : "â€”"}</span>
+              <span style={{ color: T.textMuted }}>{wk?.name || "Ã¢â‚¬â€"}</span>
+              <span style={{ color: job.price ? T.success : T.textFaint, fontWeight: job.price ? 700 : 400 }}>{job.price ? `${job.price}Ã¢â€šÂ¬` : "Ã¢â‚¬â€"}</span>
               <span style={{ color: T.textMuted, fontSize: 12 }}>{fmtDate(job.createdAt)}<br/><span style={{ color: T.textFaint, fontSize: 11 }}>{timeAgo(job.createdAt)}</span></span>
               <span style={{ display: "flex", gap: 4 }}>
                 <button onClick={e => { e.stopPropagation(); onNavigate("jobDetail", job.id); }} style={{ background: T.accent, color: "#fff", border: "none", borderRadius: 6, width: 28, height: 28, cursor: "pointer", display: "flex", alignItems: "center", justifyContent: "center" }}>{Ic.edit(12)}</button>
@@ -768,7 +768,7 @@ function Workers({ data, setData, T }) {
           return (<div key={w.id} style={{ background: T.surfaceAlt, borderRadius: 12, padding: 16, marginTop: 12, border: `1px solid ${T.border}` }}>
             <div style={{ fontWeight: 700, marginBottom: 8, color: T.text, display: "flex", justifyContent: "space-between" }}>
               <span>{w.name}</span>
-              <span style={{ fontSize: 13, color: T.success, fontWeight: 600 }}>{wRevenue.toFixed(2)}â‚¬ te ardhura</span>
+              <span style={{ fontSize: 13, color: T.success, fontWeight: 600 }}>{wRevenue.toFixed(2)}Ã¢â€šÂ¬ te ardhura</span>
             </div>
             {STATUSES.map(s => <div key={s.key} style={{ display: "flex", justifyContent: "space-between", padding: "4px 0", fontSize: 13, color: T.textMuted }}><span>{s.label}</span><span style={{ fontWeight: 600 }}>{wJobs.filter(j => j.status === s.key).length}</span></div>)}
           </div>);
@@ -814,14 +814,14 @@ function Clients({ data, setData, onNavigate, T }) {
         {filtered.length === 0 ? <div style={{ textAlign: "center", padding: 30, color: T.textFaint, fontSize: 14 }}>Nuk ka klienta! <span onClick={() => onNavigate("createJob")} style={{ color: T.accent, cursor: "pointer", textDecoration: "underline" }}>Shto klienta</span></div> : filtered.map(c => (
           <div key={c.id} className="clients-table-row" style={{ display: "grid", gridTemplateColumns: "1.5fr 1fr 0.8fr 1fr 0.8fr", padding: "14px 16px", fontSize: 13, borderBottom: `1px solid ${T.border}`, alignItems: "center" }}>
             <span style={{ fontWeight: 600, color: T.text }}>{c.name}</span><span style={{ color: T.textMuted }}>{c.phone}</span><span style={{ fontWeight: 700, color: T.accent }}>{data.jobs.filter(j => j.clientId === c.id).length}</span><span style={{ color: T.textMuted, fontSize: 12 }}>{fmtDate(c.createdAt)}</span>
-            <div style={{ display: "flex", gap: 6 }}><button onClick={() => setSelectedClientJobs(c)} style={{ background: "#DBEAFE", color: "#1E40AF", border: "none", borderRadius: 8, padding: "6px 10px", fontSize: 12, cursor: "pointer", fontWeight: 600 }}>ðŸ“‹ PunÃ«t</button><button onClick={() => { if (window.confirm("Fshi?")) setData(d => ({ ...d, clients: d.clients.filter(cl => cl.id !== c.id) })); }} style={{ background: "#FEE2E2", color: "#EF4444", border: "none", borderRadius: 8, padding: "6px 10px", fontSize: 12, cursor: "pointer", fontWeight: 600 }}>Fshij</button></div>
+            <div style={{ display: "flex", gap: 6 }}><button onClick={() => setSelectedClientJobs(c)} style={{ background: "#DBEAFE", color: "#1E40AF", border: "none", borderRadius: 8, padding: "6px 10px", fontSize: 12, cursor: "pointer", fontWeight: 600 }}>Ã°Å¸â€œâ€¹ PunÃƒÂ«t</button><button onClick={() => { if (window.confirm("Fshi?")) setData(d => ({ ...d, clients: d.clients.filter(cl => cl.id !== c.id) })); }} style={{ background: "#FEE2E2", color: "#EF4444", border: "none", borderRadius: 8, padding: "6px 10px", fontSize: 12, cursor: "pointer", fontWeight: 600 }}>Fshij</button></div>
           </div>
         ))}
       </div>
       {selectedClientJobs && (
-        <Modal open={true} onClose={() => setSelectedClientJobs(null)} title={"PunÃ«t e " + selectedClientJobs.name} width={600} t={T}>
+        <Modal open={true} onClose={() => setSelectedClientJobs(null)} title={"PunÃƒÂ«t e " + selectedClientJobs.name} width={600} t={T}>
           {data.jobs.filter(j => j.clientId === selectedClientJobs.id).length === 0 ? (
-            <div style={{ padding: 20, textAlign: "center", color: T.textFaint }}>Ky klient nuk ka punÃ« tÃ« regjistruara.</div>
+            <div style={{ padding: 20, textAlign: "center", color: T.textFaint }}>Ky klient nuk ka punÃƒÂ« tÃƒÂ« regjistruara.</div>
           ) : (
             <div style={{ maxHeight: 400, overflowY: "auto" }}>
               {data.jobs.filter(j => j.clientId === selectedClientJobs.id).map(j => {
@@ -830,7 +830,7 @@ function Clients({ data, setData, onNavigate, T }) {
                   <div key={j.id} style={{ display: "flex", justifyContent: "space-between", alignItems: "center", padding: "12px 14px", borderBottom: "1px solid " + T.border, gap: 10 }}>
                     <div style={{ flex: 1, minWidth: 0 }}>
                       <div style={{ fontWeight: 700, fontSize: 14, color: T.text }}>{j.phoneModel}</div>
-                      <div style={{ fontSize: 12, color: T.textMuted, marginTop: 2 }}>{fmtDate(j.createdAt)} Â· #{j.id.slice(-6)}</div>
+                      <div style={{ fontSize: 12, color: T.textMuted, marginTop: 2 }}>{fmtDate(j.createdAt)} Ã‚Â· #{j.id.slice(-6)}</div>
                     </div>
                     <span style={{ padding: "4px 10px", borderRadius: 20, fontSize: 11, fontWeight: 700, background: st.bg, color: st.color }}>{st.label}</span>
                     <button onClick={() => { setSelectedClientJobs(null); onNavigate("jobDetail", j.id); }} style={{ background: T.accent, color: "#fff", border: "none", borderRadius: 8, padding: "6px 12px", fontSize: 12, cursor: "pointer", fontWeight: 600 }}>Hap Raportin</button>
@@ -922,22 +922,22 @@ function DetailedReport({ job, client, worker, business, T, accountId }) {
   .note-meta{font-size:11px;color:#94a3b8;margin-top:4px}
   @media print{body{padding:16px}.no-print{display:none}}
 </style></head><body>
-<h1>Raport i Detajuar â€” ${job.phoneModel}</h1>
-<div class="sub">${business?.name || ""} Â· Gjeneruar: ${new Date().toLocaleString("sq-AL")}</div>
+<h1>Raport i Detajuar Ã¢â‚¬â€ ${job.phoneModel}</h1>
+<div class="sub">${business?.name || ""} Ã‚Â· Gjeneruar: ${new Date().toLocaleString("sq-AL")}</div>
 <div class="grid">
-  <div><div class="label">Klienti</div><div class="val">${client?.name || "â€”"}</div><div style="color:#64748b;font-size:12px">${client?.phone || ""}</div></div>
-  <div><div class="label">Pajisja</div><div class="val">${job.phoneModel}</div><div style="color:#64748b;font-size:12px">IMEI: ${job.imei || "â€”"}</div></div>
+  <div><div class="label">Klienti</div><div class="val">${client?.name || "Ã¢â‚¬â€"}</div><div style="color:#64748b;font-size:12px">${client?.phone || ""}</div></div>
+  <div><div class="label">Pajisja</div><div class="val">${job.phoneModel}</div><div style="color:#64748b;font-size:12px">IMEI: ${job.imei || "Ã¢â‚¬â€"}</div></div>
 </div>
 <hr/>
-<div class="row"><span>Puntori</span><span><b>${worker?.name || "â€”"}</b></span></div>
+<div class="row"><span>Puntori</span><span><b>${worker?.name || "Ã¢â‚¬â€"}</b></span></div>
 <div class="row"><span>Statusi</span><span><b>${statusLabel}</b></span></div>
-<div class="row"><span>Ã‡mimi</span><span><b>${job.price ? job.price + "â‚¬" : "â€”"}</b></span></div>
+<div class="row"><span>Ãƒâ€¡mimi</span><span><b>${job.price ? job.price + "Ã¢â€šÂ¬" : "Ã¢â‚¬â€"}</b></span></div>
 <div class="row"><span>Data pranimit</span><span>${new Date(job.createdAt).toLocaleDateString("sq-AL")}</span></div>
-<div class="row"><span>Kodi</span><span>${job.code || "â€”"}</span></div>
+<div class="row"><span>Kodi</span><span>${job.code || "Ã¢â‚¬â€"}</span></div>
 <hr/>
 <div class="label">Pershkrimi</div>
 <div class="desc">${job.description}</div>
-${notes.length > 0 ? `<hr/><div class="label" style="margin-bottom:8px">ShÃ«nimet shtesÃ«</div>${notes.map(n => `<div class="note">${n.text}<div class="note-meta">${new Date(n.at).toLocaleString("sq-AL")}</div></div>`).join("")}` : ""}
+${notes.length > 0 ? `<hr/><div class="label" style="margin-bottom:8px">ShÃƒÂ«nimet shtesÃƒÂ«</div>${notes.map(n => `<div class="note">${n.text}<div class="note-meta">${new Date(n.at).toLocaleString("sq-AL")}</div></div>`).join("")}` : ""}
 </body></html>`;
   };
 
@@ -972,7 +972,7 @@ ${notes.length > 0 ? `<hr/><div class="label" style="margin-bottom:8px">ShÃ«ni
     <div style={{ background: T.surfaceAlt, borderRadius: 16, padding: 20, marginTop: 12, border: "1.5px solid " + T.border }}>
       <h4 style={{ margin: "0 0 16px", fontSize: 15, fontWeight: 700, color: T.text }}>Raport i detajuar</h4>
       <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 12, marginBottom: 16 }}>
-        {[["Klienti", client?.name || "â€”"], ["Pajisja", job.phoneModel], ["IMEI", job.imei || "â€”"], ["Puntori", worker?.name || "â€”"], ["Statusi", statusLabel], ["Ã‡mimi", job.price ? job.price + "â‚¬" : "â€”"], ["Data", new Date(job.createdAt).toLocaleDateString("sq-AL")], ["Kodi", job.code || "â€”"]].map(([k, v]) => (
+        {[["Klienti", client?.name || "Ã¢â‚¬â€"], ["Pajisja", job.phoneModel], ["IMEI", job.imei || "Ã¢â‚¬â€"], ["Puntori", worker?.name || "Ã¢â‚¬â€"], ["Statusi", statusLabel], ["Ãƒâ€¡mimi", job.price ? job.price + "Ã¢â€šÂ¬" : "Ã¢â‚¬â€"], ["Data", new Date(job.createdAt).toLocaleDateString("sq-AL")], ["Kodi", job.code || "Ã¢â‚¬â€"]].map(([k, v]) => (
           <div key={k} style={{ background: T.surface, borderRadius: 10, padding: "10px 14px", border: "1px solid " + T.border }}>
             <div style={{ fontSize: 11, fontWeight: 700, textTransform: "uppercase", color: T.textFaint, marginBottom: 4 }}>{k}</div>
             <div style={{ fontSize: 14, fontWeight: 600, color: T.text }}>{v}</div>
@@ -985,7 +985,7 @@ ${notes.length > 0 ? `<hr/><div class="label" style="margin-bottom:8px">ShÃ«ni
       </div>
       {notes.length > 0 && (
         <div style={{ marginBottom: 16 }}>
-          <div style={{ fontSize: 11, fontWeight: 700, textTransform: "uppercase", color: T.textFaint, marginBottom: 8 }}>ShÃ«nimet shtesÃ«</div>
+          <div style={{ fontSize: 11, fontWeight: 700, textTransform: "uppercase", color: T.textFaint, marginBottom: 8 }}>ShÃƒÂ«nimet shtesÃƒÂ«</div>
           {notes.map((n, i) => (
             <div key={i} style={{ background: T.surface, borderLeft: "3px solid " + T.accent, borderRadius: "0 10px 10px 0", padding: "10px 14px", marginBottom: 8 }}>
               <div style={{ fontSize: 13, color: T.text }}>{n.text}</div>
@@ -995,10 +995,10 @@ ${notes.length > 0 ? `<hr/><div class="label" style="margin-bottom:8px">ShÃ«ni
         </div>
       )}
       <div style={{ marginBottom: 16 }}>
-        <div style={{ fontSize: 11, fontWeight: 700, textTransform: "uppercase", color: T.textFaint, marginBottom: 8 }}>Shto shÃ«nim shtesÃ«</div>
-        <textarea value={noteInput} onChange={e => setNoteInput(e.target.value)} rows={3} placeholder="VÃ«rejtje teknike, rezultate diagnostike, rekomandime..." style={{ width: "100%", padding: "10px 14px", borderRadius: 10, border: "1.5px solid " + T.border, fontSize: 13, background: T.inputBg, color: T.text, fontFamily: "inherit", resize: "vertical", outline: "none", boxSizing: "border-box" }} />
+        <div style={{ fontSize: 11, fontWeight: 700, textTransform: "uppercase", color: T.textFaint, marginBottom: 8 }}>Shto shÃƒÂ«nim shtesÃƒÂ«</div>
+        <textarea value={noteInput} onChange={e => setNoteInput(e.target.value)} rows={3} placeholder="VÃƒÂ«rejtje teknike, rezultate diagnostike, rekomandime..." style={{ width: "100%", padding: "10px 14px", borderRadius: 10, border: "1.5px solid " + T.border, fontSize: 13, background: T.inputBg, color: T.text, fontFamily: "inherit", resize: "vertical", outline: "none", boxSizing: "border-box" }} />
         <div style={{ display: "flex", justifyContent: "flex-end", marginTop: 8 }}>
-          <Btn variant="primary" size="sm" onClick={addNote} disabled={!noteInput.trim()} t={T}>Ruaj shÃ«nimin</Btn>
+          <Btn variant="primary" size="sm" onClick={addNote} disabled={!noteInput.trim()} t={T}>Ruaj shÃƒÂ«nimin</Btn>
         </div>
       </div>
       <div style={{ display: "flex", gap: 8, flexWrap: "wrap" }}>
@@ -1047,7 +1047,7 @@ function CreateJob({ data, setData, onNavigate, T }) {
           <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 16 }}>
             <div style={{ position: "relative" }}>
               <Input label="Klienti" value={clientSearch} onChange={v => { setClientSearch(v); setSelectedClient(null); setShowSuggestions(true); }} placeholder="Kerko klientin" required t={T} />
-              {showSuggestions && matchingClients.length > 0 && <div style={{ position: "absolute", top: "100%", left: 0, right: 0, zIndex: 10, background: T.surface, borderRadius: 10, border: `1.5px solid ${T.border}`, boxShadow: "0 8px 24px rgba(0,0,0,.12)", maxHeight: 150, overflowY: "auto" }}>{matchingClients.map(c => <div key={c.id} onClick={() => { setSelectedClient(c); setClientSearch(c.name); setNewClientPhone(c.phone); setShowSuggestions(false); }} style={{ padding: "10px 14px", cursor: "pointer", fontSize: 13, borderBottom: `1px solid ${T.border}`, color: T.text }} onMouseEnter={e => e.currentTarget.style.background = T.surfaceAlt} onMouseLeave={e => e.currentTarget.style.background = "transparent"}><strong>{c.name}</strong> â€” {c.phone}</div>)}</div>}
+              {showSuggestions && matchingClients.length > 0 && <div style={{ position: "absolute", top: "100%", left: 0, right: 0, zIndex: 10, background: T.surface, borderRadius: 10, border: `1.5px solid ${T.border}`, boxShadow: "0 8px 24px rgba(0,0,0,.12)", maxHeight: 150, overflowY: "auto" }}>{matchingClients.map(c => <div key={c.id} onClick={() => { setSelectedClient(c); setClientSearch(c.name); setNewClientPhone(c.phone); setShowSuggestions(false); }} style={{ padding: "10px 14px", cursor: "pointer", fontSize: 13, borderBottom: `1px solid ${T.border}`, color: T.text }} onMouseEnter={e => e.currentTarget.style.background = T.surfaceAlt} onMouseLeave={e => e.currentTarget.style.background = "transparent"}><strong>{c.name}</strong> Ã¢â‚¬â€ {c.phone}</div>)}</div>}
             </div>
             <Input label="Numri tel." value={newClientPhone} onChange={setNewClientPhone} placeholder="Numri kontaktues" t={T} />
           </div>
@@ -1062,7 +1062,7 @@ function CreateJob({ data, setData, onNavigate, T }) {
           <Input label="Modeli telefonit" value={phoneModel} onChange={setPhoneModel} placeholder="iPhone 12 blu" required t={T} />
           <Input label="IMEI" value={imei} onChange={setImei} placeholder="3576647773..." t={T} />
           <Input label="Kodi" value={code} onChange={setCode} placeholder="123456" t={T} />
-          <Input label="Ã‡mimi (â‚¬)" value={price} onChange={setPrice} placeholder="0.00" type="number" t={T} />
+          <Input label="Ãƒâ€¡mimi (Ã¢â€šÂ¬)" value={price} onChange={setPrice} placeholder="0.00" type="number" t={T} />
         </div>
         <Textarea label="Pershkrimi" value={description} onChange={setDescription} placeholder="Shenuaj detaje rreth punes." required rows={4} t={T} />
         <div style={{ display: "flex", justifyContent: "flex-end", marginTop: 8 }}><Btn variant="primary" size="lg" onClick={handleSubmit} disabled={!phoneModel.trim() || !description.trim()} t={T}>Shto Punen</Btn></div>
@@ -1133,27 +1133,27 @@ function JobDetail({ data, setData, jobId, onNavigate, T }) {
         <div style={{ background: T.surface, borderRadius: 20, padding: 28, border: `1.5px solid ${T.border}` }}>
           <div style={{ fontSize: 12, color: T.textFaint, fontWeight: 600, textTransform: "uppercase" }}>NR.PUNEVE TE KLIENTIT: {data.jobs.filter(j => j.clientId === job.clientId).length}</div>
           <div style={{ display: "flex", alignItems: "center", gap: 12, marginTop: 8, marginBottom: 4 }}>
-            <h2 style={{ margin: 0, fontSize: 24, fontWeight: 800, color: T.text }}>{client?.name || "â€”"}</h2>
+            <h2 style={{ margin: 0, fontSize: 24, fontWeight: 800, color: T.text }}>{client?.name || "Ã¢â‚¬â€"}</h2>
             <button onClick={() => { setEditField("clientName"); setEditValue(client?.name || ""); }} style={{ background: T.accent, color: "#fff", border: "none", borderRadius: 6, width: 26, height: 26, cursor: "pointer", display: "flex", alignItems: "center", justifyContent: "center" }}>{Ic.edit(11)}</button>
           </div>
           <div style={{ fontSize: 14, color: T.textMuted, marginBottom: 16, display: "flex", alignItems: "center", gap: 8 }}>{client?.phone} <span style={{ cursor: "pointer", display: "inline-flex", color: T.textMuted }}>{Ic.phone(14)}</span> <span style={{ cursor: "pointer", display: "inline-flex", color: T.textMuted }}>{Ic.copy(14)}</span></div>
           <EF label="Status" field="_status" value={STATUSES.find(s => s.key === job.status)?.label} />
           <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", padding: "12px 0", borderBottom: `1px solid ${T.border}` }}>
             <span style={{ fontSize: 13, color: T.textMuted, fontWeight: 600 }}>Duke punu</span>
-            <div style={{ display: "flex", alignItems: "center", gap: 8 }}><span style={{ fontSize: 14, fontWeight: 600, color: T.text }}>{worker?.name || "â€”"}</span>
+            <div style={{ display: "flex", alignItems: "center", gap: 8 }}><span style={{ fontSize: 14, fontWeight: 600, color: T.text }}>{worker?.name || "Ã¢â‚¬â€"}</span>
               <select value={job.workerId} onChange={e => setData(d => ({ ...d, jobs: d.jobs.map(j => j.id === jobId ? { ...j, workerId: e.target.value } : j) }))} style={{ padding: "4px 8px", borderRadius: 6, border: `1px solid ${T.border}`, fontSize: 12, background: T.inputBg, color: T.text }}>{data.workers.map(w => <option key={w.id} value={w.id}>{w.name}</option>)}</select>
             </div>
           </div>
           {/* Price field inline */}
           <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", padding: "12px 0", borderBottom: `1px solid ${T.border}` }}>
-            <span style={{ fontSize: 13, color: T.textMuted, fontWeight: 600, display: "flex", alignItems: "center", gap: 6 }}>{Ic.money(13)} Ã‡mimi (â‚¬)</span>
+            <span style={{ fontSize: 13, color: T.textMuted, fontWeight: 600, display: "flex", alignItems: "center", gap: 6 }}>{Ic.money(13)} Ãƒâ€¡mimi (Ã¢â€šÂ¬)</span>
             <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
               {editField === "price" ? (
                 <><input value={editValue} onChange={e => setEditValue(e.target.value)} type="number" style={{ padding: "6px 10px", borderRadius: 6, border: `1.5px solid ${T.accent}`, fontSize: 13, outline: "none", width: 100, background: T.inputBg, color: T.text }} autoFocus onKeyDown={e => e.key === "Enter" && saveEdit("price")} />
                 <button onClick={() => saveEdit("price")} style={{ background: T.success, color: "#fff", border: "none", borderRadius: 6, padding: "6px 10px", cursor: "pointer", display: "flex", alignItems: "center" }}>{Ic.check(11)}</button>
                 <button onClick={() => setEditField(null)} style={{ background: T.danger, color: "#fff", border: "none", borderRadius: 6, padding: "6px 10px", cursor: "pointer", display: "flex", alignItems: "center" }}>{Ic.x(11)}</button></>
               ) : (
-                <><span style={{ fontSize: 15, fontWeight: 700, color: job.price ? T.success : T.textFaint }}>{job.price ? `${job.price}â‚¬` : "â€”"}</span>
+                <><span style={{ fontSize: 15, fontWeight: 700, color: job.price ? T.success : T.textFaint }}>{job.price ? `${job.price}Ã¢â€šÂ¬` : "Ã¢â‚¬â€"}</span>
                 <button onClick={() => { setEditField("price"); setEditValue(job.price || ""); }} style={{ background: T.accent, color: "#fff", border: "none", borderRadius: 6, width: 26, height: 26, cursor: "pointer", display: "flex", alignItems: "center", justifyContent: "center" }}>{Ic.edit(11)}</button></>
               )}
             </div>
@@ -1168,8 +1168,8 @@ function JobDetail({ data, setData, jobId, onNavigate, T }) {
             <div style={{ background: T.surfaceAlt, borderRadius: 12, padding: 16, fontSize: 14, color: T.textMuted, lineHeight: 1.6, border: `1px solid ${T.border}`, minHeight: 60 }}>{job.description}</div>}
           </div>
           <div style={{ marginTop: 20 }}>
-            <h3 style={{ fontSize: 16, fontWeight: 700, marginBottom: 8, color: T.text }}>ShÃ«nime shtesÃ«</h3>
-            <textarea value={job.notes || ""} onChange={e => setData(d => ({ ...d, jobs: d.jobs.map(j => j.id === jobId ? { ...j, notes: e.target.value } : j) }))} rows={3} placeholder="ShÃ«no diÃ§ka shtesÃ«..." style={{ width: "100%", padding: "10px 14px", borderRadius: 10, border: "1.5px solid " + T.border, fontSize: 13, background: T.inputBg, color: T.text, fontFamily: "inherit", resize: "vertical", outline: "none", boxSizing: "border-box" }} />
+            <h3 style={{ fontSize: 16, fontWeight: 700, marginBottom: 8, color: T.text }}>ShÃƒÂ«nime shtesÃƒÂ«</h3>
+            <textarea value={job.notes || ""} onChange={e => setData(d => ({ ...d, jobs: d.jobs.map(j => j.id === jobId ? { ...j, notes: e.target.value } : j) }))} rows={3} placeholder="ShÃƒÂ«no diÃƒÂ§ka shtesÃƒÂ«..." style={{ width: "100%", padding: "10px 14px", borderRadius: 10, border: "1.5px solid " + T.border, fontSize: 13, background: T.inputBg, color: T.text, fontFamily: "inherit", resize: "vertical", outline: "none", boxSizing: "border-box" }} />
             <div style={{ display: "flex", gap: 8, marginTop: 8 }}>
               <Btn variant="primary" size="sm" onClick={() => showToast("U ruajt!")} t={T}>Ruaj</Btn>
               <Btn variant="success" size="sm" onClick={() => { setData(d => ({ ...d, jobs: d.jobs.map(j => j.id === jobId ? { ...j, showNotesOnCoupon: true } : j) })); showToast("Do te shfaqen ne kupon!"); }} t={T}>Ruaj dhe shfaq ne kupon</Btn>
@@ -1203,9 +1203,9 @@ function JobDetail({ data, setData, jobId, onNavigate, T }) {
         <div style={{ position: "fixed", inset: 0, zIndex: 1000, background: "rgba(15,20,30,0.55)", backdropFilter: "blur(4px)", display: "flex", alignItems: "center", justifyContent: "center" }} onClick={() => setShowMsgSend(false)}>
           <div onClick={e => e.stopPropagation()} style={{ background: "#fff", borderRadius: 20, padding: 32, width: "90%", maxWidth: 400, boxShadow: "0 24px 80px rgba(0,0,0,.2)" }}>
             <div style={{ textAlign: "center", marginBottom: 20 }}>
-              <div style={{ fontSize: 40, marginBottom: 8 }}>ðŸ“±</div>
-              <h3 style={{ margin: "0 0 6px", fontSize: 18, fontWeight: 800 }}>DÃ«rgo njoftim klientit?</h3>
-              <p style={{ margin: 0, fontSize: 13, color: "#64748b" }}>Statusi u ndryshua nÃ«: <strong style={{ color: STATUSES.find(s=>s.key===pendingStatus)?.color }}>{STATUSES.find(s=>s.key===pendingStatus)?.label}</strong></p>
+              <div style={{ fontSize: 40, marginBottom: 8 }}>Ã°Å¸â€œÂ±</div>
+              <h3 style={{ margin: "0 0 6px", fontSize: 18, fontWeight: 800 }}>DÃƒÂ«rgo njoftim klientit?</h3>
+              <p style={{ margin: 0, fontSize: 13, color: "#64748b" }}>Statusi u ndryshua nÃƒÂ«: <strong style={{ color: STATUSES.find(s=>s.key===pendingStatus)?.color }}>{STATUSES.find(s=>s.key===pendingStatus)?.label}</strong></p>
               {client?.phone && <p style={{ margin: "6px 0 0", fontSize: 12, color: "#94a3b8" }}>Tel: {client.phone}</p>}
             </div>
             {client?.phone ? (
@@ -1217,7 +1217,7 @@ function JobDetail({ data, setData, jobId, onNavigate, T }) {
                   window.open(`https://wa.me/${phone}?text=${msg}`, "_blank");
                   setShowMsgSend(false);
                 }} style={{ background: "#25D366", color: "#fff", border: "none", borderRadius: 12, padding: "14px", cursor: "pointer", fontWeight: 700, fontSize: 15, display: "flex", alignItems: "center", justifyContent: "center", gap: 8 }}>
-                  ðŸ’¬ DÃ«rgo nÃ« WhatsApp
+                  Ã°Å¸â€™Â¬ DÃƒÂ«rgo nÃƒÂ« WhatsApp
                 </button>
                 <button onClick={() => {
                   const statusLabel = STATUSES.find(s=>s.key===pendingStatus)?.label || pendingStatus;
@@ -1226,15 +1226,15 @@ function JobDetail({ data, setData, jobId, onNavigate, T }) {
                   window.open(`viber://chat?number=${phone}&text=${msg}`, "_blank");
                   setShowMsgSend(false);
                 }} style={{ background: "#7360F2", color: "#fff", border: "none", borderRadius: 12, padding: "14px", cursor: "pointer", fontWeight: 700, fontSize: 15, display: "flex", alignItems: "center", justifyContent: "center", gap: 8 }}>
-                  ðŸ’œ DÃ«rgo nÃ« Viber
+                  Ã°Å¸â€™Å“ DÃƒÂ«rgo nÃƒÂ« Viber
                 </button>
                 <button onClick={() => setShowMsgSend(false)} style={{ background: "#f1f5f9", color: "#64748b", border: "none", borderRadius: 12, padding: "12px", cursor: "pointer", fontWeight: 600, fontSize: 14 }}>
-                  Mos dÃ«rgo
+                  Mos dÃƒÂ«rgo
                 </button>
               </div>
             ) : (
               <div style={{ textAlign: "center" }}>
-                <p style={{ color: "#EF4444", fontSize: 13, marginBottom: 16 }}>Klienti nuk ka numÃ«r telefoni tÃ« regjistruar.</p>
+                <p style={{ color: "#EF4444", fontSize: 13, marginBottom: 16 }}>Klienti nuk ka numÃƒÂ«r telefoni tÃƒÂ« regjistruar.</p>
                 <button onClick={() => setShowMsgSend(false)} style={{ background: "#f1f5f9", color: "#64748b", border: "none", borderRadius: 12, padding: "12px 24px", cursor: "pointer", fontWeight: 600 }}>Mbyll</button>
               </div>
             )}
@@ -1269,22 +1269,22 @@ function BusinessSettings({ data, setData, T }) {
           <div style={{ borderTop: `2px solid ${T.border}`, marginTop: 8, paddingTop: 8, fontSize: 18, fontWeight: 800, color: T.text }}>Total: {data.jobs.length}</div>
         </div>
         <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr 1fr 1fr", gap: 12 }}>
-          {[["Kete muaj", thisMonth], ["6 Muajt e fundit", last6], ["Te gjitha", data.jobs.length], ["Te ardhura", `${totalRevenue.toFixed(2)}â‚¬`]].map(([l, c]) => <div key={l} style={{ background: T.surfaceAlt, borderRadius: 12, padding: 16, textAlign: "center", border: `1px solid ${T.border}` }}><div style={{ fontSize: 12, color: T.textMuted }}>{l}</div><div style={{ fontSize: 22, fontWeight: 800, color: T.accent }}>{c}{typeof c === "number" && <span style={{ fontSize: 12, fontWeight: 400 }}> / pune</span>}</div></div>)}
+          {[["Kete muaj", thisMonth], ["6 Muajt e fundit", last6], ["Te gjitha", data.jobs.length], ["Te ardhura", `${totalRevenue.toFixed(2)}Ã¢â€šÂ¬`]].map(([l, c]) => <div key={l} style={{ background: T.surfaceAlt, borderRadius: 12, padding: 16, textAlign: "center", border: `1px solid ${T.border}` }}><div style={{ fontSize: 12, color: T.textMuted }}>{l}</div><div style={{ fontSize: 22, fontWeight: 800, color: T.accent }}>{c}{typeof c === "number" && <span style={{ fontSize: 12, fontWeight: 400 }}> / pune</span>}</div></div>)}
         </div>
       </div>
       <div style={{ background: T.surface, borderRadius: 20, padding: 28, marginBottom: 20, border: `1.5px solid ${T.border}` }}>
         <div style={{ display: "flex", alignItems: "center", gap: 12, marginBottom: 20 }}><h2 style={{ margin: 0, fontSize: 22, fontWeight: 800, color: T.text }}>{b.name}</h2><span style={{ background: "#D1FAE5", color: "#10B981", padding: "4px 14px", borderRadius: 20, fontSize: 12, fontWeight: 700 }}>Aktiv</span>
-                {b.expiryDate && <span style={{ background: "#DBEAFE", color: "#2563EB", padding: "4px 14px", borderRadius: 20, fontSize: 12, fontWeight: 700, marginLeft: 8 }}>{Math.max(0, Math.ceil((new Date(b.expiryDate) - new Date()) / 86400000))} ditÃ« mbeten</span>}</div>
+                {b.expiryDate && <span style={{ background: "#DBEAFE", color: "#2563EB", padding: "4px 14px", borderRadius: 20, fontSize: 12, fontWeight: 700, marginLeft: 8 }}>{Math.max(0, Math.ceil((new Date(b.expiryDate) - new Date()) / 86400000))} ditÃƒÂ« mbeten</span>}</div>
         <div style={{ display: "grid", gridTemplateColumns: "140px 1fr", gap: "8px 16px", fontSize: 14 }}>
-          <span style={{ color: T.textMuted, fontWeight: 600 }}>Email:</span><span style={{ color: T.text }}>{b.email || "â€”"}</span>
-          <span style={{ color: T.textMuted, fontWeight: 600 }}>Adresa:</span><span style={{ color: T.text }}>{b.address || "â€”"}</span>
-          <span style={{ color: T.textMuted, fontWeight: 600 }}>Numri Kontaktues:</span><span style={{ color: T.text }}>{b.phone || "â€”"}</span>
+          <span style={{ color: T.textMuted, fontWeight: 600 }}>Email:</span><span style={{ color: T.text }}>{b.email || "Ã¢â‚¬â€"}</span>
+          <span style={{ color: T.textMuted, fontWeight: 600 }}>Adresa:</span><span style={{ color: T.text }}>{b.address || "Ã¢â‚¬â€"}</span>
+          <span style={{ color: T.textMuted, fontWeight: 600 }}>Numri Kontaktues:</span><span style={{ color: T.text }}>{b.phone || "Ã¢â‚¬â€"}</span>
           <span style={{ color: T.textMuted, fontWeight: 600 }}>Regjistruar:</span><span style={{ color: T.text }}>{fmtDate(b.registeredAt)}</span>
           <span style={{ color: T.textMuted, fontWeight: 600 }}>Skadimi:</span><span style={{ color: T.accent, fontWeight: 600 }}>{b.expiryDate ? fmtDate(b.expiryDate) : (b.expiresIn || "Pa abonim")}</span>
         </div>
         <h3 style={{ margin: "24px 0 12px", fontSize: 15, fontWeight: 700, color: T.text }}>Pagesat e programit</h3>
         <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr 1fr", padding: "10px 16px", fontSize: 12, fontWeight: 700, color: T.textMuted, borderBottom: `2px solid ${T.border}` }}><span>Shuma</span><span>Data pageses</span><span>Valide per</span></div>
-        {(!b.payments || b.payments.length === 0) ? <div style={{ textAlign: "center", padding: "16px 0", color: T.textFaint, fontSize: 13 }}>Trial 30 ditÃ« â€” Ska pagesa tÃ« regjistruara</div> : b.payments.map((p, i) => <div key={i} style={{ display: "grid", gridTemplateColumns: "1fr 1fr 1fr", padding: "12px 16px", fontSize: 13, borderBottom: `1px solid ${T.border}`, color: T.text }}><span>{p.amount}</span><span>{fmtDate(p.date)}</span><span style={{ color: T.accent, fontWeight: 600 }}>{p.validFor}</span></div>)}
+        {(!b.payments || b.payments.length === 0) ? <div style={{ textAlign: "center", padding: "16px 0", color: T.textFaint, fontSize: 13 }}>Trial 30 ditÃƒÂ« Ã¢â‚¬â€ Ska pagesa tÃƒÂ« regjistruara</div> : b.payments.map((p, i) => <div key={i} style={{ display: "grid", gridTemplateColumns: "1fr 1fr 1fr", padding: "12px 16px", fontSize: 13, borderBottom: `1px solid ${T.border}`, color: T.text }}><span>{p.amount}</span><span>{fmtDate(p.date)}</span><span style={{ color: T.accent, fontWeight: 600 }}>{p.validFor}</span></div>)}
       </div>
       <div style={{ background: T.surface, borderRadius: 20, padding: 28, border: `1.5px solid ${T.border}` }}>
         <div style={{ marginBottom: 24 }}>
@@ -1316,9 +1316,9 @@ function BusinessSettings({ data, setData, T }) {
       {b.hasArka && (
         <div style={{ background: T.surface, borderRadius: 20, padding: 28, border: `1.5px solid ${T.border}`, marginTop: 20 }}>
           <h3 style={{ margin: "0 0 16px", fontSize: 16, fontWeight: 700, color: T.text, display: "flex", alignItems: "center", gap: 8 }}>
-            ðŸ”’ CilÃ«simet e ArkÃ«s
+            Ã°Å¸â€â€™ CilÃƒÂ«simet e ArkÃƒÂ«s
           </h3>
-          <label style={{ display: "block", fontSize: 12, fontWeight: 600, color: T.textMuted, marginBottom: 6 }}>Kodi PIN i ArkÃ«s (6 shifra)</label>
+          <label style={{ display: "block", fontSize: 12, fontWeight: 600, color: T.textMuted, marginBottom: 6 }}>Kodi PIN i ArkÃƒÂ«s (6 shifra)</label>
           <div style={{ display: "flex", gap: 10, alignItems: "center" }}>
             <input
               type="text"
@@ -1330,13 +1330,13 @@ function BusinessSettings({ data, setData, T }) {
               style={{ width: 220, padding: "11px 14px", borderRadius: 10, border: `1.5px solid ${T.border}`, fontSize: 18, letterSpacing: 6, textAlign: "center", outline: "none", background: T.inputBg, color: T.text, fontFamily: "monospace" }}
             />
             <button onClick={() => {
-              if (!form.arkaPin || !/^\d{6}$/.test(form.arkaPin)) { alert("PIN-i duhet tÃ« ketÃ« 6 shifra"); return; }
+              if (!form.arkaPin || !/^\d{6}$/.test(form.arkaPin)) { alert("PIN-i duhet tÃƒÂ« ketÃƒÂ« 6 shifra"); return; }
               setData(d => ({ ...d, business: { ...d.business, arkaPin: form.arkaPin } }));
             }} style={{ background: T.accentGrad, color: "#fff", border: "none", borderRadius: 10, padding: "11px 20px", cursor: "pointer", fontWeight: 700, fontSize: 13 }}>
               Ndrysho PIN-in
             </button>
           </div>
-          <p style={{ margin: "10px 0 0", fontSize: 12, color: T.textFaint }}>PIN-i kÃ«rkohet pÃ«r tÃ« hapur ose mbyllur ArkÃ«n. Mbaje tÃ« sigurt.</p>
+          <p style={{ margin: "10px 0 0", fontSize: 12, color: T.textFaint }}>PIN-i kÃƒÂ«rkohet pÃƒÂ«r tÃƒÂ« hapur ose mbyllur ArkÃƒÂ«n. Mbaje tÃƒÂ« sigurt.</p>
         </div>
       )}
     </div>
@@ -1359,7 +1359,7 @@ function SettingsPage({ tab, data, setData, onNavigate, T }) {
   return (
     <div>
       <div style={{ display: "flex", alignItems: "center", gap: 16, marginBottom: 24 }}>
-        <button onClick={() => onNavigate("dashboard")} style={{ background: "none", border: "none", cursor: "pointer", color: T.textMuted, fontSize: 14, display: "flex", alignItems: "center", gap: 6 }}>â† Kthehu</button>
+        <button onClick={() => onNavigate("dashboard")} style={{ background: "none", border: "none", cursor: "pointer", color: T.textMuted, fontSize: 14, display: "flex", alignItems: "center", gap: 6 }}>Ã¢â€ Â Kthehu</button>
         <h2 style={{ margin: 0, fontSize: 22, fontWeight: 800, color: T.text }}>Manage Account</h2>
       </div>
       <div style={{ display: "flex", gap: 8, marginBottom: 24, flexWrap: "wrap" }}>
@@ -1448,7 +1448,7 @@ function SettingsPerdoruesit({ data, setData, T }) {
       <div style={{ background: T.surface, borderRadius: 20, padding: 28, border: "1.5px solid " + T.border }}>
         <h3 style={{ margin: "0 0 20px", fontSize: 16, fontWeight: 700, color: T.text }}>Shto Perdorues te Ri</h3>
         <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 16 }}>
-          <Input label="Emri" value={name} onChange={setName} placeholder="Emri i punÃ«torit" t={T} />
+          <Input label="Emri" value={name} onChange={setName} placeholder="Emri i punÃƒÂ«torit" t={T} />
           <Input label="Numri Tel." value={phone} onChange={setPhone} placeholder="044 123 456" t={T} />
         </div>
         <Btn variant="primary" onClick={addWorker} disabled={!name.trim()} t={T}>+ Shto Perdoruesin</Btn>
@@ -1517,7 +1517,7 @@ function SettingsPrint({ data, setData, T }) {
       <div style={{ marginTop: 16 }}>
         <Input label="Teksti i kokes se kuponit" value={form.printHeader} onChange={v => setForm(f=>({...f,printHeader:v}))} placeholder="p.sh. Faleminderit per besimin!" t={T} />
         <Input label="Teksti i fundit te kuponit" value={form.printFooter} onChange={v => setForm(f=>({...f,printFooter:v}))} placeholder="p.sh. Garanci 30 dite" t={T} />
-        <Textarea label="ShÃ«nime shtesÃ« pÃ«r kuponin" value={form.couponNotes} onChange={v => setForm(f=>({...f,couponNotes:v}))} placeholder="ShÃ«nimet do tÃ« shfaqen nÃ« fund tÃ« kuponit (pas QR kodit)" rows={3} t={T} />
+        <Textarea label="ShÃƒÂ«nime shtesÃƒÂ« pÃƒÂ«r kuponin" value={form.couponNotes} onChange={v => setForm(f=>({...f,couponNotes:v}))} placeholder="ShÃƒÂ«nimet do tÃƒÂ« shfaqen nÃƒÂ« fund tÃƒÂ« kuponit (pas QR kodit)" rows={3} t={T} />
       </div>
       <Btn variant={saved ? "success" : "primary"} size="lg" onClick={save} style={{ width: "100%", justifyContent: "center", marginTop: 8 }} t={T}>{saved ? "U ruajt!" : "Ruaj ndryshimet"}</Btn>
     </div>
@@ -1664,37 +1664,37 @@ function AdminPanel({ accounts, setAccounts, onLogout }) {
       try {
         const { error } = await supabase.from('accounts').update({ has_posta: postaEnabled }).eq('id', acc.id);
         if (error) {
-          showToast("âš ï¸ Ekzekuto SQL-in e migrimit nÃ« Supabase (shih poshtÃ«)!");
+          showToast("Ã¢Å¡Â Ã¯Â¸Â Ekzekuto SQL-in e migrimit nÃƒÂ« Supabase (shih poshtÃƒÂ«)!");
           setPostaSqlNeeded(true);
           return;
         }
       } catch(e) {
-        showToast("Gabim gjatÃ« ruajtjes: " + e.message);
+        showToast("Gabim gjatÃƒÂ« ruajtjes: " + e.message);
         return;
       }
       setAccounts(prev => prev.map(a => a.id === acc.id ? { ...a, hasPosta: postaEnabled } : a));
       setSelectedAccount(s => s && s.id === acc.id ? { ...s, hasPosta: postaEnabled } : s);
       setPostaDirty(false);
       setPostaSqlNeeded(false);
-      showToast(postaEnabled ? "âœ… Posta u aktivizua!" : "Posta u Ã§aktivizua");
+      showToast(postaEnabled ? "Ã¢Å“â€¦ Posta u aktivizua!" : "Posta u ÃƒÂ§aktivizua");
     };
 
     const saveArkaConfig = () => {
       if (arkaEnabled && (!arkaPin || arkaPin.length < 6 || !/^\d{6}$/.test(arkaPin))) {
-        showToast("PIN-i duhet tÃ« ketÃ« 6 shifra!");
+        showToast("PIN-i duhet tÃƒÂ« ketÃƒÂ« 6 shifra!");
         return;
       }
       setAccounts(prev => prev.map(a => a.id === acc.id ? { ...a, hasArka: arkaEnabled, arkaPin: arkaEnabled ? arkaPin : "" } : a));
       setSelectedAccount(s => s && s.id === acc.id ? { ...s, hasArka: arkaEnabled, arkaPin: arkaEnabled ? arkaPin : "" } : s);
       setArkaDirty(false);
-      showToast(arkaEnabled ? "Arka u aktivizua pÃ«r kÃ«tÃ« biznes!" : "Arka u Ã§aktivizua");
+      showToast(arkaEnabled ? "Arka u aktivizua pÃƒÂ«r kÃƒÂ«tÃƒÂ« biznes!" : "Arka u ÃƒÂ§aktivizua");
     };
     return (
       <div style={{ animation: "slideUp .2s ease" }}>
         <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 24 }}>
           <div style={{ display: "flex", alignItems: "center", gap: 12 }}>
             <button onClick={() => { setPage("firms"); setSelectedAccount(null); }} style={{ background: T.surfaceAlt, border: `1px solid ${T.border}`, borderRadius: 8, padding: "6px 14px", cursor: "pointer", fontSize: 13, color: T.textMuted, display: "flex", alignItems: "center", gap: 6 }}>
-              â‚¬Ã‚Â Ã‚Â Kthehu
+              Ã¢â€šÂ¬Ãƒâ€šÃ‚Â Ãƒâ€šÃ‚Â Kthehu
             </button>
             <h2 style={{ margin: 0, fontSize: 20, fontWeight: 800, color: T.text }}>{acc.name}</h2>
             <StatusPill status={status} />
@@ -1707,7 +1707,7 @@ function AdminPanel({ accounts, setAccounts, onLogout }) {
               {Ic.edit(13)} Edito
             </button>
             <button onClick={() => handleSuspend(acc.id)} style={{ background: status === "suspended" ? "#D1FAE5" : "#FEF3C7", color: status === "suspended" ? "#059669" : "#D97706", border: "none", borderRadius: 10, padding: "9px 18px", cursor: "pointer", fontWeight: 700, fontSize: 13 }}>
-              {status === "suspended" ? "â–¶ Aktivizo" : "â¸ Pezullo"}
+              {status === "suspended" ? "Ã¢â€“Â¶ Aktivizo" : "Ã¢ÂÂ¸ Pezullo"}
             </button>
             <button onClick={() => setDeleteConfirm(acc.id)} style={{ background: "#FEE2E2", color: "#EF4444", border: "none", borderRadius: 10, padding: "9px 14px", cursor: "pointer", fontWeight: 700, fontSize: 13, display: "flex", alignItems: "center", gap: 6 }}>
               {Ic.trash(13)} Fshi
@@ -1719,7 +1719,7 @@ function AdminPanel({ accounts, setAccounts, onLogout }) {
           {/* Info card */}
           <div style={{ background: T.surface, borderRadius: 20, padding: 24, border: `1.5px solid ${T.border}` }}>
             <h3 style={{ margin: "0 0 16px", fontSize: 15, fontWeight: 700, color: T.text }}>Informacioni i firmes</h3>
-            {[["Email", acc.email], ["Telefon", acc.phone || "â€”"], ["Adresa", acc.address || "â€”"], ["Qyteti", acc.city || "â€”"], ["Shteti", acc.country || "â€”"], ["Regjistruar", fmtDate(acc.registeredAt)]].map(([l, v]) => (
+            {[["Email", acc.email], ["Telefon", acc.phone || "Ã¢â‚¬â€"], ["Adresa", acc.address || "Ã¢â‚¬â€"], ["Qyteti", acc.city || "Ã¢â‚¬â€"], ["Shteti", acc.country || "Ã¢â‚¬â€"], ["Regjistruar", fmtDate(acc.registeredAt)]].map(([l, v]) => (
               <div key={l} style={{ display: "flex", justifyContent: "space-between", padding: "10px 0", borderBottom: `1px solid ${T.border}`, fontSize: 14 }}>
                 <span style={{ color: T.textMuted, fontWeight: 600 }}>{l}</span>
                 <span style={{ color: T.text, fontWeight: 500 }}>{v}</span>
@@ -1736,7 +1736,7 @@ function AdminPanel({ accounts, setAccounts, onLogout }) {
             <div style={{ background: status === "active" ? "#D1FAE511" : status === "expired" ? "#FEE2E211" : "#FEF3C711", borderRadius: 12, padding: "16px 20px", marginBottom: 16, border: `1px solid ${status === "active" ? "#10B98130" : "#EF444430"}` }}>
               <div style={{ fontSize: 12, color: T.textMuted, fontWeight: 600 }}>STATUSI ABONIMIT</div>
               <div style={{ fontSize: 22, fontWeight: 800, color: status === "active" ? "#059669" : status === "expired" ? "#EF4444" : "#D97706", marginTop: 4 }}>
-                {dl !== null ? `${dl} ditÃ« mbeten` : "Pa abonim"}
+                {dl !== null ? `${dl} ditÃƒÂ« mbeten` : "Pa abonim"}
               </div>
               {acc.expiryDate && <div style={{ fontSize: 12, color: T.textMuted, marginTop: 4 }}>Skadon: {fmtDate(acc.expiryDate)}</div>}
             </div>
@@ -1756,7 +1756,7 @@ function AdminPanel({ accounts, setAccounts, onLogout }) {
         {/* ARKA / POS MODULE */}
         <div style={{ background: T.surface, borderRadius: 20, padding: 24, border: `1.5px solid ${T.border}`, marginBottom: 20 }}>
           <h3 style={{ margin: "0 0 14px", fontSize: 15, fontWeight: 700, color: T.text, display: "flex", alignItems: "center", gap: 8 }}>
-            ðŸ§¾ Moduli i ArkÃ«s (POS)
+            Ã°Å¸Â§Â¾ Moduli i ArkÃƒÂ«s (POS)
           </h3>
           <label style={{ display: "flex", alignItems: "center", gap: 12, cursor: "pointer", padding: "12px 14px", borderRadius: 12, background: arkaEnabled ? `${T.accent}12` : T.surfaceAlt, border: `1.5px solid ${arkaEnabled ? T.accent : T.border}`, transition: "all .2s" }}>
             <input
@@ -1766,13 +1766,13 @@ function AdminPanel({ accounts, setAccounts, onLogout }) {
               style={{ width: 18, height: 18, accentColor: T.accent, cursor: "pointer" }}
             />
             <div>
-              <div style={{ fontSize: 14, fontWeight: 700, color: T.text }}>Shto arkÃ«n te biznesi</div>
-              <div style={{ fontSize: 12, color: T.textMuted, marginTop: 2 }}>Aktivizo modulin e shitjeve (POS) pÃ«r kÃ«tÃ« firmÃ«</div>
+              <div style={{ fontSize: 14, fontWeight: 700, color: T.text }}>Shto arkÃƒÂ«n te biznesi</div>
+              <div style={{ fontSize: 12, color: T.textMuted, marginTop: 2 }}>Aktivizo modulin e shitjeve (POS) pÃƒÂ«r kÃƒÂ«tÃƒÂ« firmÃƒÂ«</div>
             </div>
           </label>
           {arkaEnabled && (
             <div style={{ marginTop: 16, animation: "slideUp .2s ease" }}>
-              <label style={{ display: "block", fontSize: 12, fontWeight: 600, color: T.textMuted, marginBottom: 6 }}>Kodi PIN 6-shifror i ArkÃ«s (fillestar)</label>
+              <label style={{ display: "block", fontSize: 12, fontWeight: 600, color: T.textMuted, marginBottom: 6 }}>Kodi PIN 6-shifror i ArkÃƒÂ«s (fillestar)</label>
               <input
                 type="text"
                 inputMode="numeric"
@@ -1785,13 +1785,13 @@ function AdminPanel({ accounts, setAccounts, onLogout }) {
                 onFocus={e => e.target.style.borderColor = T.accent}
                 onBlur={e => e.target.style.borderColor = T.border}
               />
-              <div style={{ fontSize: 11, color: T.textFaint, marginTop: 6 }}>Biznesi mund ta ndryshojÃ« mÃ« vonÃ« nga CilÃ«simet.</div>
+              <div style={{ fontSize: 11, color: T.textFaint, marginTop: 6 }}>Biznesi mund ta ndryshojÃƒÂ« mÃƒÂ« vonÃƒÂ« nga CilÃƒÂ«simet.</div>
             </div>
           )}
           {arkaDirty && (
             <div style={{ marginTop: 16, display: "flex", gap: 8 }}>
               <button onClick={saveArkaConfig} style={{ background: T.accentGrad, color: "#fff", border: "none", borderRadius: 10, padding: "10px 22px", cursor: "pointer", fontWeight: 700, fontSize: 13 }}>
-                {Ic.check ? Ic.check(13) : "âœ”"} Ruaj
+                {Ic.check ? Ic.check(13) : "Ã¢Å“â€"} Ruaj
               </button>
               <button onClick={() => { setArkaEnabled(!!acc.hasArka); setArkaPin(acc.arkaPin || ""); setArkaDirty(false); }} style={{ background: T.surfaceAlt, color: T.textMuted, border: `1.5px solid ${T.border}`, borderRadius: 10, padding: "10px 18px", cursor: "pointer", fontWeight: 600, fontSize: 13 }}>
                 Anulo
@@ -1803,24 +1803,24 @@ function AdminPanel({ accounts, setAccounts, onLogout }) {
         {/* POSTA MODULE */}
         <div style={{ background: T.surface, borderRadius: 20, padding: 24, border: `1.5px solid ${T.border}`, marginBottom: 20 }}>
           <h3 style={{ margin: "0 0 14px", fontSize: 15, fontWeight: 700, color: T.text, display: "flex", alignItems: "center", gap: 8 }}>
-            ðŸ“¦ Moduli i PostÃ«s (DÃ«rgesa)
+            Ã°Å¸â€œÂ¦ Moduli i PostÃƒÂ«s (DÃƒÂ«rgesa)
           </h3>
           <label style={{ display: "flex", alignItems: "center", gap: 12, cursor: "pointer", padding: "12px 14px", borderRadius: 12, background: postaEnabled ? "#EFF6FF" : T.surfaceAlt, border: `1.5px solid ${postaEnabled ? "#3B82F6" : T.border}`, transition: "all .2s" }}>
             <input type="checkbox" checked={postaEnabled} onChange={e => { setPostaEnabled(e.target.checked); setPostaDirty(true); }} style={{ width: 18, height: 18, accentColor: "#3B82F6", cursor: "pointer" }} />
             <div>
-              <div style={{ fontSize: 14, fontWeight: 700, color: T.text }}>Shto postÃ«n te biznesi</div>
-              <div style={{ fontSize: 12, color: T.textMuted, marginTop: 2 }}>Aktivizo modulin e dÃ«rgesave (Posta) pÃ«r kÃ«tÃ« firmÃ«</div>
+              <div style={{ fontSize: 14, fontWeight: 700, color: T.text }}>Shto postÃƒÂ«n te biznesi</div>
+              <div style={{ fontSize: 12, color: T.textMuted, marginTop: 2 }}>Aktivizo modulin e dÃƒÂ«rgesave (Posta) pÃƒÂ«r kÃƒÂ«tÃƒÂ« firmÃƒÂ«</div>
             </div>
           </label>
           {postaDirty && (
             <div style={{ marginTop: 16, display: "flex", gap: 8 }}>
-              <button onClick={savePostaConfig} style={{ background: "#3B82F6", color: "#fff", border: "none", borderRadius: 10, padding: "10px 22px", cursor: "pointer", fontWeight: 700, fontSize: 13 }}>âœ” Ruaj</button>
+              <button onClick={savePostaConfig} style={{ background: "#3B82F6", color: "#fff", border: "none", borderRadius: 10, padding: "10px 22px", cursor: "pointer", fontWeight: 700, fontSize: 13 }}>Ã¢Å“â€ Ruaj</button>
               <button onClick={() => { setPostaEnabled(!!acc.hasPosta); setPostaDirty(false); setPostaSqlNeeded(false); }} style={{ background: T.surfaceAlt, color: T.textMuted, border: `1.5px solid ${T.border}`, borderRadius: 10, padding: "10px 18px", cursor: "pointer", fontWeight: 600, fontSize: 13 }}>Anulo</button>
             </div>
           )}
           {postaSqlNeeded && (
             <div style={{ marginTop: 16, background: "#FEF3C7", border: "1.5px solid #F59E0B", borderRadius: 12, padding: 16 }}>
-              <div style={{ fontWeight: 700, fontSize: 13, marginBottom: 8, color: "#92400E" }}>âš ï¸ Kolona mungon nÃ« DB. Ekzekuto SQL-in nÃ« Supabase SQL Editor:</div>
+              <div style={{ fontWeight: 700, fontSize: 13, marginBottom: 8, color: "#92400E" }}>Ã¢Å¡Â Ã¯Â¸Â Kolona mungon nÃƒÂ« DB. Ekzekuto SQL-in nÃƒÂ« Supabase SQL Editor:</div>
               <pre style={{ fontSize: 11, background: "#1E293B", color: "#94A3B8", padding: 12, borderRadius: 8, overflowX: "auto", margin: 0, whiteSpace: "pre-wrap" }}>{`ALTER TABLE accounts ADD COLUMN IF NOT EXISTS has_posta BOOLEAN DEFAULT FALSE;
 
 CREATE TABLE IF NOT EXISTS posta_orders (
@@ -1839,7 +1839,7 @@ CREATE TABLE IF NOT EXISTS coupons (
   code TEXT NOT NULL, discount_percent NUMERIC(5,2) DEFAULT 0,
   is_active BOOLEAN DEFAULT TRUE, created_at TIMESTAMPTZ DEFAULT NOW()
 );`}</pre>
-              <button onClick={savePostaConfig} style={{ marginTop: 10, background: "#3B82F6", color: "#fff", border: "none", borderRadius: 8, padding: "8px 18px", cursor: "pointer", fontWeight: 700, fontSize: 12 }}>ðŸ”„ Provo pÃ«rsÃ«ri pas ekzekutimit</button>
+              <button onClick={savePostaConfig} style={{ marginTop: 10, background: "#3B82F6", color: "#fff", border: "none", borderRadius: 8, padding: "8px 18px", cursor: "pointer", fontWeight: 700, fontSize: 12 }}>Ã°Å¸â€â€ž Provo pÃƒÂ«rsÃƒÂ«ri pas ekzekutimit</button>
             </div>
           )}
         </div>
@@ -1924,7 +1924,7 @@ CREATE TABLE IF NOT EXISTS coupons (
               <div style={{ background: T.surface, borderRadius: 20, padding: 24, border: `1.5px solid ${T.border}`, marginBottom: 20 }}>
                 <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 16 }}>
                   <h3 style={{ margin: 0, fontSize: 16, fontWeight: 700, color: T.text }}>Regjistrimet e fundit</h3>
-                  <button onClick={() => setPage("firms")} style={{ background: "none", border: "none", color: T.accent, fontSize: 13, fontWeight: 600, cursor: "pointer" }}>Shih te gjitha â€“</button>
+                  <button onClick={() => setPage("firms")} style={{ background: "none", border: "none", color: T.accent, fontSize: 13, fontWeight: 600, cursor: "pointer" }}>Shih te gjitha Ã¢â‚¬â€œ</button>
                 </div>
                 {accounts.length === 0 ? (
                   <div style={{ textAlign: "center", padding: "30px 0", color: T.textFaint, fontSize: 14 }}>Nuk ka firma te regjistruara ende.</div>
@@ -1936,10 +1936,10 @@ CREATE TABLE IF NOT EXISTS coupons (
                       onClick={() => { setSelectedAccount(acc); setPage("firmDetail"); }}>
                       <span style={{ fontWeight: 700, color: T.text }}>{acc.name}</span>
                       <span style={{ color: T.textMuted }}>{acc.email}</span>
-                      <span style={{ color: T.textMuted }}>{acc.city || "â€”"}</span>
+                      <span style={{ color: T.textMuted }}>{acc.city || "Ã¢â‚¬â€"}</span>
                       <span><StatusPill status={status} /></span>
                       <span style={{ color: dl !== null ? (dl < 7 ? T.danger : T.success) : T.textFaint, fontWeight: 600, fontSize: 12 }}>
-                        {dl !== null ? `${dl}d` : "â€”"}
+                        {dl !== null ? `${dl}d` : "Ã¢â‚¬â€"}
                       </span>
                     </div>
                   );
@@ -1951,12 +1951,12 @@ CREATE TABLE IF NOT EXISTS coupons (
                 <div style={{ background: "#FEF3C7", borderRadius: 16, padding: 20, border: "1.5px solid #FCD34D" }}>
                   <div style={{ display: "flex", alignItems: "center", gap: 8, marginBottom: 12 }}>
                     <span style={{ color: "#D97706" }}>{Ic.warn(16)}</span>
-                    <strong style={{ color: "#92400E", fontSize: 14 }}>Firma me abonim qÃ« skadon shpejt (â‚¬Ã‚Â°Ã‚Â¤7 ditÃ«)</strong>
+                    <strong style={{ color: "#92400E", fontSize: 14 }}>Firma me abonim qÃƒÂ« skadon shpejt (Ã¢â€šÂ¬Ãƒâ€šÃ‚Â°Ãƒâ€šÃ‚Â¤7 ditÃƒÂ«)</strong>
                   </div>
                   {accounts.filter(a => getAccountStatus(a) === "expiring").map(acc => (
                     <div key={acc.id} style={{ display: "flex", justifyContent: "space-between", alignItems: "center", padding: "8px 0", borderBottom: "1px solid #FCD34D", fontSize: 13 }}>
                       <span style={{ fontWeight: 700, color: "#92400E" }}>{acc.name}</span>
-                      <span style={{ color: "#92400E" }}>{daysLeft(acc)} ditÃ« mbeten</span>
+                      <span style={{ color: "#92400E" }}>{daysLeft(acc)} ditÃƒÂ« mbeten</span>
                       <button onClick={() => openSubModal(acc)} style={{ background: "#D97706", color: "#fff", border: "none", borderRadius: 8, padding: "5px 14px", cursor: "pointer", fontSize: 12, fontWeight: 700 }}>Rinovoi</button>
                     </div>
                   ))}
@@ -1969,7 +1969,7 @@ CREATE TABLE IF NOT EXISTS coupons (
           {page === "firms" && !selectedAccount && (
             <div style={{ animation: "slideUp .2s ease" }}>
               <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 20 }}>
-                <div className="aaf-firm-header"><h2 style={{ margin: 0, fontSize: 22, fontWeight: 800, color: T.text }}>Te gjitha firmat ({accounts.length})</h2><AdminAddFirmaButton onAdded={() => window.location.reload()} /></div> <AdminAddFirmaButton onAdded={async () => { const fresh = await loadAllAccounts(); setAccounts(fresh); }} />
+                <h2 style={{ margin: 0, fontSize: 22, fontWeight: 800, color: T.text }}>Te gjitha firmat ({accounts.length})</h2><AdminAddFirmaButton onAdded={() => window.location.reload()} />
                 <div style={{ position: "relative" }}>
                   <span style={{ position: "absolute", left: 12, top: "50%", transform: "translateY(-50%)", color: T.textFaint, display: "flex" }}>{Ic.search(14)}</span>
                   <input value={search} onChange={e => setSearch(e.target.value)} placeholder="Kerko firmen..." style={{ padding: "10px 14px 10px 36px", borderRadius: 10, border: `1.5px solid ${T.border}`, fontSize: 13, width: 260, background: T.inputBg, color: T.text, outline: "none" }} />
@@ -1991,15 +1991,15 @@ CREATE TABLE IF NOT EXISTS coupons (
                       onClick={() => { setSelectedAccount(acc); setPage("firmDetail"); }}>
                       <span style={{ fontWeight: 700, color: T.text }}>{acc.name}</span>
                       <span style={{ color: T.textMuted, fontSize: 12 }}>{acc.email}</span>
-                      <span style={{ color: T.textMuted }}>{acc.city || "â€”"}</span>
+                      <span style={{ color: T.textMuted }}>{acc.city || "Ã¢â‚¬â€"}</span>
                       <span onClick={e => e.stopPropagation()}><StatusPill status={status} /></span>
                       <span style={{ color: dl !== null ? (dl <= 7 ? T.danger : T.success) : T.textFaint, fontWeight: 600 }}>
-                        {dl !== null ? `${dl} ditÃ«` : "Pa abonim"}
+                        {dl !== null ? `${dl} ditÃƒÂ«` : "Pa abonim"}
                       </span>
                       <span style={{ display: "flex", gap: 6 }} onClick={e => e.stopPropagation()}>
                         <button onClick={() => openSubModal(acc)} title="Shto abonim" style={{ background: T.accentGrad, color: "#fff", border: "none", borderRadius: 7, width: 30, height: 30, cursor: "pointer", display: "flex", alignItems: "center", justifyContent: "center" }}>{Ic.money(12)}</button>
                         <button onClick={() => handleEdit(acc)} title="Edito" style={{ background: T.surfaceAlt, color: T.textMuted, border: `1px solid ${T.border}`, borderRadius: 7, width: 30, height: 30, cursor: "pointer", display: "flex", alignItems: "center", justifyContent: "center" }}>{Ic.edit(12)}</button>
-                        <button onClick={() => handleSuspend(acc.id)} title={status === "suspended" ? "Aktivizo" : "Pezullo"} style={{ background: status === "suspended" ? "#D1FAE5" : "#FEF3C7", color: status === "suspended" ? "#059669" : "#D97706", border: "none", borderRadius: 7, width: 30, height: 30, cursor: "pointer", display: "flex", alignItems: "center", justifyContent: "center", fontWeight: 900, fontSize: 13 }}>{status === "suspended" ? "â–¶" : "â¸"}</button>
+                        <button onClick={() => handleSuspend(acc.id)} title={status === "suspended" ? "Aktivizo" : "Pezullo"} style={{ background: status === "suspended" ? "#D1FAE5" : "#FEF3C7", color: status === "suspended" ? "#059669" : "#D97706", border: "none", borderRadius: 7, width: 30, height: 30, cursor: "pointer", display: "flex", alignItems: "center", justifyContent: "center", fontWeight: 900, fontSize: 13 }}>{status === "suspended" ? "Ã¢â€“Â¶" : "Ã¢ÂÂ¸"}</button>
                         <button onClick={() => setDeleteConfirm(acc.id)} title="Fshi" style={{ background: "#FEE2E2", color: "#EF4444", border: "none", borderRadius: 7, width: 30, height: 30, cursor: "pointer", display: "flex", alignItems: "center", justifyContent: "center" }}>{Ic.trash(12)}</button>
                       </span>
                     </div>
@@ -2053,7 +2053,7 @@ CREATE TABLE IF NOT EXISTS coupons (
             {subTarget.expiryDate && (
               <div style={{ background: T.surfaceAlt, borderRadius: 10, padding: "10px 16px", marginBottom: 20, fontSize: 13, color: T.textMuted, border: `1px solid ${T.border}` }}>
                 Abonimi aktual skadon: <strong style={{ color: T.text }}>{fmtDate(subTarget.expiryDate)}</strong>
-                {daysLeft(subTarget) !== null && <span style={{ marginLeft: 8, color: daysLeft(subTarget) < 7 ? T.danger : T.success, fontWeight: 700 }}>({daysLeft(subTarget)} ditÃ« mbeten)</span>}
+                {daysLeft(subTarget) !== null && <span style={{ marginLeft: 8, color: daysLeft(subTarget) < 7 ? T.danger : T.success, fontWeight: 700 }}>({daysLeft(subTarget)} ditÃƒÂ« mbeten)</span>}
               </div>
             )}
             <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 14 }}>
@@ -2064,7 +2064,7 @@ CREATE TABLE IF NOT EXISTS coupons (
                   onMouseLeave={e => { e.currentTarget.style.borderColor = T.border; e.currentTarget.style.background = T.surfaceAlt; }}>
                   <div style={{ fontSize: 22, fontWeight: 900, color: T.accent }}>{plan.label}</div>
                   <div style={{ fontSize: 16, fontWeight: 700, color: T.text, marginTop: 6 }}>{plan.price}</div>
-                  <div style={{ fontSize: 11, color: T.textFaint, marginTop: 4 }}>{plan.days} ditÃ«</div>
+                  <div style={{ fontSize: 11, color: T.textFaint, marginTop: 4 }}>{plan.days} ditÃƒÂ«</div>
                 </button>
               ))}
             </div>
@@ -2076,10 +2076,10 @@ CREATE TABLE IF NOT EXISTS coupons (
       {deleteConfirm && (
         <div style={{ position: "fixed", inset: 0, zIndex: 1100, background: T.overlay, backdropFilter: "blur(4px)", display: "flex", alignItems: "center", justifyContent: "center" }} onClick={() => setDeleteConfirm(null)}>
           <div onClick={e => e.stopPropagation()} style={{ background: T.surface, borderRadius: 20, padding: "36px 40px", width: "90%", maxWidth: 400, boxShadow: "0 24px 80px rgba(0,0,0,.3)", textAlign: "center", border: `1px solid ${T.border}` }}>
-            <div style={{ fontSize: 48, marginBottom: 16 }}>âœ…Ã‚Â ï¸Ã‚Â</div>
+            <div style={{ fontSize: 48, marginBottom: 16 }}>Ã¢Å“â€¦Ãƒâ€šÃ‚Â Ã¯Â¸ÂÃƒâ€šÃ‚Â</div>
             <h3 style={{ margin: "0 0 10px", fontSize: 18, fontWeight: 800, color: T.text }}>Konfirmo fshirjen</h3>
             <p style={{ color: T.textMuted, fontSize: 14, marginBottom: 28 }}>
-              A jeni i sigurt? Firma <strong style={{ color: T.text }}>{accounts.find(a => a.id === deleteConfirm)?.name}</strong> do tÃ« fshihet pÃ«rgjithmonÃ«!
+              A jeni i sigurt? Firma <strong style={{ color: T.text }}>{accounts.find(a => a.id === deleteConfirm)?.name}</strong> do tÃƒÂ« fshihet pÃƒÂ«rgjithmonÃƒÂ«!
             </p>
             <div style={{ display: "flex", gap: 12, justifyContent: "center" }}>
               <button onClick={() => setDeleteConfirm(null)} style={{ background: T.surfaceAlt, border: `1.5px solid ${T.border}`, borderRadius: 10, padding: "11px 28px", cursor: "pointer", fontSize: 14, color: T.textMuted, fontWeight: 600 }}>Anulo</button>
@@ -2124,7 +2124,7 @@ async function saveJobToSupabase(job, client, worker, business) {
 async function updateJobStatusSupabase(jobId, status, jobData, clientData, workerData, bizData) {
   try {
     const updateObj = { status, updated_at: new Date().toISOString() };
-    // NÃ«se kemi tÃ« dhÃ«na, perditso edhe ato
+    // NÃƒÂ«se kemi tÃƒÂ« dhÃƒÂ«na, perditso edhe ato
     if (jobData) {
       Object.assign(updateObj, {
         phone_model: jobData.phoneModel || "",
@@ -2230,7 +2230,7 @@ function mapAccountToDB(a) {
 }
 
 // ============================================================
-// Arka â€” Products & Sales helpers
+// Arka Ã¢â‚¬â€ Products & Sales helpers
 // ============================================================
 function mapProductFromDB(row) {
   return {
@@ -2533,9 +2533,9 @@ function ArkaPinGate({ T, expectedPin, title, onSuccess, onCancel }) {
   return (
     <div style={{ position: "fixed", inset: 0, zIndex: 1200, background: "rgba(0,0,0,.55)", display: "flex", alignItems: "center", justifyContent: "center", animation: "fadeIn .2s" }}>
       <div style={{ background: T.surface, borderRadius: 20, padding: "32px 36px", width: "90%", maxWidth: 380, boxShadow: "0 24px 80px rgba(0,0,0,.35)", border: `1px solid ${T.border}`, textAlign: "center" }}>
-        <div style={{ fontSize: 32, marginBottom: 8 }}>ðŸ”’</div>
+        <div style={{ fontSize: 32, marginBottom: 8 }}>Ã°Å¸â€â€™</div>
         <h3 style={{ margin: "0 0 6px", fontSize: 18, fontWeight: 800, color: T.text }}>{title || "Shkruaj kodin PIN"}</h3>
-        <p style={{ color: T.textMuted, fontSize: 13, marginBottom: 20 }}>KÃ«rkohet kodi 6-shifror pÃ«r tÃ« hapur ArkÃ«n.</p>
+        <p style={{ color: T.textMuted, fontSize: 13, marginBottom: 20 }}>KÃƒÂ«rkohet kodi 6-shifror pÃƒÂ«r tÃƒÂ« hapur ArkÃƒÂ«n.</p>
         <input
           type="password"
           inputMode="numeric"
@@ -2560,7 +2560,7 @@ function ArkaPinGate({ T, expectedPin, title, onSuccess, onCancel }) {
 function ReportView({ T, business, period, sales, jobs, debts, onBack }) {
   const PERIODS = {
     daily: { label: "Raporti Ditor", sub: "Sot" },
-    weekly: { label: "Raporti Javor", sub: "7 ditÃ«t e fundit" },
+    weekly: { label: "Raporti Javor", sub: "7 ditÃƒÂ«t e fundit" },
     monthly: { label: "Raporti Mujor", sub: "Muaji aktual" },
     yearly: { label: "Raporti Vjetor", sub: "Viti aktual" },
   };
@@ -2606,29 +2606,29 @@ function ReportView({ T, business, period, sales, jobs, debts, onBack }) {
     const reportNo = "RPT-" + period.slice(0,3).toUpperCase() + "-" + now.getFullYear() + pad2(now.getMonth() + 1) + pad2(now.getDate()) + "-" + pad2(now.getHours()) + pad2(now.getMinutes());
     const salesRows = periodSales.slice(0, 100).map((s, i) => `<tr>
       <td>${i + 1}</td>
-      <td><b>${s.receiptNo || 'â€”'}</b></td>
+      <td><b>${s.receiptNo || 'Ã¢â‚¬â€'}</b></td>
       <td>${new Date(s.createdAt).toLocaleString('sq-AL')}</td>
-      <td>${s.clientName || 'â€”'}</td>
+      <td>${s.clientName || 'Ã¢â‚¬â€'}</td>
       <td class="r">${s.items?.length || 0}</td>
       <td>${s.paymentMethod === 'bank' ? 'Bank' : 'Cash'}${s.isCredit ? ' <span class="badge">borxh</span>' : ''}</td>
-      <td class="r"><b>â‚¬${s.total.toFixed(2)}</b></td>
+      <td class="r"><b>Ã¢â€šÂ¬${s.total.toFixed(2)}</b></td>
     </tr>`).join("");
     const jobsRows = periodJobs.slice(0, 100).map((j, i) => `<tr>
       <td>${i + 1}</td>
-      <td><b>#${j.id?.slice(0, 8) || 'â€”'}</b></td>
+      <td><b>#${j.id?.slice(0, 8) || 'Ã¢â‚¬â€'}</b></td>
       <td>${new Date(j.createdAt).toLocaleDateString('sq-AL')}</td>
-      <td>${j.phoneModel || 'â€”'}</td>
-      <td>${(j.description || '').slice(0, 50)}${(j.description || '').length > 50 ? 'â€¦' : ''}</td>
-      <td>${j.status || 'â€”'}</td>
-      <td class="r"><b>â‚¬${(parseFloat(j.price) || 0).toFixed(2)}</b></td>
+      <td>${j.phoneModel || 'Ã¢â‚¬â€'}</td>
+      <td>${(j.description || '').slice(0, 50)}${(j.description || '').length > 50 ? 'Ã¢â‚¬Â¦' : ''}</td>
+      <td>${j.status || 'Ã¢â‚¬â€'}</td>
+      <td class="r"><b>Ã¢â€šÂ¬${(parseFloat(j.price) || 0).toFixed(2)}</b></td>
     </tr>`).join("");
     const debtsRows = periodDebts.slice(0, 50).map((d, i) => `<tr>
       <td>${i + 1}</td>
       <td><b>${d.clientName}</b>${d.clientPhone ? `<br><span style="font-size:10px;color:#64748b">${d.clientPhone}</span>` : ''}</td>
       <td>${new Date(d.createdAt).toLocaleDateString('sq-AL')}</td>
-      <td class="r">â‚¬${d.originalAmount.toFixed(2)}</td>
-      <td class="r">â‚¬${d.paidAmount.toFixed(2)}</td>
-      <td class="r"><b style="color:${d.isSettled ? '#059669' : '#B91C1C'}">â‚¬${d.remainingAmount.toFixed(2)}</b></td>
+      <td class="r">Ã¢â€šÂ¬${d.originalAmount.toFixed(2)}</td>
+      <td class="r">Ã¢â€šÂ¬${d.paidAmount.toFixed(2)}</td>
+      <td class="r"><b style="color:${d.isSettled ? '#059669' : '#B91C1C'}">Ã¢â€šÂ¬${d.remainingAmount.toFixed(2)}</b></td>
     </tr>`).join("");
     w.document.write(`<html><head><title>${reportNo}</title>
       <style>
@@ -2669,7 +2669,7 @@ function ReportView({ T, business, period, sales, jobs, debts, onBack }) {
             ${biz.logo ? `<img src="${biz.logo}" style="width:48px;height:48px;object-fit:contain">` : ''}
             <div>
               <div class="biz-name">${biz.name || "Biznesi"}</div>
-              <div class="biz-sub">${biz.address || ""} ${biz.city || ""}<br>Tel: ${biz.phone || ""} ${biz.email ? "Â· " + biz.email : ""}</div>
+              <div class="biz-sub">${biz.address || ""} ${biz.city || ""}<br>Tel: ${biz.phone || ""} ${biz.email ? "Ã‚Â· " + biz.email : ""}</div>
             </div>
           </div>
           <div>
@@ -2682,47 +2682,47 @@ function ReportView({ T, business, period, sales, jobs, debts, onBack }) {
 
         <div class="summary-box">
           <div>
-            <div class="label">TÃ« Ardhura Gjithsej</div>
-            <div style="font-size:10px;opacity:.7;margin-top:3px">Arka + Servis pÃ«r ${cfg.sub.toLowerCase()}</div>
+            <div class="label">TÃƒÂ« Ardhura Gjithsej</div>
+            <div style="font-size:10px;opacity:.7;margin-top:3px">Arka + Servis pÃƒÂ«r ${cfg.sub.toLowerCase()}</div>
           </div>
-          <div class="value">â‚¬${totalRevenue.toFixed(2)}</div>
+          <div class="value">Ã¢â€šÂ¬${totalRevenue.toFixed(2)}</div>
         </div>
 
-        <div class="section-title">ðŸ›’ Shitjet e ArkÃ«s</div>
+        <div class="section-title">Ã°Å¸â€ºâ€™ Shitjet e ArkÃƒÂ«s</div>
         <div class="stats">
-          <div class="stat primary"><div class="label">Gjithsej Shitje</div><div class="value">â‚¬${salesTotal.toFixed(2)}</div></div>
+          <div class="stat primary"><div class="label">Gjithsej Shitje</div><div class="value">Ã¢â€šÂ¬${salesTotal.toFixed(2)}</div></div>
           <div class="stat"><div class="label">Nr. transaksioneve</div><div class="value">${periodSales.length}</div></div>
-          <div class="stat success"><div class="label">Cash</div><div class="value">â‚¬${salesCash.toFixed(2)}</div></div>
-          <div class="stat"><div class="label">Bank</div><div class="value">â‚¬${salesBank.toFixed(2)}</div></div>
+          <div class="stat success"><div class="label">Cash</div><div class="value">Ã¢â€šÂ¬${salesCash.toFixed(2)}</div></div>
+          <div class="stat"><div class="label">Bank</div><div class="value">Ã¢â€šÂ¬${salesBank.toFixed(2)}</div></div>
         </div>
         <table>
           <thead><tr>
-            <th style="width:34px">Nr</th><th>Nr. FaturÃ«s</th><th>Data</th><th>Klienti</th>
+            <th style="width:34px">Nr</th><th>Nr. FaturÃƒÂ«s</th><th>Data</th><th>Klienti</th>
             <th class="r" style="width:50px">Artikuj</th><th>Metoda</th><th class="r">Totali</th>
           </tr></thead>
-          <tbody>${salesRows || '<tr><td colspan="7" class="empty">Nuk ka shitje nÃ« kÃ«tÃ« periudhÃ«</td></tr>'}</tbody>
+          <tbody>${salesRows || '<tr><td colspan="7" class="empty">Nuk ka shitje nÃƒÂ« kÃƒÂ«tÃƒÂ« periudhÃƒÂ«</td></tr>'}</tbody>
         </table>
 
-        <div class="section-title">ðŸ”§ PunÃ«t nÃ« Servis</div>
+        <div class="section-title">Ã°Å¸â€Â§ PunÃƒÂ«t nÃƒÂ« Servis</div>
         <div class="stats">
-          <div class="stat primary"><div class="label">TÃ« Ardhura nga Servisi</div><div class="value">â‚¬${jobsRevenue.toFixed(2)}</div></div>
-          <div class="stat success"><div class="label">TÃ« pÃ«rfunduara</div><div class="value">${jobsCompleted.length}</div></div>
-          <div class="stat warn"><div class="label">NÃ« proces</div><div class="value">${jobsActive.length}</div></div>
-          <div class="stat"><div class="label">Gjithsej punÃ«</div><div class="value">${periodJobs.length}</div></div>
+          <div class="stat primary"><div class="label">TÃƒÂ« Ardhura nga Servisi</div><div class="value">Ã¢â€šÂ¬${jobsRevenue.toFixed(2)}</div></div>
+          <div class="stat success"><div class="label">TÃƒÂ« pÃƒÂ«rfunduara</div><div class="value">${jobsCompleted.length}</div></div>
+          <div class="stat warn"><div class="label">NÃƒÂ« proces</div><div class="value">${jobsActive.length}</div></div>
+          <div class="stat"><div class="label">Gjithsej punÃƒÂ«</div><div class="value">${periodJobs.length}</div></div>
         </div>
         <table>
           <thead><tr>
             <th style="width:34px">Nr</th><th>ID</th><th>Data</th><th>Modeli</th>
-            <th>PÃ«rshkrimi</th><th>Statusi</th><th class="r">Ã‡mimi</th>
+            <th>PÃƒÂ«rshkrimi</th><th>Statusi</th><th class="r">Ãƒâ€¡mimi</th>
           </tr></thead>
-          <tbody>${jobsRows || '<tr><td colspan="7" class="empty">Nuk ka punÃ« nÃ« servis nÃ« kÃ«tÃ« periudhÃ«</td></tr>'}</tbody>
+          <tbody>${jobsRows || '<tr><td colspan="7" class="empty">Nuk ka punÃƒÂ« nÃƒÂ« servis nÃƒÂ« kÃƒÂ«tÃƒÂ« periudhÃƒÂ«</td></tr>'}</tbody>
         </table>
 
-        <div class="section-title">ðŸ’³ Borxhet</div>
+        <div class="section-title">Ã°Å¸â€™Â³ Borxhet</div>
         <div class="stats">
-          <div class="stat warn"><div class="label">Borxhe tÃ« krijuara</div><div class="value">â‚¬${debtsOpened.toFixed(2)}</div></div>
-          <div class="stat success"><div class="label">TÃ« paguara</div><div class="value">â‚¬${debtsPaid.toFixed(2)}</div></div>
-          <div class="stat danger"><div class="label">TÃ« pashlyera</div><div class="value">â‚¬${debtsOpen.toFixed(2)}</div></div>
+          <div class="stat warn"><div class="label">Borxhe tÃƒÂ« krijuara</div><div class="value">Ã¢â€šÂ¬${debtsOpened.toFixed(2)}</div></div>
+          <div class="stat success"><div class="label">TÃƒÂ« paguara</div><div class="value">Ã¢â€šÂ¬${debtsPaid.toFixed(2)}</div></div>
+          <div class="stat danger"><div class="label">TÃƒÂ« pashlyera</div><div class="value">Ã¢â€šÂ¬${debtsOpen.toFixed(2)}</div></div>
           <div class="stat"><div class="label">Numri</div><div class="value">${periodDebts.length}</div></div>
         </div>
         <table>
@@ -2730,12 +2730,12 @@ function ReportView({ T, business, period, sales, jobs, debts, onBack }) {
             <th style="width:34px">Nr</th><th>Klienti</th><th>Data</th>
             <th class="r">Totali</th><th class="r">Paguar</th><th class="r">Mbetur</th>
           </tr></thead>
-          <tbody>${debtsRows || '<tr><td colspan="6" class="empty">Nuk ka borxhe nÃ« kÃ«tÃ« periudhÃ«</td></tr>'}</tbody>
+          <tbody>${debtsRows || '<tr><td colspan="6" class="empty">Nuk ka borxhe nÃƒÂ« kÃƒÂ«tÃƒÂ« periudhÃƒÂ«</td></tr>'}</tbody>
         </table>
 
         <div class="footer">
-          Ky raport Ã«shtÃ« gjeneruar automatikisht nga sistemi ProPhone â€” ${now.toLocaleString('sq-AL')}<br>
-          <span style="font-style:italic">Raporti pÃ«rfshin tÃ« dhÃ«nat aktive nÃ« momentin e gjenerimit.</span>
+          Ky raport ÃƒÂ«shtÃƒÂ« gjeneruar automatikisht nga sistemi ProPhone Ã¢â‚¬â€ ${now.toLocaleString('sq-AL')}<br>
+          <span style="font-style:italic">Raporti pÃƒÂ«rfshin tÃƒÂ« dhÃƒÂ«nat aktive nÃƒÂ« momentin e gjenerimit.</span>
         </div>
       </div>
       <script>window.onload=()=>{setTimeout(()=>window.print(),250);}</script>
@@ -2758,7 +2758,7 @@ function ReportView({ T, business, period, sales, jobs, debts, onBack }) {
           <button onClick={onBack} style={{ background: T.surfaceAlt, border: `1px solid ${T.border}`, borderRadius: 10, padding: "8px 14px", cursor: "pointer", fontSize: 13, color: T.textMuted, fontWeight: 600, display: "flex", alignItems: "center", gap: 6 }}>{PIc.back(12)} Kthehu</button>
           <div>
             <h2 style={{ margin: 0, fontSize: 22, fontWeight: 800, color: T.text }}>{cfg.label}</h2>
-            <div style={{ fontSize: 12, color: T.textMuted, marginTop: 2 }}>{cfg.sub} Â· Gjeneruar: {now.toLocaleString('sq-AL')}</div>
+            <div style={{ fontSize: 12, color: T.textMuted, marginTop: 2 }}>{cfg.sub} Ã‚Â· Gjeneruar: {now.toLocaleString('sq-AL')}</div>
           </div>
         </div>
         <button onClick={printReport} style={{ background: T.accentGrad, color: "#fff", border: "none", borderRadius: 10, padding: "10px 22px", cursor: "pointer", fontWeight: 700, fontSize: 13, display: "flex", alignItems: "center", gap: 8 }}>
@@ -2768,34 +2768,34 @@ function ReportView({ T, business, period, sales, jobs, debts, onBack }) {
 
       <div style={{ background: "linear-gradient(135deg, #0F172A, #1E293B)", color: "#fff", padding: "20px 24px", borderRadius: 14, marginBottom: 20, display: "flex", justifyContent: "space-between", alignItems: "center" }}>
         <div>
-          <div style={{ fontSize: 11, fontWeight: 700, textTransform: "uppercase", letterSpacing: 1, opacity: 0.75 }}>TÃ« Ardhura Gjithsej</div>
+          <div style={{ fontSize: 11, fontWeight: 700, textTransform: "uppercase", letterSpacing: 1, opacity: 0.75 }}>TÃƒÂ« Ardhura Gjithsej</div>
           <div style={{ fontSize: 12, opacity: 0.65, marginTop: 2 }}>Arka + Servis</div>
         </div>
-        <div style={{ fontSize: 32, fontWeight: 900, letterSpacing: -0.5 }}>â‚¬{totalRevenue.toFixed(2)}</div>
+        <div style={{ fontSize: 32, fontWeight: 900, letterSpacing: -0.5 }}>Ã¢â€šÂ¬{totalRevenue.toFixed(2)}</div>
       </div>
 
-      <div style={{ fontSize: 12, fontWeight: 800, color: T.accent, textTransform: "uppercase", letterSpacing: 1, marginBottom: 10, display: "flex", alignItems: "center", gap: 6 }}>{PIc.receipt(14)} Shitjet e ArkÃ«s</div>
+      <div style={{ fontSize: 12, fontWeight: 800, color: T.accent, textTransform: "uppercase", letterSpacing: 1, marginBottom: 10, display: "flex", alignItems: "center", gap: 6 }}>{PIc.receipt(14)} Shitjet e ArkÃƒÂ«s</div>
       <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(180px, 1fr))", gap: 12, marginBottom: 18 }}>
-        <Stat label="Gjithsej shitje" value={`â‚¬${salesTotal.toFixed(2)}`} color={T.accent} />
+        <Stat label="Gjithsej shitje" value={`Ã¢â€šÂ¬${salesTotal.toFixed(2)}`} color={T.accent} />
         <Stat label="Nr. transaksioneve" value={periodSales.length} />
-        <Stat label="Cash" value={`â‚¬${salesCash.toFixed(2)}`} color="#10B981" />
-        <Stat label="Bank" value={`â‚¬${salesBank.toFixed(2)}`} />
-        <Stat label="Me borxh" value={`â‚¬${salesCredit.toFixed(2)}`} color="#F59E0B" />
+        <Stat label="Cash" value={`Ã¢â€šÂ¬${salesCash.toFixed(2)}`} color="#10B981" />
+        <Stat label="Bank" value={`Ã¢â€šÂ¬${salesBank.toFixed(2)}`} />
+        <Stat label="Me borxh" value={`Ã¢â€šÂ¬${salesCredit.toFixed(2)}`} color="#F59E0B" />
       </div>
 
-      <div style={{ fontSize: 12, fontWeight: 800, color: T.accent, textTransform: "uppercase", letterSpacing: 1, marginBottom: 10, display: "flex", alignItems: "center", gap: 6 }}>{PIc.settings(13)} PunÃ«t nÃ« Servis</div>
+      <div style={{ fontSize: 12, fontWeight: 800, color: T.accent, textTransform: "uppercase", letterSpacing: 1, marginBottom: 10, display: "flex", alignItems: "center", gap: 6 }}>{PIc.settings(13)} PunÃƒÂ«t nÃƒÂ« Servis</div>
       <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(180px, 1fr))", gap: 12, marginBottom: 18 }}>
-        <Stat label="TÃ« ardhura nga servisi" value={`â‚¬${jobsRevenue.toFixed(2)}`} color={T.accent} />
-        <Stat label="TÃ« pÃ«rfunduara" value={jobsCompleted.length} color="#10B981" />
-        <Stat label="NÃ« proces" value={jobsActive.length} color="#F59E0B" />
-        <Stat label="Gjithsej punÃ«" value={periodJobs.length} />
+        <Stat label="TÃƒÂ« ardhura nga servisi" value={`Ã¢â€šÂ¬${jobsRevenue.toFixed(2)}`} color={T.accent} />
+        <Stat label="TÃƒÂ« pÃƒÂ«rfunduara" value={jobsCompleted.length} color="#10B981" />
+        <Stat label="NÃƒÂ« proces" value={jobsActive.length} color="#F59E0B" />
+        <Stat label="Gjithsej punÃƒÂ«" value={periodJobs.length} />
       </div>
 
       <div style={{ fontSize: 12, fontWeight: 800, color: T.accent, textTransform: "uppercase", letterSpacing: 1, marginBottom: 10, display: "flex", alignItems: "center", gap: 6 }}>{PIc.cash(13)} Borxhet</div>
       <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(180px, 1fr))", gap: 12, marginBottom: 22 }}>
-        <Stat label="Borxhe tÃ« krijuara" value={`â‚¬${debtsOpened.toFixed(2)}`} color="#F59E0B" />
-        <Stat label="TÃ« paguara" value={`â‚¬${debtsPaid.toFixed(2)}`} color="#10B981" />
-        <Stat label="TÃ« pashlyera" value={`â‚¬${debtsOpen.toFixed(2)}`} color="#B91C1C" />
+        <Stat label="Borxhe tÃƒÂ« krijuara" value={`Ã¢â€šÂ¬${debtsOpened.toFixed(2)}`} color="#F59E0B" />
+        <Stat label="TÃƒÂ« paguara" value={`Ã¢â€šÂ¬${debtsPaid.toFixed(2)}`} color="#10B981" />
+        <Stat label="TÃƒÂ« pashlyera" value={`Ã¢â€šÂ¬${debtsOpen.toFixed(2)}`} color="#B91C1C" />
         <Stat label="Numri" value={periodDebts.length} />
       </div>
 
@@ -2806,30 +2806,30 @@ function ReportView({ T, business, period, sales, jobs, debts, onBack }) {
             {periodSales.slice(0, 50).map((s, i) => (
               <div key={s.id} style={{ display: "grid", gridTemplateColumns: "36px 1.5fr 1fr 120px 1fr 100px", padding: "9px 16px", fontSize: 12, color: T.text, borderBottom: `1px solid ${T.border}`, alignItems: "center" }}>
                 <div style={{ color: T.textMuted }}>{i + 1}</div>
-                <div style={{ fontWeight: 700 }}>{s.receiptNo || 'â€”'}</div>
+                <div style={{ fontWeight: 700 }}>{s.receiptNo || 'Ã¢â‚¬â€'}</div>
                 <div style={{ color: T.textMuted, fontSize: 11 }}>{new Date(s.createdAt).toLocaleString('sq-AL')}</div>
-                <div>{s.clientName || 'â€”'}</div>
+                <div>{s.clientName || 'Ã¢â‚¬â€'}</div>
                 <div style={{ color: T.textMuted, fontSize: 11 }}>{s.paymentMethod === 'bank' ? 'Bank' : 'Cash'} {s.isCredit && <span style={{ background: "#FEF3C7", color: "#92400E", padding: "1px 6px", borderRadius: 8, fontSize: 9, fontWeight: 700, marginLeft: 4 }}>borxh</span>}</div>
-                <div style={{ textAlign: "right", fontWeight: 800, color: T.accent }}>â‚¬{s.total.toFixed(2)}</div>
+                <div style={{ textAlign: "right", fontWeight: 800, color: T.accent }}>Ã¢â€šÂ¬{s.total.toFixed(2)}</div>
               </div>
             ))}
-            {periodSales.length > 50 && <div style={{ padding: 10, textAlign: "center", fontSize: 11, color: T.textFaint }}>+ {periodSales.length - 50} tÃ« tjera (shfaqen nÃ« printim)</div>}
+            {periodSales.length > 50 && <div style={{ padding: 10, textAlign: "center", fontSize: 11, color: T.textFaint }}>+ {periodSales.length - 50} tÃƒÂ« tjera (shfaqen nÃƒÂ« printim)</div>}
           </div>
         </div>
       )}
 
       {periodJobs.length > 0 && (
         <div style={{ background: T.surface, borderRadius: 12, border: `1.5px solid ${T.border}`, overflow: "hidden", marginBottom: 18 }}>
-          <div style={{ padding: "10px 16px", background: T.surfaceAlt, fontSize: 12, fontWeight: 800, color: T.text, borderBottom: `1px solid ${T.border}` }}>PunÃ«t nÃ« servis ({periodJobs.length})</div>
+          <div style={{ padding: "10px 16px", background: T.surfaceAlt, fontSize: 12, fontWeight: 800, color: T.text, borderBottom: `1px solid ${T.border}` }}>PunÃƒÂ«t nÃƒÂ« servis ({periodJobs.length})</div>
           <div style={{ maxHeight: 300, overflow: "auto" }}>
             {periodJobs.slice(0, 50).map((j, i) => (
               <div key={j.id} style={{ display: "grid", gridTemplateColumns: "36px 1fr 100px 1.5fr 100px 80px", padding: "9px 16px", fontSize: 12, color: T.text, borderBottom: `1px solid ${T.border}`, alignItems: "center" }}>
                 <div style={{ color: T.textMuted }}>{i + 1}</div>
-                <div style={{ fontWeight: 700 }}>{j.phoneModel || 'â€”'}</div>
+                <div style={{ fontWeight: 700 }}>{j.phoneModel || 'Ã¢â‚¬â€'}</div>
                 <div style={{ color: T.textMuted, fontSize: 11 }}>{new Date(j.createdAt).toLocaleDateString('sq-AL')}</div>
-                <div style={{ color: T.textMuted, fontSize: 11, whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" }}>{j.description || 'â€”'}</div>
-                <div style={{ fontSize: 11, color: T.textMuted }}>{j.status || 'â€”'}</div>
-                <div style={{ textAlign: "right", fontWeight: 700, color: T.accent }}>â‚¬{(parseFloat(j.price) || 0).toFixed(2)}</div>
+                <div style={{ color: T.textMuted, fontSize: 11, whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" }}>{j.description || 'Ã¢â‚¬â€'}</div>
+                <div style={{ fontSize: 11, color: T.textMuted }}>{j.status || 'Ã¢â‚¬â€'}</div>
+                <div style={{ textAlign: "right", fontWeight: 700, color: T.accent }}>Ã¢â€šÂ¬{(parseFloat(j.price) || 0).toFixed(2)}</div>
               </div>
             ))}
           </div>
@@ -2880,7 +2880,7 @@ function DebtsView({ T, business, debts, onUpdate, onDelete, onBack }) {
       originalAmount: d.originalAmount + amt,
       remainingAmount: d.remainingAmount + amt,
       isSettled: false,
-      notes: (d.notes ? d.notes + "\n" : "") + `[${new Date().toLocaleDateString('sq-AL')}] Shtuar â‚¬${amt.toFixed(2)}${addMoreDesc ? " â€” " + addMoreDesc : ""}`,
+      notes: (d.notes ? d.notes + "\n" : "") + `[${new Date().toLocaleDateString('sq-AL')}] Shtuar Ã¢â€šÂ¬${amt.toFixed(2)}${addMoreDesc ? " Ã¢â‚¬â€ " + addMoreDesc : ""}`,
     });
     setAddMoreFor(null); setAddMoreAmount(""); setAddMoreDesc("");
   };
@@ -2902,9 +2902,9 @@ function DebtsView({ T, business, debts, onUpdate, onDelete, onBack }) {
       <td>${i + 1}</td>
       <td><b>${d.clientName}</b>${d.clientPhone ? `<br><span style="font-size:10px;color:#64748b">${d.clientPhone}</span>` : ""}</td>
       <td>${new Date(d.createdAt).toLocaleDateString('sq-AL')}</td>
-      <td class="r">â‚¬${d.originalAmount.toFixed(2)}</td>
-      <td class="r">â‚¬${d.paidAmount.toFixed(2)}</td>
-      <td class="r"><b style="color:${d.isSettled ? '#059669' : '#B91C1C'}">â‚¬${d.remainingAmount.toFixed(2)}</b></td>
+      <td class="r">Ã¢â€šÂ¬${d.originalAmount.toFixed(2)}</td>
+      <td class="r">Ã¢â€šÂ¬${d.paidAmount.toFixed(2)}</td>
+      <td class="r"><b style="color:${d.isSettled ? '#059669' : '#B91C1C'}">Ã¢â€šÂ¬${d.remainingAmount.toFixed(2)}</b></td>
       <td><span class="pill ${d.isSettled ? 'settled' : 'open'}">${d.isSettled ? 'Mbyllur' : 'I hapur'}</span></td>
     </tr>`).join("");
     w.document.write(`<html><head><title>${reportNo}</title>
@@ -2950,17 +2950,17 @@ function DebtsView({ T, business, debts, onUpdate, onDelete, onBack }) {
         </div>
         <div class="stats">
           <div class="stat"><div class="label">Numri i borxheve</div><div class="value">${list.length}</div></div>
-          <div class="stat danger"><div class="label">Borxh i hapur</div><div class="value">â‚¬${openTotal.toFixed(2)}</div></div>
-          <div class="stat success"><div class="label">Gjithsej i paguar</div><div class="value">â‚¬${paidTotal.toFixed(2)}</div></div>
+          <div class="stat danger"><div class="label">Borxh i hapur</div><div class="value">Ã¢â€šÂ¬${openTotal.toFixed(2)}</div></div>
+          <div class="stat success"><div class="label">Gjithsej i paguar</div><div class="value">Ã¢â€šÂ¬${paidTotal.toFixed(2)}</div></div>
         </div>
         <table>
           <thead><tr>
             <th style="width:40px">Nr</th><th>Klienti</th><th>Data</th>
             <th class="r">Totali</th><th class="r">Paguar</th><th class="r">Mbetur</th><th>Statusi</th>
           </tr></thead>
-          <tbody>${rows || '<tr><td colspan="7" style="text-align:center;color:#94a3b8;padding:30px">Nuk ka borxhe pÃ«r raportim</td></tr>'}</tbody>
+          <tbody>${rows || '<tr><td colspan="7" style="text-align:center;color:#94a3b8;padding:30px">Nuk ka borxhe pÃƒÂ«r raportim</td></tr>'}</tbody>
         </table>
-        <div class="footer">Ky raport Ã«shtÃ« gjeneruar automatikisht nga sistemi ProPhone â€” ${nowDt.toLocaleString('sq-AL')}</div>
+        <div class="footer">Ky raport ÃƒÂ«shtÃƒÂ« gjeneruar automatikisht nga sistemi ProPhone Ã¢â‚¬â€ ${nowDt.toLocaleString('sq-AL')}</div>
       </div>
       <script>window.onload=()=>{setTimeout(()=>window.print(),200);}</script>
       </body></html>`);
@@ -2971,7 +2971,7 @@ function DebtsView({ T, business, debts, onUpdate, onDelete, onBack }) {
     <div style={{ animation: "slideUp .2s ease" }}>
       <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 20, flexWrap: "wrap", gap: 12 }}>
         <div style={{ display: "flex", alignItems: "center", gap: 12 }}>
-          <button onClick={onBack} style={{ background: T.surfaceAlt, border: `1px solid ${T.border}`, borderRadius: 10, padding: "8px 14px", cursor: "pointer", fontSize: 13, color: T.textMuted, fontWeight: 600 }}>â† Kthehu</button>
+          <button onClick={onBack} style={{ background: T.surfaceAlt, border: `1px solid ${T.border}`, borderRadius: 10, padding: "8px 14px", cursor: "pointer", fontSize: 13, color: T.textMuted, fontWeight: 600 }}>Ã¢â€ Â Kthehu</button>
           <h2 style={{ margin: 0, fontSize: 22, fontWeight: 800, color: T.text }}>Borxhet</h2>
         </div>
         <button onClick={printReport} style={{ background: T.accentGrad, color: "#fff", border: "none", borderRadius: 10, padding: "10px 20px", cursor: "pointer", fontWeight: 700, fontSize: 13, display: "flex", alignItems: "center", gap: 6 }}>
@@ -2982,12 +2982,12 @@ function DebtsView({ T, business, debts, onUpdate, onDelete, onBack }) {
       <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(200px, 1fr))", gap: 14, marginBottom: 18 }}>
         <div style={{ background: T.surface, border: `1.5px solid ${T.border}`, borderRadius: 14, padding: 18 }}>
           <div style={{ fontSize: 11, color: T.textMuted, fontWeight: 700, textTransform: "uppercase", letterSpacing: 1 }}>Borxhe t&euml; hapura</div>
-          <div style={{ fontSize: 26, fontWeight: 800, color: "#B91C1C", marginTop: 6 }}>â‚¬{openTotal.toFixed(2)}</div>
-          <div style={{ fontSize: 11, color: T.textFaint, marginTop: 2 }}>{openCount} klientÃ«</div>
+          <div style={{ fontSize: 26, fontWeight: 800, color: "#B91C1C", marginTop: 6 }}>Ã¢â€šÂ¬{openTotal.toFixed(2)}</div>
+          <div style={{ fontSize: 11, color: T.textFaint, marginTop: 2 }}>{openCount} klientÃƒÂ«</div>
         </div>
         <div style={{ background: T.surface, border: `1.5px solid ${T.border}`, borderRadius: 14, padding: 18 }}>
           <div style={{ fontSize: 11, color: T.textMuted, fontWeight: 700, textTransform: "uppercase", letterSpacing: 1 }}>Gjithsej i paguar</div>
-          <div style={{ fontSize: 26, fontWeight: 800, color: "#059669", marginTop: 6 }}>â‚¬{paidTotal.toFixed(2)}</div>
+          <div style={{ fontSize: 26, fontWeight: 800, color: "#059669", marginTop: 6 }}>Ã¢â€šÂ¬{paidTotal.toFixed(2)}</div>
         </div>
         <div style={{ background: T.surface, border: `1.5px solid ${T.border}`, borderRadius: 14, padding: 18 }}>
           <div style={{ fontSize: 11, color: T.textMuted, fontWeight: 700, textTransform: "uppercase", letterSpacing: 1 }}>Numri gjithsej</div>
@@ -2996,9 +2996,9 @@ function DebtsView({ T, business, debts, onUpdate, onDelete, onBack }) {
       </div>
 
       <div style={{ display: "flex", gap: 8, marginBottom: 14, flexWrap: "wrap" }}>
-        <input type="text" value={search} onChange={e => setSearch(e.target.value)} placeholder="KÃ«rko klientin ose telefonin..."
+        <input type="text" value={search} onChange={e => setSearch(e.target.value)} placeholder="KÃƒÂ«rko klientin ose telefonin..."
           style={{ flex: 1, minWidth: 200, padding: "10px 14px", borderRadius: 10, border: `1.5px solid ${T.border}`, fontSize: 13, background: T.inputBg, color: T.text, outline: "none", fontFamily: "inherit" }} />
-        {[["open", "TÃ« hapura"], ["settled", "TÃ« mbyllura"], ["all", "TÃ« gjitha"]].map(([k, l]) => (
+        {[["open", "TÃƒÂ« hapura"], ["settled", "TÃƒÂ« mbyllura"], ["all", "TÃƒÂ« gjitha"]].map(([k, l]) => (
           <button key={k} onClick={() => setFilter(k)}
             style={{ background: filter === k ? T.accent : T.surface, color: filter === k ? "#fff" : T.textMuted, border: `1.5px solid ${filter === k ? T.accent : T.border}`, borderRadius: 10, padding: "9px 16px", cursor: "pointer", fontWeight: 700, fontSize: 12, fontFamily: "inherit" }}>
             {l}
@@ -3011,7 +3011,7 @@ function DebtsView({ T, business, debts, onUpdate, onDelete, onBack }) {
           <div>Klienti</div><div>Data</div><div>Totali</div><div>Paguar</div><div>Mbetur</div><div>Statusi</div><div style={{ textAlign: "right" }}>Veprime</div>
         </div>
         {list.length === 0 ? (
-          <div style={{ padding: "60px 20px", textAlign: "center", color: T.textFaint, fontSize: 13 }}>Nuk ka borxhe pÃ«r tÃ« shfaqur.</div>
+          <div style={{ padding: "60px 20px", textAlign: "center", color: T.textFaint, fontSize: 13 }}>Nuk ka borxhe pÃƒÂ«r tÃƒÂ« shfaqur.</div>
         ) : list.map(d => (
           <div key={d.id} style={{ display: "grid", gridTemplateColumns: "2fr 130px 110px 110px 110px 120px 180px", padding: "12px 18px", fontSize: 13, color: T.text, borderBottom: `1px solid ${T.border}`, alignItems: "center" }}>
             <div>
@@ -3019,17 +3019,17 @@ function DebtsView({ T, business, debts, onUpdate, onDelete, onBack }) {
               {d.clientPhone && <div style={{ fontSize: 11, color: T.textFaint }}>{d.clientPhone}</div>}
             </div>
             <div style={{ color: T.textMuted, fontSize: 12 }}>{new Date(d.createdAt).toLocaleDateString('sq-AL')}</div>
-            <div>â‚¬{d.originalAmount.toFixed(2)}</div>
-            <div style={{ color: "#059669" }}>â‚¬{d.paidAmount.toFixed(2)}</div>
-            <div style={{ fontWeight: 800, color: d.isSettled ? "#059669" : "#B91C1C" }}>â‚¬{d.remainingAmount.toFixed(2)}</div>
+            <div>Ã¢â€šÂ¬{d.originalAmount.toFixed(2)}</div>
+            <div style={{ color: "#059669" }}>Ã¢â€šÂ¬{d.paidAmount.toFixed(2)}</div>
+            <div style={{ fontWeight: 800, color: d.isSettled ? "#059669" : "#B91C1C" }}>Ã¢â€šÂ¬{d.remainingAmount.toFixed(2)}</div>
             <div>
               <span style={{ fontSize: 11, padding: "3px 10px", borderRadius: 20, fontWeight: 700, background: d.isSettled ? "#D1FAE5" : "#FEE2E2", color: d.isSettled ? "#059669" : "#B91C1C" }}>
-                {d.isSettled ? "âœ“ Mbyllur" : "I hapur"}
+                {d.isSettled ? "Ã¢Å“â€œ Mbyllur" : "I hapur"}
               </span>
             </div>
             <div style={{ display: "flex", gap: 4, justifyContent: "flex-end", flexWrap: "wrap" }}>
               {!d.isSettled && (
-                <button onClick={() => { setAddPayForId(d.id); setPayAmount(String(d.remainingAmount.toFixed(2))); }} title="Regjistro pagesÃ«" style={{ background: "#D1FAE5", color: "#059669", border: "none", borderRadius: 6, padding: "5px 8px", cursor: "pointer", fontSize: 11, fontWeight: 700 }}>+ PagesÃ«</button>
+                <button onClick={() => { setAddPayForId(d.id); setPayAmount(String(d.remainingAmount.toFixed(2))); }} title="Regjistro pagesÃƒÂ«" style={{ background: "#D1FAE5", color: "#059669", border: "none", borderRadius: 6, padding: "5px 8px", cursor: "pointer", fontSize: 11, fontWeight: 700 }}>+ PagesÃƒÂ«</button>
               )}
               <button onClick={() => { setAddMoreFor(d.id); setAddMoreAmount(""); setAddMoreDesc(""); }} title="Shto borxh" style={{ background: "#FEF3C7", color: "#92400E", border: "none", borderRadius: 6, padding: "5px 8px", cursor: "pointer", fontSize: 11, fontWeight: 700 }}>+ Borxh</button>
               <button onClick={() => setEditing({ ...d })} title="Edito" style={{ background: T.surfaceAlt, color: T.textMuted, border: `1px solid ${T.border}`, borderRadius: 6, padding: "5px 8px", cursor: "pointer", fontSize: 11 }}>Edito</button>
@@ -3042,15 +3042,15 @@ function DebtsView({ T, business, debts, onUpdate, onDelete, onBack }) {
       {editing && (
         <div style={{ position: "fixed", inset: 0, zIndex: 1000, background: "rgba(15,23,42,.6)", backdropFilter: "blur(6px)", display: "flex", alignItems: "center", justifyContent: "center", padding: 20 }} onClick={() => setEditing(null)}>
           <div onClick={e => e.stopPropagation()} style={{ background: T.surface, borderRadius: 16, width: "100%", maxWidth: 480, border: `1px solid ${T.border}`, padding: 24 }}>
-            <h3 style={{ margin: "0 0 16px", fontSize: 16, fontWeight: 800, color: T.text }}>Edito borxhin â€” {editing.clientName}</h3>
+            <h3 style={{ margin: "0 0 16px", fontSize: 16, fontWeight: 800, color: T.text }}>Edito borxhin Ã¢â‚¬â€ {editing.clientName}</h3>
             <div style={{ marginBottom: 12 }}><FormField T={T} label="Emri i klientit" value={editing.clientName} onChange={e => setEditing(x => ({ ...x, clientName: e.target.value }))} /></div>
             <div style={{ marginBottom: 12 }}><FormField T={T} label="Telefoni" value={editing.clientPhone} onChange={e => setEditing(x => ({ ...x, clientPhone: e.target.value }))} /></div>
             <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 12, marginBottom: 12 }}>
-              <FormField T={T} label="Totali original (â‚¬)" type="number" value={editing.originalAmount} onChange={e => setEditing(x => ({ ...x, originalAmount: e.target.value }))} />
-              <FormField T={T} label="I paguar (â‚¬)" type="number" value={editing.paidAmount} onChange={e => setEditing(x => ({ ...x, paidAmount: e.target.value }))} />
+              <FormField T={T} label="Totali original (Ã¢â€šÂ¬)" type="number" value={editing.originalAmount} onChange={e => setEditing(x => ({ ...x, originalAmount: e.target.value }))} />
+              <FormField T={T} label="I paguar (Ã¢â€šÂ¬)" type="number" value={editing.paidAmount} onChange={e => setEditing(x => ({ ...x, paidAmount: e.target.value }))} />
             </div>
             <div style={{ marginBottom: 14 }}>
-              <label style={{ display: "block", fontSize: 11, fontWeight: 600, color: T.textMuted, marginBottom: 4, textTransform: "uppercase", letterSpacing: 0.3 }}>ShÃ«nime</label>
+              <label style={{ display: "block", fontSize: 11, fontWeight: 600, color: T.textMuted, marginBottom: 4, textTransform: "uppercase", letterSpacing: 0.3 }}>ShÃƒÂ«nime</label>
               <textarea value={editing.notes || ""} onChange={e => setEditing(x => ({ ...x, notes: e.target.value }))} rows={3}
                 style={{ width: "100%", padding: "9px 12px", borderRadius: 8, border: `1.5px solid ${T.border}`, fontSize: 13, background: T.inputBg, color: T.text, outline: "none", boxSizing: "border-box", fontFamily: "inherit", resize: "vertical" }} />
             </div>
@@ -3065,8 +3065,8 @@ function DebtsView({ T, business, debts, onUpdate, onDelete, onBack }) {
       {addPayForId && (
         <div style={{ position: "fixed", inset: 0, zIndex: 1000, background: "rgba(15,23,42,.6)", backdropFilter: "blur(6px)", display: "flex", alignItems: "center", justifyContent: "center", padding: 20 }} onClick={() => setAddPayForId(null)}>
           <div onClick={e => e.stopPropagation()} style={{ background: T.surface, borderRadius: 16, width: "100%", maxWidth: 380, border: `1px solid ${T.border}`, padding: 24 }}>
-            <h3 style={{ margin: "0 0 10px", fontSize: 16, fontWeight: 800, color: T.text }}>Regjistro pagesÃ«</h3>
-            <FormField T={T} label="Shuma e pagesÃ«s (â‚¬)" type="number" value={payAmount} onChange={e => setPayAmount(e.target.value)} />
+            <h3 style={{ margin: "0 0 10px", fontSize: 16, fontWeight: 800, color: T.text }}>Regjistro pagesÃƒÂ«</h3>
+            <FormField T={T} label="Shuma e pagesÃƒÂ«s (Ã¢â€šÂ¬)" type="number" value={payAmount} onChange={e => setPayAmount(e.target.value)} />
             <div style={{ display: "flex", gap: 8, justifyContent: "flex-end", marginTop: 16 }}>
               <button onClick={() => setAddPayForId(null)} style={{ background: T.surfaceAlt, color: T.textMuted, border: `1.5px solid ${T.border}`, borderRadius: 10, padding: "9px 16px", cursor: "pointer", fontWeight: 600, fontSize: 13, fontFamily: "inherit" }}>Anulo</button>
               <button onClick={applyPayment} style={{ background: "linear-gradient(135deg,#10B981,#059669)", color: "#fff", border: "none", borderRadius: 10, padding: "9px 18px", cursor: "pointer", fontWeight: 700, fontSize: 13, fontFamily: "inherit" }}>Regjistro</button>
@@ -3078,9 +3078,9 @@ function DebtsView({ T, business, debts, onUpdate, onDelete, onBack }) {
       {addMoreFor && (
         <div style={{ position: "fixed", inset: 0, zIndex: 1000, background: "rgba(15,23,42,.6)", backdropFilter: "blur(6px)", display: "flex", alignItems: "center", justifyContent: "center", padding: 20 }} onClick={() => setAddMoreFor(null)}>
           <div onClick={e => e.stopPropagation()} style={{ background: T.surface, borderRadius: 16, width: "100%", maxWidth: 380, border: `1px solid ${T.border}`, padding: 24 }}>
-            <h3 style={{ margin: "0 0 10px", fontSize: 16, fontWeight: 800, color: T.text }}>Shto borxh shtesÃ«</h3>
-            <div style={{ marginBottom: 12 }}><FormField T={T} label="Shuma e re (â‚¬)" type="number" value={addMoreAmount} onChange={e => setAddMoreAmount(e.target.value)} /></div>
-            <div style={{ marginBottom: 4 }}><FormField T={T} label="PÃ«rshkrim (opsional)" value={addMoreDesc} onChange={e => setAddMoreDesc(e.target.value)} placeholder="p.sh. Blerje shtesÃ«..." /></div>
+            <h3 style={{ margin: "0 0 10px", fontSize: 16, fontWeight: 800, color: T.text }}>Shto borxh shtesÃƒÂ«</h3>
+            <div style={{ marginBottom: 12 }}><FormField T={T} label="Shuma e re (Ã¢â€šÂ¬)" type="number" value={addMoreAmount} onChange={e => setAddMoreAmount(e.target.value)} /></div>
+            <div style={{ marginBottom: 4 }}><FormField T={T} label="PÃƒÂ«rshkrim (opsional)" value={addMoreDesc} onChange={e => setAddMoreDesc(e.target.value)} placeholder="p.sh. Blerje shtesÃƒÂ«..." /></div>
             <div style={{ display: "flex", gap: 8, justifyContent: "flex-end", marginTop: 16 }}>
               <button onClick={() => setAddMoreFor(null)} style={{ background: T.surfaceAlt, color: T.textMuted, border: `1.5px solid ${T.border}`, borderRadius: 10, padding: "9px 16px", cursor: "pointer", fontWeight: 600, fontSize: 13, fontFamily: "inherit" }}>Anulo</button>
               <button onClick={addMoreDebt} style={{ background: "linear-gradient(135deg,#F59E0B,#D97706)", color: "#fff", border: "none", borderRadius: 10, padding: "9px 18px", cursor: "pointer", fontWeight: 700, fontSize: 13, fontFamily: "inherit" }}>Shto</button>
@@ -3106,16 +3106,16 @@ function ArkaLanding({ T, onOpenPOS, onOpenProducts, onOpenDebts, onOpenReport, 
         </div>
         <div style={{ background: T.surface, border: `1.5px solid ${T.border}`, borderRadius: 14, padding: 18 }}>
           <div style={{ fontSize: 11, color: T.textMuted, fontWeight: 700, textTransform: "uppercase", letterSpacing: 1 }}>Shitjet e sotme</div>
-          <div style={{ fontSize: 26, fontWeight: 800, color: "#10B981", marginTop: 6 }}>â‚¬{todaySalesTotal.toFixed(2)}</div>
+          <div style={{ fontSize: 26, fontWeight: 800, color: "#10B981", marginTop: 6 }}>Ã¢â€šÂ¬{todaySalesTotal.toFixed(2)}</div>
         </div>
         <div style={{ background: T.surface, border: `1.5px solid ${T.border}`, borderRadius: 14, padding: 18 }}>
           <div style={{ fontSize: 11, color: T.textMuted, fontWeight: 700, textTransform: "uppercase", letterSpacing: 1 }}>Borxhe t&euml; hapura</div>
-          <div style={{ fontSize: 26, fontWeight: 800, color: "#B91C1C", marginTop: 6 }}>â‚¬{(openDebtsTotal || 0).toFixed(2)}</div>
-          <div style={{ fontSize: 11, color: T.textFaint, marginTop: 2 }}>{openDebtsCount || 0} klientÃ«</div>
+          <div style={{ fontSize: 26, fontWeight: 800, color: "#B91C1C", marginTop: 6 }}>Ã¢â€šÂ¬{(openDebtsTotal || 0).toFixed(2)}</div>
+          <div style={{ fontSize: 11, color: T.textFaint, marginTop: 2 }}>{openDebtsCount || 0} klientÃƒÂ«</div>
         </div>
         <div style={{ background: T.surface, border: `1.5px solid ${T.border}`, borderRadius: 14, padding: 18 }}>
           <div style={{ fontSize: 11, color: T.textMuted, fontWeight: 700, textTransform: "uppercase", letterSpacing: 1 }}>Statusi</div>
-          <div style={{ fontSize: 15, fontWeight: 800, color: arkaOpen ? "#10B981" : "#F59E0B", marginTop: 10 }}>{arkaOpen ? "â— E Hapur" : "â— E Mbyllur"}</div>
+          <div style={{ fontSize: 15, fontWeight: 800, color: arkaOpen ? "#10B981" : "#F59E0B", marginTop: 10 }}>{arkaOpen ? "Ã¢â€”Â E Hapur" : "Ã¢â€”Â E Mbyllur"}</div>
         </div>
       </div>
 
@@ -3133,8 +3133,8 @@ function ArkaLanding({ T, onOpenPOS, onOpenProducts, onOpenDebts, onOpenReport, 
           onMouseEnter={e => { e.currentTarget.style.transform = "translateY(-2px)"; e.currentTarget.style.boxShadow = `0 12px 32px ${T.accent}55`; }}
           onMouseLeave={e => { e.currentTarget.style.transform = "none"; e.currentTarget.style.boxShadow = "none"; }}>
           <div style={{ width: 46, height: 46, borderRadius: 12, background: "rgba(255,255,255,.2)", color: "#fff", display: "flex", alignItems: "center", justifyContent: "center", marginBottom: 12 }}>{PIc.receipt(22)}</div>
-          <div style={{ fontSize: 17, fontWeight: 800 }}>Hap arkÃ«n</div>
-          <div style={{ fontSize: 12.5, opacity: .9, marginTop: 5 }}>BÃ«j shitje, printo fatura, pazari ditor</div>
+          <div style={{ fontSize: 17, fontWeight: 800 }}>Hap arkÃƒÂ«n</div>
+          <div style={{ fontSize: 12.5, opacity: .9, marginTop: 5 }}>BÃƒÂ«j shitje, printo fatura, pazari ditor</div>
         </button>
         <button onClick={onOpenDebts}
           style={{ background: T.surface, border: `2px solid ${T.border}`, borderRadius: 18, padding: "28px 24px", cursor: "pointer", textAlign: "left", transition: "all .2s", fontFamily: "inherit" }}
@@ -3142,7 +3142,7 @@ function ArkaLanding({ T, onOpenPOS, onOpenProducts, onOpenDebts, onOpenReport, 
           onMouseLeave={e => { e.currentTarget.style.borderColor = T.border; e.currentTarget.style.transform = "none"; e.currentTarget.style.boxShadow = "none"; }}>
           <div style={{ width: 46, height: 46, borderRadius: 12, background: "#FEF3C7", color: "#D97706", display: "flex", alignItems: "center", justifyContent: "center", marginBottom: 12 }}>{PIc.cash(22)}</div>
           <div style={{ fontSize: 17, fontWeight: 800, color: T.text }}>Borxhet</div>
-          <div style={{ fontSize: 12.5, color: T.textMuted, marginTop: 5 }}>Menaxho borxhet e klientÃ«ve, raport A4</div>
+          <div style={{ fontSize: 12.5, color: T.textMuted, marginTop: 5 }}>Menaxho borxhet e klientÃƒÂ«ve, raport A4</div>
         </button>
       </div>
 
@@ -3151,11 +3151,11 @@ function ArkaLanding({ T, onOpenPOS, onOpenProducts, onOpenDebts, onOpenReport, 
           <div style={{ width: 30, height: 30, borderRadius: 8, background: `${T.accent}15`, color: T.accent, display: "flex", alignItems: "center", justifyContent: "center" }}>{PIc.document(14)}</div>
           <div>
             <div style={{ fontSize: 13, fontWeight: 800, color: T.text }}>Raportet</div>
-            <div style={{ fontSize: 11, color: T.textMuted }}>Shiko dhe printo raporte tÃ« detajuara pÃ«r shitje, punÃ« nÃ« servis dhe borxhe.</div>
+            <div style={{ fontSize: 11, color: T.textMuted }}>Shiko dhe printo raporte tÃƒÂ« detajuara pÃƒÂ«r shitje, punÃƒÂ« nÃƒÂ« servis dhe borxhe.</div>
           </div>
         </div>
         <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(170px, 1fr))", gap: 10 }}>
-          {[["daily", "Raporti Ditor", "Sot"], ["weekly", "Raporti Javor", "7 ditÃ«t e fundit"], ["monthly", "Raporti Mujor", "Muaji aktual"], ["yearly", "Raporti Vjetor", "Viti aktual"]].map(([k, l, sub]) => (
+          {[["daily", "Raporti Ditor", "Sot"], ["weekly", "Raporti Javor", "7 ditÃƒÂ«t e fundit"], ["monthly", "Raporti Mujor", "Muaji aktual"], ["yearly", "Raporti Vjetor", "Viti aktual"]].map(([k, l, sub]) => (
             <button key={k} onClick={() => onOpenReport(k)}
               style={{ background: T.surfaceAlt, border: `1.5px solid ${T.border}`, borderRadius: 12, padding: "14px 16px", cursor: "pointer", textAlign: "left", fontFamily: "inherit", transition: "all .15s" }}
               onMouseEnter={e => { e.currentTarget.style.borderColor = T.accent; e.currentTarget.style.background = `${T.accent}08`; }}
@@ -3171,11 +3171,11 @@ function ArkaLanding({ T, onOpenPOS, onOpenProducts, onOpenDebts, onOpenReport, 
         <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 10 }}>
           <div>
             <div style={{ fontSize: 13, fontWeight: 800, color: "#B91C1C", display: "flex", alignItems: "center", gap: 8 }}>{PIc.trashLine(14)} Zona e Resetimit</div>
-            <div style={{ fontSize: 11, color: "#7F1D1D", marginTop: 2 }}>KÃ«to veprime fshijnÃ« tÃ« dhÃ«nat pÃ«rgjithmonÃ« â€” kÃ«rkohet kodi PIN i ArkÃ«s.</div>
+            <div style={{ fontSize: 11, color: "#7F1D1D", marginTop: 2 }}>KÃƒÂ«to veprime fshijnÃƒÂ« tÃƒÂ« dhÃƒÂ«nat pÃƒÂ«rgjithmonÃƒÂ« Ã¢â‚¬â€ kÃƒÂ«rkohet kodi PIN i ArkÃƒÂ«s.</div>
           </div>
         </div>
         <div style={{ display: "flex", gap: 8, flexWrap: "wrap" }}>
-          <button onClick={onResetDay} style={{ background: "#F59E0B", color: "#fff", border: "none", borderRadius: 10, padding: "9px 18px", cursor: "pointer", fontWeight: 700, fontSize: 13, fontFamily: "inherit" }}>Reseto DitÃ«n</button>
+          <button onClick={onResetDay} style={{ background: "#F59E0B", color: "#fff", border: "none", borderRadius: 10, padding: "9px 18px", cursor: "pointer", fontWeight: 700, fontSize: 13, fontFamily: "inherit" }}>Reseto DitÃƒÂ«n</button>
           <button onClick={onResetMonth} style={{ background: "#DC2626", color: "#fff", border: "none", borderRadius: 10, padding: "9px 18px", cursor: "pointer", fontWeight: 700, fontSize: 13, fontFamily: "inherit" }}>Reseto Muajin</button>
           <button onClick={onResetYear} style={{ background: "#B91C1C", color: "#fff", border: "none", borderRadius: 10, padding: "9px 18px", cursor: "pointer", fontWeight: 700, fontSize: 13, fontFamily: "inherit" }}>Reseto Vitin</button>
         </div>
@@ -3219,7 +3219,7 @@ function RegisterProducts({ T, products, onChange, onBack }) {
   const onPickImage = (e) => {
     const file = e.target.files?.[0];
     if (!file) return;
-    if (file.size > 2 * 1024 * 1024) { alert("Fotoja duhet tÃ« jetÃ« mÃ« e vogÃ«l se 2MB"); return; }
+    if (file.size > 2 * 1024 * 1024) { alert("Fotoja duhet tÃƒÂ« jetÃƒÂ« mÃƒÂ« e vogÃƒÂ«l se 2MB"); return; }
     const reader = new FileReader();
     reader.onload = () => setForm(f => ({ ...f, image: reader.result }));
     reader.readAsDataURL(file);
@@ -3251,7 +3251,7 @@ function RegisterProducts({ T, products, onChange, onBack }) {
       try {
         const text = String(reader.result).replace(/^\uFEFF/, "");
         const lines = text.split(/\r?\n/).filter(l => l.trim().length);
-        if (lines.length < 2) { alert("Skedari Ã«shtÃ« bosh ose nuk ka rreshta tÃ« dhÃ«nash."); return; }
+        if (lines.length < 2) { alert("Skedari ÃƒÂ«shtÃƒÂ« bosh ose nuk ka rreshta tÃƒÂ« dhÃƒÂ«nash."); return; }
         const parseLine = (line) => {
           const out = []; let cur = ""; let inQ = false;
           for (let i = 0; i < line.length; i++) {
@@ -3289,12 +3289,12 @@ function RegisterProducts({ T, products, onChange, onBack }) {
             createdAt: new Date().toISOString(),
           });
         }
-        if (imported.length === 0) { alert("Nuk u importua asnjÃ« produkt (kontrollo emrat e kolonave: name, barcode, price...)."); return; }
-        if (window.confirm(`Do tÃ« importohen ${imported.length} produkte. Vazhdoni?`)) {
+        if (imported.length === 0) { alert("Nuk u importua asnjÃƒÂ« produkt (kontrollo emrat e kolonave: name, barcode, price...)."); return; }
+        if (window.confirm(`Do tÃƒÂ« importohen ${imported.length} produkte. Vazhdoni?`)) {
           onChange([...imported, ...products]);
         }
       } catch (err) {
-        alert("Gabim nÃ« lexim: " + err.message);
+        alert("Gabim nÃƒÂ« lexim: " + err.message);
       }
     };
     reader.readAsText(file);
@@ -3309,13 +3309,13 @@ function RegisterProducts({ T, products, onChange, onBack }) {
     <div style={{ animation: "slideUp .2s ease" }}>
       <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 20, flexWrap: "wrap", gap: 12 }}>
         <div style={{ display: "flex", alignItems: "center", gap: 12 }}>
-          <button onClick={onBack} style={{ background: T.surfaceAlt, border: `1px solid ${T.border}`, borderRadius: 10, padding: "8px 14px", cursor: "pointer", fontSize: 13, color: T.textMuted, fontWeight: 600 }}>â† Kthehu</button>
+          <button onClick={onBack} style={{ background: T.surfaceAlt, border: `1px solid ${T.border}`, borderRadius: 10, padding: "8px 14px", cursor: "pointer", fontSize: 13, color: T.textMuted, fontWeight: 600 }}>Ã¢â€ Â Kthehu</button>
           <h2 style={{ margin: 0, fontSize: 22, fontWeight: 800, color: T.text }}>Regjistro Produkte</h2>
         </div>
         <div style={{ display: "flex", gap: 8 }}>
           <input ref={importInputRef} type="file" accept=".csv,text/csv" onChange={importCsv} style={{ display: "none" }} />
           <button onClick={() => importInputRef.current?.click()} style={{ background: T.surface, color: T.text, border: `1.5px solid ${T.border}`, borderRadius: 10, padding: "9px 16px", cursor: "pointer", fontWeight: 600, fontSize: 13, display: "flex", alignItems: "center", gap: 6 }}>
-            {PIc.download ? PIc.download(13) : "â¬†"} Importo CSV
+            {PIc.download ? PIc.download(13) : "Ã¢Â¬â€ "} Importo CSV
           </button>
           <button onClick={exportCsv} disabled={products.length === 0} style={{ background: T.surface, color: T.text, border: `1.5px solid ${T.border}`, borderRadius: 10, padding: "9px 16px", cursor: products.length ? "pointer" : "not-allowed", fontWeight: 600, fontSize: 13, opacity: products.length ? 1 : .5, display: "flex", alignItems: "center", gap: 6 }}>
             {PIc.save(13)} Eksporto CSV
@@ -3326,28 +3326,28 @@ function RegisterProducts({ T, products, onChange, onBack }) {
         </div>
       </div>
 
-      <input type="text" value={search} onChange={e => setSearch(e.target.value)} placeholder="KÃ«rko sipas emrit, barkodit ose kategorisÃ«..."
+      <input type="text" value={search} onChange={e => setSearch(e.target.value)} placeholder="KÃƒÂ«rko sipas emrit, barkodit ose kategorisÃƒÂ«..."
         style={{ width: "100%", padding: "11px 16px", borderRadius: 12, border: `1.5px solid ${T.border}`, fontSize: 14, outline: "none", background: T.inputBg, color: T.text, marginBottom: 16, boxSizing: "border-box" }} />
 
       <div style={{ background: T.surface, borderRadius: 16, border: `1.5px solid ${T.border}`, overflow: "hidden" }}>
         <div style={{ display: "grid", gridTemplateColumns: "56px 2fr 1fr 1fr 1fr 1fr 120px", padding: "14px 20px", background: T.surfaceAlt, fontSize: 12, fontWeight: 700, color: T.textMuted, textTransform: "uppercase", borderBottom: `1px solid ${T.border}` }}>
-          <div>Foto</div><div>Emri</div><div>Barkodi</div><div>Kategoria</div><div>Ã‡mimi</div><div>Stoku</div><div style={{ textAlign: "right" }}>Veprime</div>
+          <div>Foto</div><div>Emri</div><div>Barkodi</div><div>Kategoria</div><div>Ãƒâ€¡mimi</div><div>Stoku</div><div style={{ textAlign: "right" }}>Veprime</div>
         </div>
         {filtered.length === 0 ? (
-          <div style={{ padding: 40, textAlign: "center", color: T.textFaint, fontSize: 14 }}>Nuk ka produkte â€” klikoni "+ Shto Produkt" pÃ«r tÃ« filluar.</div>
+          <div style={{ padding: 40, textAlign: "center", color: T.textFaint, fontSize: 14 }}>Nuk ka produkte Ã¢â‚¬â€ klikoni "+ Shto Produkt" pÃƒÂ«r tÃƒÂ« filluar.</div>
         ) : filtered.map(p => (
           <div key={p.id} style={{ display: "grid", gridTemplateColumns: "56px 2fr 1fr 1fr 1fr 1fr 120px", padding: "10px 20px", fontSize: 13, color: T.text, borderBottom: `1px solid ${T.border}`, alignItems: "center" }}>
             <div>
               {p.image ? (
                 <img src={p.image} alt="" style={{ width: 40, height: 40, objectFit: "cover", borderRadius: 8, border: `1px solid ${T.border}` }} />
               ) : (
-                <div style={{ width: 40, height: 40, borderRadius: 8, background: T.surfaceAlt, border: `1px dashed ${T.border}`, display: "flex", alignItems: "center", justifyContent: "center", color: T.textFaint }}>â€”</div>
+                <div style={{ width: 40, height: 40, borderRadius: 8, background: T.surfaceAlt, border: `1px dashed ${T.border}`, display: "flex", alignItems: "center", justifyContent: "center", color: T.textFaint }}>Ã¢â‚¬â€</div>
               )}
             </div>
             <div style={{ fontWeight: 600 }}>{p.name}</div>
-            <div style={{ color: T.textMuted }}>{p.barcode || "â€”"}</div>
-            <div style={{ color: T.textMuted }}>{p.category || "â€”"}</div>
-            <div style={{ fontWeight: 700, color: T.accent }}>â‚¬{Number(p.price).toFixed(2)}</div>
+            <div style={{ color: T.textMuted }}>{p.barcode || "Ã¢â‚¬â€"}</div>
+            <div style={{ color: T.textMuted }}>{p.category || "Ã¢â‚¬â€"}</div>
+            <div style={{ fontWeight: 700, color: T.accent }}>Ã¢â€šÂ¬{Number(p.price).toFixed(2)}</div>
             <div style={{ color: p.stock <= 0 ? T.danger : T.text, fontWeight: 600 }}>{p.stock} {p.unit}</div>
             <div style={{ display: "flex", gap: 6, justifyContent: "flex-end" }}>
               <button onClick={() => openEdit(p)} style={{ background: T.surfaceAlt, color: T.textMuted, border: `1px solid ${T.border}`, borderRadius: 8, padding: "6px 12px", cursor: "pointer", fontSize: 12, fontWeight: 600 }}>Edito</button>
@@ -3360,7 +3360,7 @@ function RegisterProducts({ T, products, onChange, onBack }) {
       {modalOpen && (
         <div style={{ position: "fixed", inset: 0, zIndex: 1000, background: "rgba(0,0,0,.45)", display: "flex", alignItems: "center", justifyContent: "center", animation: "fadeIn .2s" }} onClick={() => setModalOpen(false)}>
           <div onClick={e => e.stopPropagation()} style={{ background: T.surface, borderRadius: 20, padding: "28px 32px", width: "92%", maxWidth: 560, border: `1px solid ${T.border}`, boxShadow: "0 24px 80px rgba(0,0,0,.3)" }}>
-            <h3 style={{ margin: "0 0 18px", fontSize: 18, fontWeight: 800, color: T.text }}>{editing ? "Edito produktin" : "Shto produkt tÃ« ri"}</h3>
+            <h3 style={{ margin: "0 0 18px", fontSize: 18, fontWeight: 800, color: T.text }}>{editing ? "Edito produktin" : "Shto produkt tÃƒÂ« ri"}</h3>
             <div style={{ marginBottom: 18 }}>
               <label style={{ display: "block", fontSize: 12, fontWeight: 600, color: T.textMuted, marginBottom: 8 }}>Foto e produktit (opsional)</label>
               <div style={{ display: "flex", alignItems: "center", gap: 14 }}>
@@ -3374,10 +3374,10 @@ function RegisterProducts({ T, products, onChange, onBack }) {
                 <input ref={fileInputRef} type="file" accept="image/*" onChange={onPickImage} style={{ display: "none" }} />
                 <div style={{ display: "flex", flexDirection: "column", gap: 6 }}>
                   <button onClick={() => fileInputRef.current?.click()} style={{ background: T.surface, color: T.accent, border: `1.5px solid ${T.accent}`, borderRadius: 8, padding: "7px 14px", cursor: "pointer", fontSize: 12, fontWeight: 700, display: "flex", alignItems: "center", gap: 6 }}>
-                    {form.image ? "Ndrysho fotonÃ«" : "Ngarko foto"}
+                    {form.image ? "Ndrysho fotonÃƒÂ«" : "Ngarko foto"}
                   </button>
                   {form.image && (
-                    <button onClick={() => setForm(f => ({ ...f, image: null }))} style={{ background: "transparent", color: T.danger, border: "none", cursor: "pointer", fontSize: 11, padding: "2px 0", textAlign: "left" }}>Ã— Largo fotonÃ«</button>
+                    <button onClick={() => setForm(f => ({ ...f, image: null }))} style={{ background: "transparent", color: T.danger, border: "none", cursor: "pointer", fontSize: 11, padding: "2px 0", textAlign: "left" }}>Ãƒâ€” Largo fotonÃƒÂ«</button>
                   )}
                   <div style={{ fontSize: 10, color: T.textFaint }}>PNG, JPG deri 2MB</div>
                 </div>
@@ -3387,10 +3387,10 @@ function RegisterProducts({ T, products, onChange, onBack }) {
               {[
                 ["Emri*", "name", "text", "Emri i produktit"],
                 ["Barkodi", "barcode", "text", "p.sh. 123456789"],
-                ["Kategoria", "category", "text", "p.sh. PjesÃ« kÃ«mbimi"],
-                ["NjÃ«sia", "unit", "select", ""],
-                ["Ã‡mimi i shitjes (â‚¬)*", "price", "number", "0.00"],
-                ["Ã‡mimi i blerjes (â‚¬)", "cost", "number", "0.00"],
+                ["Kategoria", "category", "text", "p.sh. PjesÃƒÂ« kÃƒÂ«mbimi"],
+                ["NjÃƒÂ«sia", "unit", "select", ""],
+                ["Ãƒâ€¡mimi i shitjes (Ã¢â€šÂ¬)*", "price", "number", "0.00"],
+                ["Ãƒâ€¡mimi i blerjes (Ã¢â€šÂ¬)", "cost", "number", "0.00"],
                 ["Stoku fillestar", "stock", "number", "0"],
               ].map(([label, key, type, ph]) => (
                 <div key={key} style={{ gridColumn: key === "name" ? "1 / -1" : "auto" }}>
@@ -3398,10 +3398,10 @@ function RegisterProducts({ T, products, onChange, onBack }) {
                   {type === "select" ? (
                     <select value={form.unit} onChange={e => setForm(f => ({ ...f, unit: e.target.value }))}
                       style={{ width: "100%", padding: "10px 14px", borderRadius: 10, border: `1.5px solid ${T.border}`, fontSize: 14, background: T.inputBg, color: T.text, outline: "none", boxSizing: "border-box" }}>
-                      <option value="cope">CopÃ«</option>
+                      <option value="cope">CopÃƒÂ«</option>
                       <option value="kg">Kg</option>
-                      <option value="litr">LitÃ«r</option>
-                      <option value="paket">PaketÃ«</option>
+                      <option value="litr">LitÃƒÂ«r</option>
+                      <option value="paket">PaketÃƒÂ«</option>
                     </select>
                   ) : (
                     <input type={type} value={form[key]} placeholder={ph}
@@ -3422,9 +3422,9 @@ function RegisterProducts({ T, products, onChange, onBack }) {
       {delId && (
         <div style={{ position: "fixed", inset: 0, zIndex: 1100, background: "rgba(0,0,0,.5)", display: "flex", alignItems: "center", justifyContent: "center" }} onClick={() => setDelId(null)}>
           <div onClick={e => e.stopPropagation()} style={{ background: T.surface, borderRadius: 20, padding: "28px 32px", width: "90%", maxWidth: 380, textAlign: "center", border: `1px solid ${T.border}` }}>
-            <div style={{ fontSize: 40, marginBottom: 10 }}>âš ï¸</div>
+            <div style={{ fontSize: 40, marginBottom: 10 }}>Ã¢Å¡Â Ã¯Â¸Â</div>
             <h3 style={{ margin: "0 0 8px", fontSize: 17, fontWeight: 800, color: T.text }}>Konfirmo fshirjen</h3>
-            <p style={{ color: T.textMuted, fontSize: 14, marginBottom: 22 }}>Produkti do tÃ« fshihet pÃ«rgjithmonÃ«.</p>
+            <p style={{ color: T.textMuted, fontSize: 14, marginBottom: 22 }}>Produkti do tÃƒÂ« fshihet pÃƒÂ«rgjithmonÃƒÂ«.</p>
             <div style={{ display: "flex", gap: 10, justifyContent: "center" }}>
               <button onClick={() => setDelId(null)} style={{ background: T.surfaceAlt, color: T.textMuted, border: `1.5px solid ${T.border}`, borderRadius: 10, padding: "10px 24px", cursor: "pointer", fontWeight: 600, fontSize: 14 }}>Anulo</button>
               <button onClick={() => doDelete(delId)} style={{ background: "#EF4444", color: "#fff", border: "none", borderRadius: 10, padding: "10px 24px", cursor: "pointer", fontWeight: 700, fontSize: 14 }}>Fshi</button>
@@ -3473,7 +3473,7 @@ function NumericKeypad({ T, total, onComplete, onCancel }) {
   const press = (k) => {
     setAmount(a => {
       if (k === "C") return "";
-      if (k === "âŒ«") return a.slice(0, -1);
+      if (k === "Ã¢Å’Â«") return a.slice(0, -1);
       if (k === ".") return a.includes(".") ? a : (a || "0") + ".";
       const next = a + k;
       if (next.split(".")[1]?.length > 2) return a;
@@ -3484,7 +3484,7 @@ function NumericKeypad({ T, total, onComplete, onCancel }) {
   const paid = Number(amount) || 0;
   const remaining = Math.max(0, total - paid);
   const change = Math.max(0, paid - total);
-  // NÃ« shitje normale kÃ«rkohet shuma >= total. NÃ« shitje me borxh lejohet edhe 0.
+  // NÃƒÂ« shitje normale kÃƒÂ«rkohet shuma >= total. NÃƒÂ« shitje me borxh lejohet edhe 0.
   const insufficient = !isCredit && paid > 0 && paid < total;
   const canSubmit = isCredit ? (clientName.trim().length > 0) : !insufficient;
 
@@ -3492,7 +3492,7 @@ function NumericKeypad({ T, total, onComplete, onCancel }) {
     const h = (e) => {
       if (/^[0-9]$/.test(e.key)) { e.preventDefault(); press(e.key); }
       else if (e.key === ".") { e.preventDefault(); press("."); }
-      else if (e.key === "Backspace") { e.preventDefault(); press("âŒ«"); }
+      else if (e.key === "Backspace") { e.preventDefault(); press("Ã¢Å’Â«"); }
       else if (e.key === "Escape") { e.preventDefault(); onCancel(); }
       else if (e.key === "Enter") { e.preventDefault(); if (canSubmit) onComplete({ paid: isCredit ? paid : (paid || total), method, clientName, clientPhone, printReceipt, isCredit, remaining: isCredit ? remaining : 0 }); }
     };
@@ -3515,8 +3515,8 @@ function NumericKeypad({ T, total, onComplete, onCancel }) {
       <div onClick={e => e.stopPropagation()} style={{ background: T.surface, borderRadius: 18, width: "92%", maxWidth: 440, border: `1px solid ${T.border}`, boxShadow: "0 30px 90px rgba(0,0,0,.35)", overflow: "hidden", animation: "slideUp .2s ease" }}>
         <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", padding: "16px 20px", borderBottom: `1px solid ${T.border}` }}>
           <div>
-            <div style={{ fontSize: 11, fontWeight: 700, color: T.textMuted, textTransform: "uppercase", letterSpacing: 0.5 }}>Shuma pÃ«r pagesÃ«</div>
-            <div style={{ fontSize: 26, fontWeight: 800, color: T.text, marginTop: 2 }}>â‚¬{total.toFixed(2)}</div>
+            <div style={{ fontSize: 11, fontWeight: 700, color: T.textMuted, textTransform: "uppercase", letterSpacing: 0.5 }}>Shuma pÃƒÂ«r pagesÃƒÂ«</div>
+            <div style={{ fontSize: 26, fontWeight: 800, color: T.text, marginTop: 2 }}>Ã¢â€šÂ¬{total.toFixed(2)}</div>
           </div>
           <button onClick={onCancel} style={{ background: "transparent", border: `1px solid ${T.border}`, borderRadius: 8, width: 32, height: 32, cursor: "pointer", color: T.textMuted, display: "flex", alignItems: "center", justifyContent: "center" }}>
             {PIc.close(14)}
@@ -3528,14 +3528,14 @@ function NumericKeypad({ T, total, onComplete, onCancel }) {
           <div style={{ background: T.surfaceAlt, borderRadius: 12, padding: "14px 18px", marginBottom: 12, border: `1.5px solid ${insufficient ? T.danger : T.border}` }}>
             <div style={{ fontSize: 10, fontWeight: 700, color: T.textMuted, textTransform: "uppercase", letterSpacing: 0.5 }}>Shuma e paguar</div>
             <div style={{ fontSize: 34, fontWeight: 800, color: T.text, fontFamily: "ui-monospace, SFMono-Regular, Menlo, monospace", letterSpacing: 1, marginTop: 2, minHeight: 42 }}>
-              â‚¬{amount || "0.00"}
+              Ã¢â€šÂ¬{amount || "0.00"}
               <span style={{ animation: "fadeIn 1s infinite alternate", color: T.accent }}></span>
             </div>
             <div style={{ display: "flex", justifyContent: "space-between", marginTop: 6, fontSize: 12 }}>
               <span style={{ color: T.textMuted }}>Kusuri:</span>
-              <span style={{ fontWeight: 800, color: change > 0 ? "#10B981" : T.textMuted }}>â‚¬{change.toFixed(2)}</span>
+              <span style={{ fontWeight: 800, color: change > 0 ? "#10B981" : T.textMuted }}>Ã¢â€šÂ¬{change.toFixed(2)}</span>
             </div>
-            {insufficient && <div style={{ color: T.danger, fontSize: 11, fontWeight: 700, marginTop: 4 }}>âš  Shuma mÃ« e vogÃ«l se totali</div>}
+            {insufficient && <div style={{ color: T.danger, fontSize: 11, fontWeight: 700, marginTop: 4 }}>Ã¢Å¡Â  Shuma mÃƒÂ« e vogÃƒÂ«l se totali</div>}
           </div>
 
           {/* Method toggle */}
@@ -3553,17 +3553,17 @@ function NumericKeypad({ T, total, onComplete, onCancel }) {
             {["7","8","9","4","5","6","1","2","3"].map(k => <KeyBtn key={k} label={k} onClick={() => press(k)} />)}
             <KeyBtn label="." onClick={() => press(".")} />
             <KeyBtn label="0" onClick={() => press("0")} />
-            <KeyBtn label="âŒ«" onClick={() => press("âŒ«")} />
+            <KeyBtn label="Ã¢Å’Â«" onClick={() => press("Ã¢Å’Â«")} />
           </div>
 
           {/* Quick amounts */}
           <div style={{ display: "grid", gridTemplateColumns: "repeat(4, 1fr)", gap: 6, marginBottom: 12 }}>
             {[5, 10, 20, 50].map(v => (
-              <button key={v} onClick={() => setAmount(String(v))} style={{ background: T.surfaceAlt, border: `1px solid ${T.border}`, borderRadius: 8, padding: "8px 0", fontSize: 12, fontWeight: 700, color: T.textMuted, cursor: "pointer", fontFamily: "inherit" }}>â‚¬{v}</button>
+              <button key={v} onClick={() => setAmount(String(v))} style={{ background: T.surfaceAlt, border: `1px solid ${T.border}`, borderRadius: 8, padding: "8px 0", fontSize: 12, fontWeight: 700, color: T.textMuted, cursor: "pointer", fontFamily: "inherit" }}>Ã¢â€šÂ¬{v}</button>
             ))}
           </div>
           <button onClick={() => setAmount(total.toFixed(2))} style={{ width: "100%", background: T.surfaceAlt, border: `1px dashed ${T.border}`, borderRadius: 8, padding: "8px", fontSize: 12, fontWeight: 700, color: T.accent, cursor: "pointer", marginBottom: 14, fontFamily: "inherit" }}>
-            PagesÃ« e saktÃ« (â‚¬{total.toFixed(2)})
+            PagesÃƒÂ« e saktÃƒÂ« (Ã¢â€šÂ¬{total.toFixed(2)})
           </button>
 
           {/* Credit toggle */}
@@ -3571,37 +3571,37 @@ function NumericKeypad({ T, total, onComplete, onCancel }) {
             <input type="checkbox" checked={isCredit} onChange={e => setIsCredit(e.target.checked)} style={{ accentColor: "#F59E0B", width: 16, height: 16 }} />
             <div style={{ flex: 1 }}>
               <div style={{ fontSize: 13, fontWeight: 700, color: isCredit ? "#92400E" : T.text }}>Shitje me borxh</div>
-              <div style={{ fontSize: 11, color: isCredit ? "#92400E" : T.textMuted, opacity: .85 }}>Shuma e mbetur ruhet si borxh pÃ«r klientin</div>
+              <div style={{ fontSize: 11, color: isCredit ? "#92400E" : T.textMuted, opacity: .85 }}>Shuma e mbetur ruhet si borxh pÃƒÂ«r klientin</div>
             </div>
           </label>
 
           {/* Credit info panel */}
           {isCredit && (
             <div style={{ background: "#FFFBEB", border: "1.5px solid #FCD34D", borderRadius: 10, padding: "10px 12px", marginBottom: 10, fontSize: 12, color: "#78350F" }}>
-              <div style={{ display: "flex", justifyContent: "space-between", marginBottom: 4 }}><span>Shuma e pagesÃ«s:</span><b>â‚¬{total.toFixed(2)}</b></div>
-              <div style={{ display: "flex", justifyContent: "space-between", marginBottom: 4 }}><span>Ka paguar klienti:</span><b>â‚¬{paid.toFixed(2)}</b></div>
-              <div style={{ display: "flex", justifyContent: "space-between", paddingTop: 4, borderTop: "1px dashed #FCD34D", fontSize: 13 }}><span>Mbet borxh:</span><b style={{ color: "#B91C1C", fontSize: 15 }}>â‚¬{remaining.toFixed(2)}</b></div>
+              <div style={{ display: "flex", justifyContent: "space-between", marginBottom: 4 }}><span>Shuma e pagesÃƒÂ«s:</span><b>Ã¢â€šÂ¬{total.toFixed(2)}</b></div>
+              <div style={{ display: "flex", justifyContent: "space-between", marginBottom: 4 }}><span>Ka paguar klienti:</span><b>Ã¢â€šÂ¬{paid.toFixed(2)}</b></div>
+              <div style={{ display: "flex", justifyContent: "space-between", paddingTop: 4, borderTop: "1px dashed #FCD34D", fontSize: 13 }}><span>Mbet borxh:</span><b style={{ color: "#B91C1C", fontSize: 15 }}>Ã¢â€šÂ¬{remaining.toFixed(2)}</b></div>
             </div>
           )}
 
           {/* Client info */}
-          <input type="text" value={clientName} onChange={e => setClientName(e.target.value)} placeholder={isCredit ? "Emri i klientit (i detyrueshÃ«m) *" : "Emri i klientit (opsional)"}
+          <input type="text" value={clientName} onChange={e => setClientName(e.target.value)} placeholder={isCredit ? "Emri i klientit (i detyrueshÃƒÂ«m) *" : "Emri i klientit (opsional)"}
             style={{ width: "100%", padding: "10px 12px", borderRadius: 10, border: `1.5px solid ${isCredit && !clientName.trim() ? T.danger : T.border}`, fontSize: 13, background: T.inputBg, color: T.text, outline: "none", boxSizing: "border-box", marginBottom: 8, fontFamily: "inherit" }} />
           {isCredit && (
-            <input type="text" value={clientPhone} onChange={e => setClientPhone(e.target.value)} placeholder="Telefoni (opsional, pÃ«r kontakt)"
+            <input type="text" value={clientPhone} onChange={e => setClientPhone(e.target.value)} placeholder="Telefoni (opsional, pÃƒÂ«r kontakt)"
               style={{ width: "100%", padding: "10px 12px", borderRadius: 10, border: `1.5px solid ${T.border}`, fontSize: 13, background: T.inputBg, color: T.text, outline: "none", boxSizing: "border-box", marginBottom: 10, fontFamily: "inherit" }} />
           )}
 
           <label style={{ display: "flex", alignItems: "center", gap: 8, fontSize: 12, color: T.textMuted, cursor: "pointer", marginBottom: 14 }}>
             <input type="checkbox" checked={printReceipt} onChange={e => setPrintReceipt(e.target.checked)} style={{ accentColor: T.accent }} />
-            Printo kuponin pas pagesÃ«s
+            Printo kuponin pas pagesÃƒÂ«s
           </label>
 
           {/* Submit */}
           <button onClick={() => canSubmit && onComplete({ paid: isCredit ? paid : (paid || total), method, clientName, clientPhone, printReceipt, isCredit, remaining: isCredit ? remaining : 0 })}
             disabled={!canSubmit}
             style={{ width: "100%", background: !canSubmit ? T.surfaceAlt : (isCredit ? "linear-gradient(135deg,#F59E0B,#D97706)" : T.accentGrad), color: !canSubmit ? T.textFaint : "#fff", border: "none", borderRadius: 12, padding: "14px", cursor: !canSubmit ? "not-allowed" : "pointer", fontWeight: 800, fontSize: 15, display: "flex", alignItems: "center", justifyContent: "center", gap: 8, fontFamily: "inherit" }}>
-            {PIc.check(16)} {isCredit ? "Regjistro Borxhin" : "PÃ«rfundo Shitjen"}
+            {PIc.check(16)} {isCredit ? "Regjistro Borxhin" : "PÃƒÂ«rfundo Shitjen"}
           </button>
         </div>
       </div>
@@ -3656,7 +3656,7 @@ function buildWarrantyA4Html(form, business) {
           ${biz.logo ? `<img src="${biz.logo}" alt="logo">` : ''}
           <div>
             <div class="biz-name">${biz.name || "Biznesi"}</div>
-            <div class="biz-sub">${biz.address || ""} ${biz.city || ""} Â· Tel: ${biz.phone || ""}</div>
+            <div class="biz-sub">${biz.address || ""} ${biz.city || ""} Ã‚Â· Tel: ${biz.phone || ""}</div>
             ${biz.email ? `<div class="biz-sub">${biz.email}</div>` : ""}
           </div>
         </div>
@@ -3668,24 +3668,24 @@ function buildWarrantyA4Html(form, business) {
       </div>
 
       <div class="section">
-        <div class="section-title">TÃ« dhÃ«nat e klientit</div>
+        <div class="section-title">TÃƒÂ« dhÃƒÂ«nat e klientit</div>
         <div class="grid">
-          <div class="field"><div class="label">Emri dhe mbiemri</div><div class="value">${form.clientName || "â€”"}</div></div>
-          <div class="field"><div class="label">Telefoni</div><div class="value">${form.clientPhone || "â€”"}</div></div>
-          <div class="field" style="grid-column: 1 / -1;"><div class="label">Adresa</div><div class="value">${form.clientAddress || "â€”"}</div></div>
+          <div class="field"><div class="label">Emri dhe mbiemri</div><div class="value">${form.clientName || "Ã¢â‚¬â€"}</div></div>
+          <div class="field"><div class="label">Telefoni</div><div class="value">${form.clientPhone || "Ã¢â‚¬â€"}</div></div>
+          <div class="field" style="grid-column: 1 / -1;"><div class="label">Adresa</div><div class="value">${form.clientAddress || "Ã¢â‚¬â€"}</div></div>
         </div>
       </div>
 
       <div class="section">
-        <div class="section-title">TÃ« dhÃ«nat e produktit</div>
+        <div class="section-title">TÃƒÂ« dhÃƒÂ«nat e produktit</div>
         <div class="grid">
-          <div class="field" style="grid-column: 1 / -1;"><div class="label">Emri i produktit</div><div class="value">${form.productName || "â€”"}</div></div>
-          <div class="field"><div class="label">Marka</div><div class="value">${form.brand || "â€”"}</div></div>
-          <div class="field"><div class="label">Modeli</div><div class="value">${form.model || "â€”"}</div></div>
-          <div class="field"><div class="label">Nr. Serik (S/N)</div><div class="value">${form.serialNo || "â€”"}</div></div>
-          <div class="field"><div class="label">IMEI</div><div class="value">${form.imei || "â€”"}</div></div>
-          <div class="field"><div class="label">Gjendja</div><div class="value">${form.condition === 'new' ? 'I ri (New)' : 'I pÃ«rdorur (Used)'}</div></div>
-          <div class="field"><div class="label">AksesorÃ«t</div><div class="value">${form.accessories || "â€”"}</div></div>
+          <div class="field" style="grid-column: 1 / -1;"><div class="label">Emri i produktit</div><div class="value">${form.productName || "Ã¢â‚¬â€"}</div></div>
+          <div class="field"><div class="label">Marka</div><div class="value">${form.brand || "Ã¢â‚¬â€"}</div></div>
+          <div class="field"><div class="label">Modeli</div><div class="value">${form.model || "Ã¢â‚¬â€"}</div></div>
+          <div class="field"><div class="label">Nr. Serik (S/N)</div><div class="value">${form.serialNo || "Ã¢â‚¬â€"}</div></div>
+          <div class="field"><div class="label">IMEI</div><div class="value">${form.imei || "Ã¢â‚¬â€"}</div></div>
+          <div class="field"><div class="label">Gjendja</div><div class="value">${form.condition === 'new' ? 'I ri (New)' : 'I pÃƒÂ«rdorur (Used)'}</div></div>
+          <div class="field"><div class="label">AksesorÃƒÂ«t</div><div class="value">${form.accessories || "Ã¢â‚¬â€"}</div></div>
         </div>
       </div>
 
@@ -3693,24 +3693,24 @@ function buildWarrantyA4Html(form, business) {
         <div class="months">${form.periodMonths} MUAJ</div>
         <div class="label">PERIUDHA E GARANCIONIT</div>
         <div style="margin-top:10px; font-size:12px; opacity:.95">
-          ${new Date(form.startDate).toLocaleDateString('sq-AL')} &nbsp;â†’&nbsp; ${new Date(form.endDate).toLocaleDateString('sq-AL')}
+          ${new Date(form.startDate).toLocaleDateString('sq-AL')} &nbsp;Ã¢â€ â€™&nbsp; ${new Date(form.endDate).toLocaleDateString('sq-AL')}
         </div>
       </div>
 
-      ${form.notes ? `<div class="section"><div class="section-title">ShÃ«nime</div><div style="font-size:12px;color:#334155">${form.notes}</div></div>` : ''}
+      ${form.notes ? `<div class="section"><div class="section-title">ShÃƒÂ«nime</div><div style="font-size:12px;color:#334155">${form.notes}</div></div>` : ''}
 
       <div class="terms">
-        <b>Kushtet e garancionit:</b> Garancioni mbulon defektet nÃ« material dhe punim nÃ«n pÃ«rdorim normal.
-        Nuk mbulohen: dÃ«mtime fizike, dÃ«mtime nga lagÃ«shtia, pÃ«rdorim i gabuar, riparime nga persona tÃ« paautorizuar,
-        apo ndryshime softverike. Klienti duhet tÃ« prezantojÃ« kÃ«tÃ« certifikatÃ« dhe provÃ«n e blerjes pÃ«r Ã§do kÃ«rkesÃ« garancioni.
+        <b>Kushtet e garancionit:</b> Garancioni mbulon defektet nÃƒÂ« material dhe punim nÃƒÂ«n pÃƒÂ«rdorim normal.
+        Nuk mbulohen: dÃƒÂ«mtime fizike, dÃƒÂ«mtime nga lagÃƒÂ«shtia, pÃƒÂ«rdorim i gabuar, riparime nga persona tÃƒÂ« paautorizuar,
+        apo ndryshime softverike. Klienti duhet tÃƒÂ« prezantojÃƒÂ« kÃƒÂ«tÃƒÂ« certifikatÃƒÂ« dhe provÃƒÂ«n e blerjes pÃƒÂ«r ÃƒÂ§do kÃƒÂ«rkesÃƒÂ« garancioni.
       </div>
 
       <div class="signatures">
-        <div class="sig">SHITÃ‹SI<br><span style="font-size:10px;font-weight:normal">(Vula & NÃ«nshkrimi)</span></div>
-        <div class="sig">KLIENTI<br><span style="font-size:10px;font-weight:normal">(NÃ«nshkrimi)</span></div>
+        <div class="sig">SHITÃƒâ€¹SI<br><span style="font-size:10px;font-weight:normal">(Vula & NÃƒÂ«nshkrimi)</span></div>
+        <div class="sig">KLIENTI<br><span style="font-size:10px;font-weight:normal">(NÃƒÂ«nshkrimi)</span></div>
       </div>
 
-      <div class="footer">Ky dokument Ã«shtÃ« gjeneruar elektronikisht nga sistemi ProPhone.</div>
+      <div class="footer">Ky dokument ÃƒÂ«shtÃƒÂ« gjeneruar elektronikisht nga sistemi ProPhone.</div>
     </div>
     <script>window.onload=()=>{setTimeout(()=>window.print(),200);}</script>
     </body></html>`;
@@ -3747,7 +3747,7 @@ function WarrantyDialog({ T, business, warranty, onSave, onClose }) {
 
   const saveAndPrint = (alsoPrint) => {
     if (!form.clientName.trim() || !form.productName.trim()) {
-      alert("Emri i klientit dhe emri i produktit janÃ« tÃ« detyrueshme.");
+      alert("Emri i klientit dhe emri i produktit janÃƒÂ« tÃƒÂ« detyrueshme.");
       return;
     }
     const record = {
@@ -3771,8 +3771,8 @@ function WarrantyDialog({ T, business, warranty, onSave, onClose }) {
           <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
             <div style={{ width: 36, height: 36, borderRadius: 10, background: `${T.accent}15`, color: T.accent, display: "flex", alignItems: "center", justifyContent: "center" }}>{PIc.shield(18)}</div>
             <div>
-              <h3 style={{ margin: 0, fontSize: 16, fontWeight: 800, color: T.text }}>CertifikatÃ« Garancioni</h3>
-              <div style={{ fontSize: 11, color: T.textMuted, marginTop: 2 }}>Dokument zyrtar â€” Format A4</div>
+              <h3 style={{ margin: 0, fontSize: 16, fontWeight: 800, color: T.text }}>CertifikatÃƒÂ« Garancioni</h3>
+              <div style={{ fontSize: 11, color: T.textMuted, marginTop: 2 }}>Dokument zyrtar Ã¢â‚¬â€ Format A4</div>
             </div>
           </div>
           <button onClick={onClose} style={{ background: "transparent", border: `1px solid ${T.border}`, borderRadius: 8, width: 32, height: 32, cursor: "pointer", color: T.textMuted, display: "flex", alignItems: "center", justifyContent: "center" }}>{PIc.close(14)}</button>
@@ -3786,7 +3786,7 @@ function WarrantyDialog({ T, business, warranty, onSave, onClose }) {
               <select value={form.condition} onChange={e => upd("condition", e.target.value)}
                 style={{ width: "100%", padding: "9px 12px", borderRadius: 8, border: `1.5px solid ${T.border}`, fontSize: 13, background: T.inputBg, color: T.text, outline: "none", boxSizing: "border-box", fontFamily: "inherit" }}>
                 <option value="new">I ri (New)</option>
-                <option value="used">I pÃ«rdorur (Used)</option>
+                <option value="used">I pÃƒÂ«rdorur (Used)</option>
               </select>
             </div>
           </div>
@@ -3805,7 +3805,7 @@ function WarrantyDialog({ T, business, warranty, onSave, onClose }) {
             {F("Modeli", "model", { placeholder: "A2890..." })}
             {F("Nr. Serik (S/N)", "serialNo")}
             {F("IMEI", "imei")}
-            {F("AksesorÃ«t", "accessories", { span: 2, placeholder: "Karikues, kufje, kuti..." })}
+            {F("AksesorÃƒÂ«t", "accessories", { span: 2, placeholder: "Karikues, kufje, kuti..." })}
           </div>
 
           <div style={{ fontSize: 11, fontWeight: 700, color: T.accent, textTransform: "uppercase", letterSpacing: 1, marginBottom: 10 }}>Periudha e Garancionit</div>
@@ -3818,11 +3818,11 @@ function WarrantyDialog({ T, business, warranty, onSave, onClose }) {
               </select>
             </div>
             {F("Nga data", "startDate", { type: "date" })}
-            {F("Deri mÃ«", "endDate", { type: "date" })}
+            {F("Deri mÃƒÂ«", "endDate", { type: "date" })}
           </div>
 
           <div>
-            <label style={{ display: "block", fontSize: 11, fontWeight: 600, color: T.textMuted, marginBottom: 4, textTransform: "uppercase", letterSpacing: 0.3 }}>ShÃ«nime shtesÃ«</label>
+            <label style={{ display: "block", fontSize: 11, fontWeight: 600, color: T.textMuted, marginBottom: 4, textTransform: "uppercase", letterSpacing: 0.3 }}>ShÃƒÂ«nime shtesÃƒÂ«</label>
             <textarea value={form.notes} onChange={e => upd("notes", e.target.value)} rows={3}
               style={{ width: "100%", padding: "10px 12px", borderRadius: 8, border: `1.5px solid ${T.border}`, fontSize: 13, background: T.inputBg, color: T.text, outline: "none", boxSizing: "border-box", fontFamily: "inherit", resize: "vertical" }} />
           </div>
@@ -3859,7 +3859,7 @@ function WarrantyList({ T, business, warranties, onClose, onDelete }) {
           <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
             <div style={{ width: 36, height: 36, borderRadius: 10, background: `${T.accent}15`, color: T.accent, display: "flex", alignItems: "center", justifyContent: "center" }}>{PIc.shieldList(18)}</div>
             <div>
-              <h3 style={{ margin: 0, fontSize: 16, fontWeight: 800, color: T.text }}>Garancionet e lÃ«shuara</h3>
+              <h3 style={{ margin: 0, fontSize: 16, fontWeight: 800, color: T.text }}>Garancionet e lÃƒÂ«shuara</h3>
               <div style={{ fontSize: 11, color: T.textMuted, marginTop: 2 }}>{warranties.length} certifikata gjithsej</div>
             </div>
           </div>
@@ -3868,7 +3868,7 @@ function WarrantyList({ T, business, warranties, onClose, onDelete }) {
         <div style={{ padding: "14px 24px", borderBottom: `1px solid ${T.border}` }}>
           <div style={{ position: "relative" }}>
             <span style={{ position: "absolute", left: 12, top: "50%", transform: "translateY(-50%)", color: T.textFaint }}>{PIc.search(14)}</span>
-            <input type="text" value={search} onChange={e => setSearch(e.target.value)} placeholder="KÃ«rko sipas klientit, produktit ose nr. certifikatÃ«s..."
+            <input type="text" value={search} onChange={e => setSearch(e.target.value)} placeholder="KÃƒÂ«rko sipas klientit, produktit ose nr. certifikatÃƒÂ«s..."
               style={{ width: "100%", padding: "10px 14px 10px 34px", borderRadius: 10, border: `1.5px solid ${T.border}`, fontSize: 13, background: T.inputBg, color: T.text, outline: "none", boxSizing: "border-box", fontFamily: "inherit" }} />
           </div>
         </div>
@@ -3876,7 +3876,7 @@ function WarrantyList({ T, business, warranties, onClose, onDelete }) {
           {filtered.length === 0 ? (
             <div style={{ padding: "60px 20px", textAlign: "center", color: T.textFaint, fontSize: 13 }}>
               <div style={{ marginBottom: 10, color: T.textMuted, display: "flex", justifyContent: "center" }}>{PIc.shieldList(40)}</div>
-              Nuk ka garancione tÃ« ruajtur ende.
+              Nuk ka garancione tÃƒÂ« ruajtur ende.
             </div>
           ) : filtered.map(w => {
             const isExpired = w.endDate && new Date(w.endDate) < new Date();
@@ -3890,14 +3890,14 @@ function WarrantyList({ T, business, warranties, onClose, onDelete }) {
                     </span>
                   </div>
                   <div style={{ fontSize: 12, color: T.textMuted }}>
-                    <b style={{ color: T.text }}>{w.clientName}</b> Â· {w.certNo} Â· Skadon: {w.endDate ? new Date(w.endDate).toLocaleDateString('sq-AL') : "â€”"}
+                    <b style={{ color: T.text }}>{w.clientName}</b> Ã‚Â· {w.certNo} Ã‚Â· Skadon: {w.endDate ? new Date(w.endDate).toLocaleDateString('sq-AL') : "Ã¢â‚¬â€"}
                   </div>
                 </div>
                 <div style={{ display: "flex", gap: 6 }}>
                   <button onClick={() => printWarrantyA4(w, business)} style={{ background: T.surface, border: `1.5px solid ${T.border}`, borderRadius: 8, padding: "7px 12px", cursor: "pointer", fontSize: 12, fontWeight: 700, color: T.accent, display: "flex", alignItems: "center", gap: 4, fontFamily: "inherit" }}>
                     {PIc.printer(12)} Printo
                   </button>
-                  <button onClick={() => { if (window.confirm("Fshi kÃ«tÃ« garancion?")) onDelete(w.id); }} style={{ background: T.surface, border: `1.5px solid ${T.border}`, borderRadius: 8, padding: "7px 10px", cursor: "pointer", color: T.danger, fontFamily: "inherit" }}>
+                  <button onClick={() => { if (window.confirm("Fshi kÃƒÂ«tÃƒÂ« garancion?")) onDelete(w.id); }} style={{ background: T.surface, border: `1.5px solid ${T.border}`, borderRadius: 8, padding: "7px 10px", cursor: "pointer", color: T.danger, fontFamily: "inherit" }}>
                     {PIc.trashLine(12)}
                   </button>
                 </div>
@@ -3919,13 +3919,13 @@ function ClientDialog({ T, initial, onSave, onClose }) {
         <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", padding: "16px 20px", borderBottom: `1px solid ${T.border}` }}>
           <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
             <div style={{ width: 34, height: 34, borderRadius: 10, background: `${T.accent}15`, color: T.accent, display: "flex", alignItems: "center", justifyContent: "center" }}>{PIc.user(16)}</div>
-            <h3 style={{ margin: 0, fontSize: 15, fontWeight: 800, color: T.text }}>TÃ« dhÃ«nat e blerÃ«sit</h3>
+            <h3 style={{ margin: 0, fontSize: 15, fontWeight: 800, color: T.text }}>TÃƒÂ« dhÃƒÂ«nat e blerÃƒÂ«sit</h3>
           </div>
           <button onClick={onClose} style={{ background: "transparent", border: `1px solid ${T.border}`, borderRadius: 8, width: 30, height: 30, cursor: "pointer", color: T.textMuted, display: "flex", alignItems: "center", justifyContent: "center" }}>{PIc.close(13)}</button>
         </div>
         <div style={{ padding: "18px 20px" }}>
-          <div style={{ marginBottom: 12 }}><FormField T={T} label="Emri i blerÃ«sit / KompanisÃ«" value={form.name} onChange={e => setK("name", e.target.value)} placeholder="Emri i plotÃ« ose emri i kompanisÃ«" /></div>
-          <div style={{ marginBottom: 12 }}><FormField T={T} label="Adresa" value={form.address} onChange={e => setK("address", e.target.value)} placeholder="Adresa e blerÃ«sit" /></div>
+          <div style={{ marginBottom: 12 }}><FormField T={T} label="Emri i blerÃƒÂ«sit / KompanisÃƒÂ«" value={form.name} onChange={e => setK("name", e.target.value)} placeholder="Emri i plotÃƒÂ« ose emri i kompanisÃƒÂ«" /></div>
+          <div style={{ marginBottom: 12 }}><FormField T={T} label="Adresa" value={form.address} onChange={e => setK("address", e.target.value)} placeholder="Adresa e blerÃƒÂ«sit" /></div>
           <div style={{ marginBottom: 12 }}><FormField T={T} label="Telefoni" value={form.phone} onChange={e => setK("phone", e.target.value)} placeholder="+383 XX XXX XXX" /></div>
           <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 12 }}>
             <FormField T={T} label="NUI" value={form.nui} onChange={e => setK("nui", e.target.value)} placeholder="Numri Unik" />
@@ -4052,10 +4052,10 @@ function POSView({ T, business, products, onSale, sales, warranties, onAddWarran
     };
     const itemRows = sale.items.map(i => {
       const line1 = i.name;
-      const line2 = `${pad(i.qty, 4, "r")} ${pad("â‚¬" + i.price.toFixed(2), 9, "r")} ${pad("â‚¬" + i.total.toFixed(2), 9, "r")}`;
+      const line2 = `${pad(i.qty, 4, "r")} ${pad("Ã¢â€šÂ¬" + i.price.toFixed(2), 9, "r")} ${pad("Ã¢â€šÂ¬" + i.total.toFixed(2), 9, "r")}`;
       return `<div class="item-row"><div class="item-name">${line1}</div><div class="item-meta">${line2}</div></div>`;
     }).join("");
-    const itemRowsShort = sale.items.map(i => `<div class="item-short"><span>${i.name} Ã—${i.qty}</span><span>â‚¬${i.total.toFixed(2)}</span></div>`).join("");
+    const itemRowsShort = sale.items.map(i => `<div class="item-short"><span>${i.name} Ãƒâ€”${i.qty}</span><span>Ã¢â€šÂ¬${i.total.toFixed(2)}</span></div>`).join("");
     w.document.write(`<html><head><title>Kupon ${sale.receiptNo}</title>
       <style>
         @page { size: 80mm 210mm; margin: 0; }
@@ -4097,29 +4097,29 @@ function POSView({ T, business, products, onSale, sales, warranties, onAddWarran
       <div class="kv"><span>Nr:</span><span class="b">${sale.receiptNo}</span></div>
       <div class="kv"><span>Data:</span><span>${dateStr}</span></div>
       <div class="kv"><span>Ora:</span><span>${timeStr}</span></div>
-      <div class="kv"><span>ArkÃ«tar:</span><span>${cashier}</span></div>
+      <div class="kv"><span>ArkÃƒÂ«tar:</span><span>${cashier}</span></div>
       ${sale.clientName ? `<div class="kv"><span>Klient:</span><span>${sale.clientName}</span></div>` : ""}
       <hr class="sep">
-      <div class="tbl-head"><span>Artikulli</span><span>Sas</span><span>Ã‡mimi</span><span>Vlera</span></div>
+      <div class="tbl-head"><span>Artikulli</span><span>Sas</span><span>Ãƒâ€¡mimi</span><span>Vlera</span></div>
       ${itemRows}
       <hr class="sep">
-      ${sale.isCredit ? `<div class="credit-banner">â˜… SHITJE ME BORXH â˜…</div>` : ""}
-      <div class="totals-row"><span>NÃ«ntotali:</span><span>${sale.total.toFixed(2)} EUR</span></div>
+      ${sale.isCredit ? `<div class="credit-banner">Ã¢Ëœâ€¦ SHITJE ME BORXH Ã¢Ëœâ€¦</div>` : ""}
+      <div class="totals-row"><span>NÃƒÂ«ntotali:</span><span>${sale.total.toFixed(2)} EUR</span></div>
       <div class="grand"><span>TOTALI:</span><span>${sale.total.toFixed(2)} EUR</span></div>
-      <div class="totals-row"><span>MÃ«nyra:</span><span class="b">${sale.paymentMethod === "bank" ? "BANK" : "CASH"}</span></div>
+      <div class="totals-row"><span>MÃƒÂ«nyra:</span><span class="b">${sale.paymentMethod === "bank" ? "BANK" : "CASH"}</span></div>
       <div class="totals-row"><span>Paguar:</span><span>${sale.paid.toFixed(2)} EUR</span></div>
       ${sale.isCredit ? `<div class="totals-row"><span>Borxh:</span><span class="b">${(sale.total - sale.paid).toFixed(2)} EUR</span></div>` : ""}
       <div class="totals-row"><span>Kusuri:</span><span>${sale.change.toFixed(2)} EUR</span></div>
       <hr class="sep">
       <div class="c foot-thanks">FALEMINDERIT!</div>
-      <div class="c foot-sub">Ju mirÃ«presim pÃ«rsÃ«ri!</div>
+      <div class="c foot-sub">Ju mirÃƒÂ«presim pÃƒÂ«rsÃƒÂ«ri!</div>
       <hr class="sep">
-      <div class="c" style="font-size:10px;color:#333">${biz.name || "Biznesi"} Â· ${dateStr}, ${timeStr}</div>
-      <div class="cut">â•Œâ•Œâ•Œâ•Œâ•Œâ•Œâ•Œâ•Œâ•Œâ•Œâ•Œâ•Œâ•Œâ•Œâ•Œâ•Œâ•Œâ•Œâ•Œâ•Œâ•Œâ•Œâ•Œâ•Œâ•Œ</div>
-      <div class="c"><span class="cut-box">âœ‚ SHKYÃ‡ KÃ‹TU âœ‚</span></div>
-      <div class="cut">â•Œâ•Œâ•Œâ•Œâ•Œâ•Œâ•Œâ•Œâ•Œâ•Œâ•Œâ•Œâ•Œâ•Œâ•Œâ•Œâ•Œâ•Œâ•Œâ•Œâ•Œâ•Œâ•Œâ•Œâ•Œ</div>
+      <div class="c" style="font-size:10px;color:#333">${biz.name || "Biznesi"} Ã‚Â· ${dateStr}, ${timeStr}</div>
+      <div class="cut">Ã¢â€¢Å’Ã¢â€¢Å’Ã¢â€¢Å’Ã¢â€¢Å’Ã¢â€¢Å’Ã¢â€¢Å’Ã¢â€¢Å’Ã¢â€¢Å’Ã¢â€¢Å’Ã¢â€¢Å’Ã¢â€¢Å’Ã¢â€¢Å’Ã¢â€¢Å’Ã¢â€¢Å’Ã¢â€¢Å’Ã¢â€¢Å’Ã¢â€¢Å’Ã¢â€¢Å’Ã¢â€¢Å’Ã¢â€¢Å’Ã¢â€¢Å’Ã¢â€¢Å’Ã¢â€¢Å’Ã¢â€¢Å’Ã¢â€¢Å’</div>
+      <div class="c"><span class="cut-box">Ã¢Å“â€š SHKYÃƒâ€¡ KÃƒâ€¹TU Ã¢Å“â€š</span></div>
+      <div class="cut">Ã¢â€¢Å’Ã¢â€¢Å’Ã¢â€¢Å’Ã¢â€¢Å’Ã¢â€¢Å’Ã¢â€¢Å’Ã¢â€¢Å’Ã¢â€¢Å’Ã¢â€¢Å’Ã¢â€¢Å’Ã¢â€¢Å’Ã¢â€¢Å’Ã¢â€¢Å’Ã¢â€¢Å’Ã¢â€¢Å’Ã¢â€¢Å’Ã¢â€¢Å’Ã¢â€¢Å’Ã¢â€¢Å’Ã¢â€¢Å’Ã¢â€¢Å’Ã¢â€¢Å’Ã¢â€¢Å’Ã¢â€¢Å’Ã¢â€¢Å’</div>
       <div class="store-copy">
-        <div class="store-copy-title">KOPJE ARKÃ‹TAR</div>
+        <div class="store-copy-title">KOPJE ARKÃƒâ€¹TAR</div>
         <div style="font-size:11px"><b>Nr:</b> ${sale.receiptNo} | ${dateStr} ${timeStr}</div>
         ${itemRowsShort}
         <div class="kv" style="margin-top:4px; border-top:1px dashed #000; padding-top:4px;"><b>TOTAL:</b><b>${sale.total.toFixed(2)} EUR</b></div>
@@ -4176,21 +4176,21 @@ function POSView({ T, business, products, onSale, sales, warranties, onAddWarran
               <div class="biz-name">${biz.name || "Biznesi"}</div>
               <div class="biz-sub">
                 ${biz.address || ""} ${biz.city || ""}<br>
-                Tel: ${biz.phone || ""} ${biz.email ? "Â· " + biz.email : ""}
+                Tel: ${biz.phone || ""} ${biz.email ? "Ã‚Â· " + biz.email : ""}
               </div>
             </div>
           </div>
           <div class="title-box">
-            <div class="title">FATURÃ‹</div>
-            <div class="inv-no">Nr. FaturÃ«s: <b>${invoiceNo}</b></div>
+            <div class="title">FATURÃƒâ€¹</div>
+            <div class="inv-no">Nr. FaturÃƒÂ«s: <b>${invoiceNo}</b></div>
             <div class="inv-no">Data: ${new Date().toLocaleString('sq-AL')}</div>
           </div>
         </div>
 
         <div class="parties">
           <div class="party-box">
-            <div class="party-title">ShitÃ«si</div>
-            <div class="party-name">${biz.name || "â€”"}</div>
+            <div class="party-title">ShitÃƒÂ«si</div>
+            <div class="party-name">${biz.name || "Ã¢â‚¬â€"}</div>
             <div class="party-info">
               ${biz.address || ""}<br>
               ${biz.city || ""}
@@ -4199,7 +4199,7 @@ function POSView({ T, business, products, onSale, sales, warranties, onAddWarran
             </div>
           </div>
           <div class="party-box">
-            <div class="party-title">BlerÃ«si</div>
+            <div class="party-title">BlerÃƒÂ«si</div>
             <div class="party-name">${client?.name || "Konsumator final"}</div>
             <div class="party-info">
               ${client?.address || ""}
@@ -4212,9 +4212,9 @@ function POSView({ T, business, products, onSale, sales, warranties, onAddWarran
 
         <table class="items">
           <thead><tr>
-            <th style="width:40px">Nr.</th><th>PÃ«rshkrimi</th>
+            <th style="width:40px">Nr.</th><th>PÃƒÂ«rshkrimi</th>
             <th class="r" style="width:70px">Sasia</th>
-            <th class="r" style="width:90px">Ã‡mimi</th>
+            <th class="r" style="width:90px">Ãƒâ€¡mimi</th>
             <th class="r" style="width:80px">Zbritja</th>
             <th class="r" style="width:70px">TVSH</th>
             <th class="r" style="width:90px">Totali</th>
@@ -4224,33 +4224,33 @@ function POSView({ T, business, products, onSale, sales, warranties, onAddWarran
               <td>${i+1}</td>
               <td>${x.name}</td>
               <td class="r">${x.qty}</td>
-              <td class="r">â‚¬${x.price.toFixed(2)}</td>
+              <td class="r">Ã¢â€šÂ¬${x.price.toFixed(2)}</td>
               <td class="r">0%</td>
               <td class="r">0%</td>
-              <td class="r"><b>â‚¬${(x.price * x.qty).toFixed(2)}</b></td>
+              <td class="r"><b>Ã¢â€šÂ¬${(x.price * x.qty).toFixed(2)}</b></td>
             </tr>`).join("")}
           </tbody>
         </table>
 
         <div class="totals">
           <div class="totals-box">
-            <div class="totals-row"><span>NÃ«ntotali:</span><b>â‚¬${subtotal.toFixed(2)}</b></div>
-            <div class="totals-row"><span>Zbritja:</span><b style="color:#ef4444">-â‚¬${totalDiscount.toFixed(2)}</b></div>
-            <div class="totals-row"><span>TVSH:</span><b>â‚¬${totalVat.toFixed(2)}</b></div>
-            <div class="totals-row grand"><span>TOTALI:</span><span>â‚¬${grandTotal.toFixed(2)}</span></div>
+            <div class="totals-row"><span>NÃƒÂ«ntotali:</span><b>Ã¢â€šÂ¬${subtotal.toFixed(2)}</b></div>
+            <div class="totals-row"><span>Zbritja:</span><b style="color:#ef4444">-Ã¢â€šÂ¬${totalDiscount.toFixed(2)}</b></div>
+            <div class="totals-row"><span>TVSH:</span><b>Ã¢â€šÂ¬${totalVat.toFixed(2)}</b></div>
+            <div class="totals-row grand"><span>TOTALI:</span><span>Ã¢â€šÂ¬${grandTotal.toFixed(2)}</span></div>
           </div>
         </div>
 
         <div class="payment-info">
-          <span>Metoda e pagesÃ«s: <b>Cash</b></span>
-          <span>Paguar: <b>â‚¬0.00</b></span>
-          <span>Kusuri: <b>â‚¬0.00</b></span>
+          <span>Metoda e pagesÃƒÂ«s: <b>Cash</b></span>
+          <span>Paguar: <b>Ã¢â€šÂ¬0.00</b></span>
+          <span>Kusuri: <b>Ã¢â€šÂ¬0.00</b></span>
         </div>
 
         <div class="footer">
-          <div class="ty">Faleminderit pÃ«r blerjen tuaj!</div>
-          PÃ«r Ã§do pyetje kontaktoni: ${biz.phone || biz.email || ""}<br>
-          <span style="font-style:italic;color:#94a3b8">Kjo faturÃ« Ã«shtÃ« gjeneruar automatikisht nga sistemi ProPhone.</span>
+          <div class="ty">Faleminderit pÃƒÂ«r blerjen tuaj!</div>
+          PÃƒÂ«r ÃƒÂ§do pyetje kontaktoni: ${biz.phone || biz.email || ""}<br>
+          <span style="font-style:italic;color:#94a3b8">Kjo faturÃƒÂ« ÃƒÂ«shtÃƒÂ« gjeneruar automatikisht nga sistemi ProPhone.</span>
         </div>
       </div>
       <script>window.onload=()=>{setTimeout(()=>window.print(),200);}</script>
@@ -4263,14 +4263,14 @@ function POSView({ T, business, products, onSale, sales, warranties, onAddWarran
     const w = window.open("", "_blank", "width=420,height=700");
     if (!w) return;
     const biz = business || {};
-    w.document.write(`<html><head><title>NotÃ«</title>
+    w.document.write(`<html><head><title>NotÃƒÂ«</title>
       <style>body{font-family:ui-monospace,monospace;padding:12px;font-size:12px;max-width:320px;margin:0 auto;color:#000}.c{text-align:center}.r{text-align:right}.b{font-weight:700}hr{border:0;border-top:1px dashed #000;margin:8px 0}table{width:100%;border-collapse:collapse}td{padding:2px 0}</style></head><body>
       <div class="c b">${biz.name || "Biznesi"}</div>
-      <hr><div class="c b">NOTÃ‹ (JO FATURÃ‹)</div>
+      <hr><div class="c b">NOTÃƒâ€¹ (JO FATURÃƒâ€¹)</div>
       <div>Data: ${new Date().toLocaleString('sq-AL')}</div><hr>
       <table><tr class="b"><td>Artikull</td><td class="r">Sasi</td><td class="r">Total</td></tr>
-      ${cart.map(i => `<tr><td>${i.name}</td><td class="r">${i.qty}</td><td class="r">â‚¬${(i.price * i.qty).toFixed(2)}</td></tr>`).join("")}
-      </table><hr><div class="r b">Total: â‚¬${grandTotal.toFixed(2)}</div>
+      ${cart.map(i => `<tr><td>${i.name}</td><td class="r">${i.qty}</td><td class="r">Ã¢â€šÂ¬${(i.price * i.qty).toFixed(2)}</td></tr>`).join("")}
+      </table><hr><div class="r b">Total: Ã¢â€šÂ¬${grandTotal.toFixed(2)}</div>
       <script>window.onload=()=>{setTimeout(()=>window.print(),150);}</script></body></html>`);
     w.document.close();
   };
@@ -4318,21 +4318,21 @@ function POSView({ T, business, products, onSale, sales, warranties, onAddWarran
           </button>
           {business?.logo && <img src={business.logo} alt="" style={{ width: 30, height: 30, objectFit: "contain", borderRadius: 6 }} />}
           <div style={{ fontWeight: 800, fontSize: 17, color: T.accent }}>{business?.name || "Biznesi"}</div>
-          <span style={{ color: T.border }}>â”‚</span>
+          <span style={{ color: T.border }}>Ã¢â€â€š</span>
           <span style={{ fontSize: 13, fontWeight: 600, color: T.text }}>Arka</span>
           <span style={{ background: "#D1FAE5", color: "#059669", padding: "3px 10px", borderRadius: 20, fontSize: 10, fontWeight: 700, letterSpacing: 0.5, marginLeft: 2 }}>E HAPUR</span>
           {client && (
             <>
-              <span style={{ color: T.border }}>â”‚</span>
+              <span style={{ color: T.border }}>Ã¢â€â€š</span>
               <span style={{ fontSize: 12, color: T.textMuted, display: "flex", alignItems: "center", gap: 6 }}>{PIc.user(12)} <b style={{ color: T.text }}>{client.name}</b></span>
               <button onClick={() => setClient(null)} style={{ background: "none", border: "none", cursor: "pointer", color: T.textFaint, padding: 0 }}>{PIc.close(12)}</button>
             </>
           )}
         </div>
         <div style={{ fontSize: 11.5, color: T.textMuted, display: "flex", alignItems: "center", gap: 14 }}>
-          <span style={{ display: "flex", alignItems: "center", gap: 5 }}>{PIc.cash(13)} Sot: <b style={{ color: "#10B981" }}>â‚¬{todayTotal.toFixed(2)}</b> ({todaySales.length})</span>
-          <span style={{ color: T.border }}>â”‚</span>
-          <span style={{ display: "flex", alignItems: "center", gap: 5 }}>{PIc.clock(12)} {now.toLocaleTimeString('sq-AL', { hour: '2-digit', minute: '2-digit' })} Â· {now.toLocaleDateString('sq-AL', { day: '2-digit', month: '2-digit' })}</span>
+          <span style={{ display: "flex", alignItems: "center", gap: 5 }}>{PIc.cash(13)} Sot: <b style={{ color: "#10B981" }}>Ã¢â€šÂ¬{todayTotal.toFixed(2)}</b> ({todaySales.length})</span>
+          <span style={{ color: T.border }}>Ã¢â€â€š</span>
+          <span style={{ display: "flex", alignItems: "center", gap: 5 }}>{PIc.clock(12)} {now.toLocaleTimeString('sq-AL', { hour: '2-digit', minute: '2-digit' })} Ã‚Â· {now.toLocaleDateString('sq-AL', { day: '2-digit', month: '2-digit' })}</span>
         </div>
       </div>
 
@@ -4343,7 +4343,7 @@ function POSView({ T, business, products, onSale, sales, warranties, onAddWarran
           <div style={{ position: "relative", marginBottom: 12, flexShrink: 0 }}>
             <span style={{ position: "absolute", left: 14, top: "50%", transform: "translateY(-50%)", color: T.textFaint }}>{PIc.search(15)}</span>
             <input id="pos-search" autoFocus type="text" value={search} onChange={e => setSearch(e.target.value)}
-              placeholder="KÃ«rko produkt ose skano barkod..."
+              placeholder="KÃƒÂ«rko produkt ose skano barkod..."
               onKeyDown={e => { if (e.key === 'Enter' && filtered.length > 0) addToCart(filtered[0]); }}
               style={{ width: "100%", padding: "11px 16px 11px 40px", borderRadius: 10, border: `1.5px solid ${T.border}`, fontSize: 14, background: T.inputBg, color: T.text, outline: "none", boxSizing: "border-box", fontFamily: "inherit" }} />
             {search && filtered.length > 0 && (
@@ -4356,7 +4356,7 @@ function POSView({ T, business, products, onSale, sales, warranties, onAddWarran
                       <div style={{ fontWeight: 600 }}>{p.name}</div>
                       {p.barcode && <div style={{ fontSize: 11, color: T.textFaint, marginTop: 2 }}>{p.barcode}</div>}
                     </div>
-                    <span style={{ color: T.accent, fontWeight: 700 }}>â‚¬{Number(p.price).toFixed(2)}</span>
+                    <span style={{ color: T.accent, fontWeight: 700 }}>Ã¢â€šÂ¬{Number(p.price).toFixed(2)}</span>
                   </div>
                 ))}
               </div>
@@ -4365,13 +4365,13 @@ function POSView({ T, business, products, onSale, sales, warranties, onAddWarran
 
           <div style={{ flex: 1, background: T.surface, border: `1px solid ${T.border}`, borderRadius: 10, overflow: "auto" }}>
             <div style={{ display: "grid", gridTemplateColumns: "50px 2.5fr 110px 90px 80px 80px 100px 100px", padding: "10px 14px", background: T.surfaceAlt, fontSize: 10.5, fontWeight: 700, color: T.textMuted, textTransform: "uppercase", letterSpacing: 0.5, position: "sticky", top: 0, borderBottom: `1px solid ${T.border}`, zIndex: 1 }}>
-              <div>Nr</div><div>EmÃ«rtimi</div><div>Sasia</div><div>Ã‡mimi</div><div>Zbritja %</div><div>TVSH %</div><div style={{ textAlign: "right" }}>Ã‡mimi me TVSH</div><div style={{ textAlign: "right" }}>Totali</div>
+              <div>Nr</div><div>EmÃƒÂ«rtimi</div><div>Sasia</div><div>Ãƒâ€¡mimi</div><div>Zbritja %</div><div>TVSH %</div><div style={{ textAlign: "right" }}>Ãƒâ€¡mimi me TVSH</div><div style={{ textAlign: "right" }}>Totali</div>
             </div>
             {cart.length === 0 ? (
               <div style={{ padding: "80px 20px", textAlign: "center", color: T.textFaint, fontSize: 13 }}>
                 <div style={{ marginBottom: 12, opacity: .25, display: "flex", justifyContent: "center" }}>{PIc.receipt(52)}</div>
-                <div style={{ fontWeight: 600, fontSize: 14, color: T.textMuted }}>Shporta Ã«shtÃ« e zbrazÃ«t</div>
-                <div style={{ marginTop: 4 }}>KÃ«rkoni nga emri ose skanoni barkodin e produktit</div>
+                <div style={{ fontWeight: 600, fontSize: 14, color: T.textMuted }}>Shporta ÃƒÂ«shtÃƒÂ« e zbrazÃƒÂ«t</div>
+                <div style={{ marginTop: 4 }}>KÃƒÂ«rkoni nga emri ose skanoni barkodin e produktit</div>
               </div>
             ) : cart.map((x, idx) => (
               <div key={x.id} onClick={() => setSelectedIdx(idx)}
@@ -4387,24 +4387,24 @@ function POSView({ T, business, products, onSale, sales, warranties, onAddWarran
                     style={{ width: 40, textAlign: "center", padding: "3px 4px", border: `1px solid ${T.border}`, borderRadius: 5, background: T.inputBg, color: T.text, fontSize: 12, fontWeight: 700, outline: "none", fontFamily: "inherit" }} />
                   <button onClick={() => updateQty(x.id, x.qty + 1)} style={{ background: T.surfaceAlt, border: `1px solid ${T.border}`, borderRadius: 5, width: 24, height: 24, cursor: "pointer", color: T.text, display: "flex", alignItems: "center", justifyContent: "center" }}>{PIc.plus(12)}</button>
                 </div>
-                <div>â‚¬{x.price.toFixed(2)}</div>
+                <div>Ã¢â€šÂ¬{x.price.toFixed(2)}</div>
                 <div style={{ color: T.textMuted }}>0%</div>
                 <div style={{ color: T.textMuted }}>0%</div>
-                <div style={{ textAlign: "right" }}>â‚¬{x.price.toFixed(2)}</div>
-                <div style={{ textAlign: "right", fontWeight: 700, color: T.accent }}>â‚¬{(x.price * x.qty).toFixed(2)}</div>
+                <div style={{ textAlign: "right" }}>Ã¢â€šÂ¬{x.price.toFixed(2)}</div>
+                <div style={{ textAlign: "right", fontWeight: 700, color: T.accent }}>Ã¢â€šÂ¬{(x.price * x.qty).toFixed(2)}</div>
               </div>
             ))}
           </div>
 
           <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", padding: "14px 4px 4px", flexShrink: 0 }}>
             <div style={{ display: "flex", gap: 28, fontSize: 12.5, color: T.textMuted }}>
-              <span>Subtotal: <b style={{ color: T.text }}>â‚¬{subtotal.toFixed(2)}</b></span>
-              <span>Zbritja: <b style={{ color: T.danger }}>-â‚¬{totalDiscount.toFixed(2)}</b></span>
-              <span>TVSH: <b style={{ color: T.text }}>â‚¬{totalVat.toFixed(2)}</b></span>
+              <span>Subtotal: <b style={{ color: T.text }}>Ã¢â€šÂ¬{subtotal.toFixed(2)}</b></span>
+              <span>Zbritja: <b style={{ color: T.danger }}>-Ã¢â€šÂ¬{totalDiscount.toFixed(2)}</b></span>
+              <span>TVSH: <b style={{ color: T.text }}>Ã¢â€šÂ¬{totalVat.toFixed(2)}</b></span>
             </div>
             <div style={{ display: "flex", alignItems: "baseline", gap: 10 }}>
               <span style={{ fontSize: 11, color: T.textFaint, textTransform: "uppercase", letterSpacing: 1 }}>Total</span>
-              <span style={{ fontSize: 30, fontWeight: 800, color: T.text, letterSpacing: -0.5 }}>â‚¬{grandTotal.toFixed(2)}</span>
+              <span style={{ fontSize: 30, fontWeight: 800, color: T.text, letterSpacing: -0.5 }}>Ã¢â€šÂ¬{grandTotal.toFixed(2)}</span>
             </div>
           </div>
         </div>
@@ -4412,7 +4412,7 @@ function POSView({ T, business, products, onSale, sales, warranties, onAddWarran
         {/* RIGHT SIDEBAR */}
         <div style={{ background: T.surface, borderLeft: `1px solid ${T.border}`, padding: 10, display: "flex", flexDirection: "column", gap: 6, overflow: "auto" }}>
           <ActionBtn icon={PIc.document(14)} label="Dokumentin" shortcut="F8" onClick={() => { /* not yet */ }} />
-          <ActionBtn icon={PIc.search(14)} label="KÃ«rko artikullin" shortcut="F12" onClick={() => document.getElementById('pos-search')?.focus()} />
+          <ActionBtn icon={PIc.search(14)} label="KÃƒÂ«rko artikullin" shortcut="F12" onClick={() => document.getElementById('pos-search')?.focus()} />
           <ActionBtn icon={PIc.note(14)} label="Shtyp Noten" onClick={printThermalNote} disabled={cart.length === 0} />
           <ActionBtn icon={PIc.shield(14)} label="Garancioni" shortcut="F7" variant="accent" onClick={() => setWarrantyOpen(true)} />
           <ActionBtn icon={PIc.shieldList(14)} label="Garancione" variant="accent" onClick={() => setWarrantyListOpen(true)} />
@@ -4421,7 +4421,7 @@ function POSView({ T, business, products, onSale, sales, warranties, onAddWarran
           <ActionBtn icon={PIc.settings(14)} label="Parametrat" onClick={() => { /* settings placeholder */ }} />
           <ActionBtn icon={PIc.printer(14)} label="Printo A4" shortcut="F4" onClick={() => setA4Open(true)} disabled={cart.length === 0} />
           <ActionBtn icon={PIc.receipt(14)} label="Shtyp" shortcut="F2" variant="primary" onClick={() => setPayOpen(true)} disabled={cart.length === 0} />
-          <ActionBtn icon={PIc.lock(14)} label="Mbyll ArkÃ«n" onClick={onCloseArka} />
+          <ActionBtn icon={PIc.lock(14)} label="Mbyll ArkÃƒÂ«n" onClick={onCloseArka} />
           <ActionBtn icon={PIc.xCircle(14)} label="Pastro" variant="danger" onClick={() => { setCart([]); setClient(null); }} disabled={cart.length === 0 && !client} />
         </div>
       </div>
@@ -4439,13 +4439,13 @@ function POSView({ T, business, products, onSale, sales, warranties, onAddWarran
             <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", padding: "16px 20px", borderBottom: `1px solid ${T.border}` }}>
               <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
                 <div style={{ width: 34, height: 34, borderRadius: 10, background: `${T.accent}15`, color: T.accent, display: "flex", alignItems: "center", justifyContent: "center" }}>{PIc.printer(16)}</div>
-                <h3 style={{ margin: 0, fontSize: 15, fontWeight: 800, color: T.text }}>Printo FaturÃ« A4</h3>
+                <h3 style={{ margin: 0, fontSize: 15, fontWeight: 800, color: T.text }}>Printo FaturÃƒÂ« A4</h3>
               </div>
               <button onClick={() => setA4Open(false)} style={{ background: "transparent", border: `1px solid ${T.border}`, borderRadius: 8, width: 30, height: 30, cursor: "pointer", color: T.textMuted, display: "flex", alignItems: "center", justifyContent: "center" }}>{PIc.close(13)}</button>
             </div>
             <div style={{ padding: 20 }}>
               <div style={{ background: T.surfaceAlt, borderRadius: 10, padding: 14, fontSize: 12, color: T.textMuted, marginBottom: 14, lineHeight: 1.6 }}>
-                FaturÃ« A4 do tÃ« gjenerohet me tÃ« dhÃ«nat aktuale tÃ« shportÃ«s{client ? ` dhe tÃ« blerÃ«sit <b style="color:${T.text}">${client.name}</b>` : ", pa tÃ« dhÃ«na blerÃ«si"}. NÃ« dialogun e printimit mund tÃ« zgjidhni printerin dhe madhÃ«sinÃ« e letrÃ«s (A4).
+                FaturÃƒÂ« A4 do tÃƒÂ« gjenerohet me tÃƒÂ« dhÃƒÂ«nat aktuale tÃƒÂ« shportÃƒÂ«s{client ? ` dhe tÃƒÂ« blerÃƒÂ«sit <b style="color:${T.text}">${client.name}</b>` : ", pa tÃƒÂ« dhÃƒÂ«na blerÃƒÂ«si"}. NÃƒÂ« dialogun e printimit mund tÃƒÂ« zgjidhni printerin dhe madhÃƒÂ«sinÃƒÂ« e letrÃƒÂ«s (A4).
               </div>
               <div style={{ display: "flex", justifyContent: "space-between", fontSize: 13, marginBottom: 14 }}>
                 <span style={{ color: T.textMuted }}>Artikuj:</span>
@@ -4453,12 +4453,12 @@ function POSView({ T, business, products, onSale, sales, warranties, onAddWarran
               </div>
               <div style={{ display: "flex", justifyContent: "space-between", fontSize: 13, marginBottom: 20 }}>
                 <span style={{ color: T.textMuted }}>Totali:</span>
-                <b style={{ color: T.accent, fontSize: 16 }}>â‚¬{grandTotal.toFixed(2)}</b>
+                <b style={{ color: T.accent, fontSize: 16 }}>Ã¢â€šÂ¬{grandTotal.toFixed(2)}</b>
               </div>
               <div style={{ display: "flex", gap: 8, justifyContent: "flex-end" }}>
                 <button onClick={() => setA4Open(false)} style={{ background: "transparent", border: `1.5px solid ${T.border}`, borderRadius: 10, padding: "10px 18px", cursor: "pointer", fontWeight: 600, fontSize: 13, color: T.textMuted, fontFamily: "inherit" }}>Anulo</button>
                 <button onClick={() => { setA4Open(false); if (!client) setClientOpen(true); else printA4Invoice(); }} style={{ background: T.surface, border: `1.5px solid ${T.accent}`, borderRadius: 10, padding: "10px 18px", cursor: "pointer", fontWeight: 700, fontSize: 13, color: T.accent, display: "flex", alignItems: "center", gap: 6, fontFamily: "inherit" }}>
-                  {PIc.user(13)} {client ? "Ndrysho blerÃ«sin" : "Shto blerÃ«sin"}
+                  {PIc.user(13)} {client ? "Ndrysho blerÃƒÂ«sin" : "Shto blerÃƒÂ«sin"}
                 </button>
                 <button onClick={() => { setA4Open(false); printA4Invoice(); }} style={{ background: T.accentGrad, border: "none", borderRadius: 10, padding: "10px 20px", cursor: "pointer", fontWeight: 800, fontSize: 13, color: "#fff", display: "flex", alignItems: "center", gap: 6, fontFamily: "inherit" }}>
                   {PIc.printer(13)} Printo A4
@@ -4474,8 +4474,8 @@ function POSView({ T, business, products, onSale, sales, warranties, onAddWarran
           <div onClick={e => e.stopPropagation()} style={{ background: T.surface, borderRadius: 16, padding: 28, width: "92%", maxWidth: 400, textAlign: "center", border: `1px solid ${T.border}`, boxShadow: "0 30px 90px rgba(0,0,0,.35)" }}>
             <div style={{ width: 60, height: 60, borderRadius: "50%", background: "#D1FAE5", color: "#059669", display: "flex", alignItems: "center", justifyContent: "center", margin: "0 auto 14px" }}>{PIc.check(28)}</div>
             <h3 style={{ margin: "0 0 4px", fontSize: 17, fontWeight: 800, color: T.text }}>Shitja u regjistrua!</h3>
-            <div style={{ color: T.textMuted, fontSize: 12, marginBottom: 4 }}>Nr. faturÃ«s: <b style={{ color: T.text }}>{lastReceipt.receiptNo}</b></div>
-            <div style={{ fontSize: 28, fontWeight: 800, color: T.accent, marginBottom: 20 }}>â‚¬{lastReceipt.total.toFixed(2)}</div>
+            <div style={{ color: T.textMuted, fontSize: 12, marginBottom: 4 }}>Nr. faturÃƒÂ«s: <b style={{ color: T.text }}>{lastReceipt.receiptNo}</b></div>
+            <div style={{ fontSize: 28, fontWeight: 800, color: T.accent, marginBottom: 20 }}>Ã¢â€šÂ¬{lastReceipt.total.toFixed(2)}</div>
             <div style={{ display: "flex", gap: 10 }}>
               <button onClick={() => setLastReceipt(null)} style={{ flex: 1, background: T.surfaceAlt, color: T.textMuted, border: `1.5px solid ${T.border}`, borderRadius: 10, padding: "11px", cursor: "pointer", fontWeight: 600, fontSize: 13, fontFamily: "inherit" }}>Mbyll</button>
               <button onClick={() => { printThermal(lastReceipt); }} style={{ flex: 2, background: T.accentGrad, color: "#fff", border: "none", borderRadius: 10, padding: "11px", cursor: "pointer", fontWeight: 800, fontSize: 13, display: "flex", alignItems: "center", justifyContent: "center", gap: 6, fontFamily: "inherit" }}>
@@ -4494,8 +4494,8 @@ function POSView({ T, business, products, onSale, sales, warranties, onAddWarran
 // ============================================================
 const POSTA_STATUSES = [
   { key: "procesuara", label: "Procesuara", color: "#3B82F6" },
-  { key: "derguar", label: "DÃ«rguar", color: "#F59E0B" },
-  { key: "dorezuar", label: "DorÃ«zuar", color: "#10B981" },
+  { key: "derguar", label: "DÃƒÂ«rguar", color: "#F59E0B" },
+  { key: "dorezuar", label: "DorÃƒÂ«zuar", color: "#10B981" },
   { key: "kthyer", label: "Kthyer", color: "#EF4444" },
 ];
 
@@ -4530,17 +4530,17 @@ function printPostaOrder(order, business) {
     <div class="biz">${business?.name || ""} ${business?.phone ? "| Tel: " + business.phone : ""}</div>
     <h1>Porosi #${order.orderNo || order.id.slice(-6).toUpperCase()}</h1>
     <div class="row"><span class="lbl">Emri:</span><span class="val">${order.clientName} ${order.clientSurname}</span></div>
-    <div class="row"><span class="lbl">Telefon:</span><span class="val">${order.clientPhone || "â€”"}</span></div>
+    <div class="row"><span class="lbl">Telefon:</span><span class="val">${order.clientPhone || "Ã¢â‚¬â€"}</span></div>
     <div class="row"><span class="lbl">Qyteti:</span><span class="val">${order.city}${order.country ? ", " + order.country : ""}</span></div>
-    <div class="row"><span class="lbl">Adresa:</span><span class="val">${order.address || "â€”"}</span></div>
-    ${order.description ? `<div class="row"><span class="lbl">PÃ«rshkrimi:</span><span class="val">${order.description}</span></div>` : ""}
+    <div class="row"><span class="lbl">Adresa:</span><span class="val">${order.address || "Ã¢â‚¬â€"}</span></div>
+    ${order.description ? `<div class="row"><span class="lbl">PÃƒÂ«rshkrimi:</span><span class="val">${order.description}</span></div>` : ""}
     ${order.weight ? `<div class="row"><span class="lbl">Pesha:</span><span class="val">${order.weight}</span></div>` : ""}
-    <div class="price">â‚¬${Number(order.price).toFixed(2)}</div>
+    <div class="price">Ã¢â€šÂ¬${Number(order.price).toFixed(2)}</div>
   </div>
   <div class="right">
     <div class="status">${statusLabel}</div>
     <div id="qr"></div>
-    <div class="qr-label">Skanoni pÃ«r status</div>
+    <div class="qr-label">Skanoni pÃƒÂ«r status</div>
   </div>
   <script>
     new QRCode(document.getElementById("qr"), { text: "${qrUrl}", width: 90, height: 90, correctLevel: QRCode.CorrectLevel.M });
@@ -4573,19 +4573,19 @@ function PostaOrderForm({ T, initial, onSave, onClose }) {
     <div style={{ background: T.surface, borderRadius: 20, padding: 24, border: `1.5px solid ${T.border}` }}>
       <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 20 }}>
         <h3 style={{ margin: 0, fontSize: 17, fontWeight: 800, color: T.text }}>{initial ? "Edito Porosi" : "Porosi e Re"}</h3>
-        <button onClick={onClose} style={{ background: "none", border: "none", cursor: "pointer", color: T.textMuted, fontSize: 20 }}>âœ•</button>
+        <button onClick={onClose} style={{ background: "none", border: "none", cursor: "pointer", color: T.textMuted, fontSize: 20 }}>Ã¢Å“â€¢</button>
       </div>
       <div className="posta-form-grid" style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 12, marginBottom: 12 }}>
         <FI label="Emri" field="clientName" required placeholder="p.sh. Arben" />
         <FI label="Mbiemri" field="clientSurname" placeholder="p.sh. Krasniqi" />
         <FI label="Telefon" field="clientPhone" placeholder="+383..." />
-        <FI label="Qyteti" field="city" required placeholder="p.sh. PrishtinÃ«" />
-        <FI label="Shteti" field="country" placeholder="p.sh. KosovÃ«" />
+        <FI label="Qyteti" field="city" required placeholder="p.sh. PrishtinÃƒÂ«" />
+        <FI label="Shteti" field="country" placeholder="p.sh. KosovÃƒÂ«" />
         <FI label="Adresa" field="address" placeholder="Rruga, Nr..." />
-        <FI label="PÃ«rshkrim" field="description" placeholder="Produkt..." />
-        <FI label="Ã‡mimi (â‚¬)" field="price" type="number" placeholder="0.00" />
+        <FI label="PÃƒÂ«rshkrim" field="description" placeholder="Produkt..." />
+        <FI label="Ãƒâ€¡mimi (Ã¢â€šÂ¬)" field="price" type="number" placeholder="0.00" />
         <FI label="Pesha" field="weight" placeholder="kg..." />
-        <FI label="ShÃ«nime" field="notes" placeholder="ShÃ«nim opsional..." />
+        <FI label="ShÃƒÂ«nime" field="notes" placeholder="ShÃƒÂ«nim opsional..." />
       </div>
       {initial && (
         <div style={{ marginBottom: 12 }}>
@@ -4636,7 +4636,7 @@ function PostaPage({ T, business, orders, onAdd, onUpdate, onDelete }) {
   if (view === "new") {
     return (
       <div>
-        <button onClick={() => setView("list")} style={{ background: T.surfaceAlt, border: `1px solid ${T.border}`, borderRadius: 8, padding: "6px 14px", cursor: "pointer", fontSize: 13, color: T.textMuted, marginBottom: 16 }}>â† Kthehu</button>
+        <button onClick={() => setView("list")} style={{ background: T.surfaceAlt, border: `1px solid ${T.border}`, borderRadius: 8, padding: "6px 14px", cursor: "pointer", fontSize: 13, color: T.textMuted, marginBottom: 16 }}>Ã¢â€ Â Kthehu</button>
         <PostaOrderForm T={T} onClose={() => setView("list")} onSave={(f) => {
           const id = crypto.randomUUID ? crypto.randomUUID() : Date.now().toString(36);
           const newOrder = { id, orderNo: genOrderNo(), ...f, price: Number(f.price) || 0, status: "procesuara", createdAt: new Date().toISOString(), updatedAt: new Date().toISOString() };
@@ -4651,7 +4651,7 @@ function PostaPage({ T, business, orders, onAdd, onUpdate, onDelete }) {
     const order = (orders || []).find(o => o.id === selected.id) || selected;
     return (
       <div>
-        <button onClick={() => { setView("list"); setSelected(null); }} style={{ background: T.surfaceAlt, border: `1px solid ${T.border}`, borderRadius: 8, padding: "6px 14px", cursor: "pointer", fontSize: 13, color: T.textMuted, marginBottom: 16 }}>â† Kthehu</button>
+        <button onClick={() => { setView("list"); setSelected(null); }} style={{ background: T.surfaceAlt, border: `1px solid ${T.border}`, borderRadius: 8, padding: "6px 14px", cursor: "pointer", fontSize: 13, color: T.textMuted, marginBottom: 16 }}>Ã¢â€ Â Kthehu</button>
         <PostaOrderForm T={T} initial={order} onClose={() => { setView("list"); setSelected(null); }} onSave={(f) => {
           const updated = { ...order, ...f, price: Number(f.price) || 0, updatedAt: new Date().toISOString() };
           onUpdate(updated);
@@ -4661,7 +4661,7 @@ function PostaPage({ T, business, orders, onAdd, onUpdate, onDelete }) {
         <div style={{ display: "flex", gap: 10, marginTop: 12 }}>
           <button onClick={() => printPostaOrder(order, business)}
             style={{ padding: "10px 20px", borderRadius: 10, border: "none", background: "#3B82F6", color: "#fff", fontWeight: 700, fontSize: 13, cursor: "pointer", display: "flex", alignItems: "center", gap: 6 }}>
-            ðŸ–¨ï¸ Printo Kuponin
+            Ã°Å¸â€“Â¨Ã¯Â¸Â Printo Kuponin
           </button>
           <button onClick={() => {
             const _b = window.location.protocol === 'file:'
@@ -4671,11 +4671,11 @@ function PostaPage({ T, business, orders, onAdd, onUpdate, onDelete }) {
             navigator.clipboard?.writeText(url);
             window.open(url, "_blank");
           }} style={{ padding: "10px 20px", borderRadius: 10, border: `1.5px solid ${T.border}`, background: T.surface, color: T.text, fontWeight: 600, fontSize: 13, cursor: "pointer", display: "flex", alignItems: "center", gap: 6 }}>
-            ðŸ”— Faqja e statusit
+            Ã°Å¸â€â€” Faqja e statusit
           </button>
-          <button onClick={() => { if (window.confirm("Fshi kÃ«tÃ« porosi?")) { onDelete(order.id); setView("list"); setSelected(null); } }}
+          <button onClick={() => { if (window.confirm("Fshi kÃƒÂ«tÃƒÂ« porosi?")) { onDelete(order.id); setView("list"); setSelected(null); } }}
             style={{ padding: "10px 16px", borderRadius: 10, border: "none", background: "#FEE2E2", color: "#EF4444", fontWeight: 700, fontSize: 13, cursor: "pointer" }}>
-            ðŸ—‘ï¸
+            Ã°Å¸â€”â€˜Ã¯Â¸Â
           </button>
         </div>
       </div>
@@ -4688,7 +4688,7 @@ function PostaPage({ T, business, orders, onAdd, onUpdate, onDelete }) {
   return (
     <div style={{ animation: "slideUp .2s ease" }}>
       <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 20 }}>
-        <h2 style={{ margin: 0, fontSize: 22, fontWeight: 800, color: T.text }}>ðŸ“¦ Posta</h2>
+        <h2 style={{ margin: 0, fontSize: 22, fontWeight: 800, color: T.text }}>Ã°Å¸â€œÂ¦ Posta</h2>
         <button onClick={() => setView("new")}
           style={{ padding: "10px 20px", borderRadius: 12, border: "none", background: "#3B82F6", color: "#fff", fontWeight: 700, fontSize: 14, cursor: "pointer", display: "flex", alignItems: "center", gap: 6 }}>
           + Porosi e re
@@ -4707,11 +4707,11 @@ function PostaPage({ T, business, orders, onAdd, onUpdate, onDelete }) {
 
       {/* Filter + Search */}
       <div style={{ display: "flex", gap: 10, marginBottom: 16, flexWrap: "wrap" }}>
-        <input value={search} onChange={e => setSearch(e.target.value)} placeholder="KÃ«rko emÃ«r, telefon, nr. porosie..."
+        <input value={search} onChange={e => setSearch(e.target.value)} placeholder="KÃƒÂ«rko emÃƒÂ«r, telefon, nr. porosie..."
           style={{ flex: 1, minWidth: 200, padding: "9px 14px", borderRadius: 10, border: `1.5px solid ${T.border}`, fontSize: 13, background: T.surface, color: T.text, outline: "none" }} />
         <select value={filter} onChange={e => setFilter(e.target.value)}
           style={{ padding: "9px 14px", borderRadius: 10, border: `1.5px solid ${T.border}`, fontSize: 13, background: T.surface, color: T.text }}>
-          <option value="all">TÃ« gjitha</option>
+          <option value="all">TÃƒÂ« gjitha</option>
           {POSTA_STATUSES.map(s => <option key={s.key} value={s.key}>{s.label}</option>)}
         </select>
       </div>
@@ -4719,7 +4719,7 @@ function PostaPage({ T, business, orders, onAdd, onUpdate, onDelete }) {
       {/* Orders list */}
       {filtered.length === 0 ? (
         <div style={{ textAlign: "center", padding: "60px 20px", color: T.textMuted }}>
-          <div style={{ fontSize: 48, marginBottom: 12 }}>ðŸ“¦</div>
+          <div style={{ fontSize: 48, marginBottom: 12 }}>Ã°Å¸â€œÂ¦</div>
           <div style={{ fontSize: 15, fontWeight: 600 }}>Nuk ka porosi</div>
         </div>
       ) : (
@@ -4736,10 +4736,10 @@ function PostaPage({ T, business, orders, onAdd, onUpdate, onDelete }) {
                     <span style={{ fontWeight: 700, fontSize: 14, color: T.text }}>{o.clientName} {o.clientSurname}</span>
                     <span style={{ fontSize: 11, color: "#64748b" }}>#{o.orderNo || o.id.slice(-6).toUpperCase()}</span>
                   </div>
-                  <div style={{ fontSize: 12, color: T.textMuted }}>{o.city}{o.country ? ", " + o.country : ""} {o.clientPhone ? "â€¢ " + o.clientPhone : ""}</div>
+                  <div style={{ fontSize: 12, color: T.textMuted }}>{o.city}{o.country ? ", " + o.country : ""} {o.clientPhone ? "Ã¢â‚¬Â¢ " + o.clientPhone : ""}</div>
                 </div>
                 <div style={{ textAlign: "right" }}>
-                  <div style={{ fontWeight: 800, fontSize: 16, color: "#1E40AF" }}>â‚¬{Number(o.price).toFixed(2)}</div>
+                  <div style={{ fontWeight: 800, fontSize: 16, color: "#1E40AF" }}>Ã¢â€šÂ¬{Number(o.price).toFixed(2)}</div>
                   <span style={{ fontSize: 11, fontWeight: 600, padding: "2px 8px", borderRadius: 6, background: st.color + "20", color: st.color }}>{st.label}</span>
                 </div>
               </div>
@@ -4787,7 +4787,7 @@ function PostaStatusPublicPage({ orderId, onBack }) {
             <React.Fragment key={s.key}>
               <div style={{ textAlign: "center", flex: 1 }}>
                 <div style={{ width: 32, height: 32, borderRadius: "50%", background: i <= progress ? s.color : "#E2E8F0", color: "#fff", display: "flex", alignItems: "center", justifyContent: "center", margin: "0 auto 4px", fontWeight: 700, fontSize: 12, transition: "background .3s" }}>
-                  {i < progress ? "âœ“" : i + 1}
+                  {i < progress ? "Ã¢Å“â€œ" : i + 1}
                 </div>
                 <div style={{ fontSize: 10, color: i <= progress ? s.color : "#94A3B8", fontWeight: 600 }}>{s.label}</div>
               </div>
@@ -4798,7 +4798,7 @@ function PostaStatusPublicPage({ orderId, onBack }) {
         <div style={{ background: st.color + "15", border: `1.5px solid ${st.color}30`, borderRadius: 12, padding: "12px 16px", marginBottom: 20, textAlign: "center" }}>
           <div style={{ fontWeight: 800, fontSize: 18, color: st.color }}>{st.label}</div>
         </div>
-        {[["Emri", order.clientName + " " + order.clientSurname], ["Telefon", order.clientPhone], ["Qyteti", order.city + (order.country ? ", " + order.country : "")], ["Adresa", order.address], ["Ã‡mimi", "â‚¬" + Number(order.price).toFixed(2)], ["Pesha", order.weight]].filter(([,v]) => v && v.trim()).map(([l, v]) => (
+        {[["Emri", order.clientName + " " + order.clientSurname], ["Telefon", order.clientPhone], ["Qyteti", order.city + (order.country ? ", " + order.country : "")], ["Adresa", order.address], ["Ãƒâ€¡mimi", "Ã¢â€šÂ¬" + Number(order.price).toFixed(2)], ["Pesha", order.weight]].filter(([,v]) => v && v.trim()).map(([l, v]) => (
           <div key={l} style={{ display: "flex", justifyContent: "space-between", padding: "8px 0", borderBottom: "1px solid #F1F5F9", fontSize: 14 }}>
             <span style={{ color: "#64748b", fontWeight: 600 }}>{l}</span>
             <span style={{ color: "#0F172A", fontWeight: 700 }}>{v}</span>
@@ -4810,7 +4810,7 @@ function PostaStatusPublicPage({ orderId, onBack }) {
 }
 
 export default function DataPhone() {
-  // accounts is shared â€” both admin and businesses share this list
+  // accounts is shared Ã¢â‚¬â€ both admin and businesses share this list
   const [accounts, setAccounts] = useState([]);
   const [data, setData] = useState(DEFAULT_DATA);
   const [page, setPage] = useState("auth");
@@ -4946,7 +4946,7 @@ export default function DataPhone() {
           const { error } = await supabase.from('accounts').update(row).eq('id', data.business.id);
           if (error) {
             console.error('Business sync error:', error);
-            // Fallback: provo pÃ«rditÃ«sim pa fushat qÃ« mund tÃ« mos ekzistojnÃ«
+            // Fallback: provo pÃƒÂ«rditÃƒÂ«sim pa fushat qÃƒÂ« mund tÃƒÂ« mos ekzistojnÃƒÂ«
             const minimal = {
               name: row.name, email: row.email, phone: row.phone,
               city: row.city, country: row.country, address: row.address,
@@ -4954,7 +4954,7 @@ export default function DataPhone() {
             };
             const { error: err2 } = await supabase.from('accounts').update(minimal).eq('id', data.business.id);
             if (err2) console.error('Business sync minimal error:', err2);
-            else console.warn('Business u ruajt pa fushat e reja â€” ekzekuto SQL migrimin!');
+            else console.warn('Business u ruajt pa fushat e reja Ã¢â‚¬â€ ekzekuto SQL migrimin!');
           }
         } catch (e) {
           console.error('Business sync exception:', e);
@@ -5050,7 +5050,7 @@ export default function DataPhone() {
       // Check if email already exists
       const { data: existing } = await supabase.from('accounts').select('id').eq('email', biz.email.trim()).maybeSingle();
       if (existing) {
-        showToast("Ky email Ã«shtÃ« i regjistruar tashmÃ«");
+        showToast("Ky email ÃƒÂ«shtÃƒÂ« i regjistruar tashmÃƒÂ«");
         return;
       }
       const now = new Date();
@@ -5070,7 +5070,7 @@ export default function DataPhone() {
       const { data: inserted, error } = await supabase.from('accounts').insert(insertRow).select().single();
       if (error) {
         console.error('Register error:', error);
-        showToast("Gabim gjatÃ« regjistrimit: " + error.message);
+        showToast("Gabim gjatÃƒÂ« regjistrimit: " + error.message);
         return;
       }
       const mapped = mapAccountFromDB(inserted);
@@ -5093,7 +5093,7 @@ export default function DataPhone() {
     if (account.email === ADMIN_CREDENTIALS.email && account.password === ADMIN_CREDENTIALS.password) {
       setIsAdmin(true);
       localStorage.setItem('prophone_is_admin', '1');
-      showToast("MirÃ« se vini, Administrator!");
+      showToast("MirÃƒÂ« se vini, Administrator!");
       return;
     }
     try {
@@ -5105,12 +5105,12 @@ export default function DataPhone() {
         .eq('password', account.password)
         .maybeSingle();
       if (error || !rows) {
-        showToast("Email ose fjalÃ«kalim i gabuar");
+        showToast("Email ose fjalÃƒÂ«kalim i gabuar");
         return;
       }
       const fresh = mapAccountFromDB(rows);
       if (getAccountStatus(fresh) === "suspended") {
-        showToast("Llogaria juaj Ã«shtÃ« pezulluar. Kontaktoni administratorin.");
+        showToast("Llogaria juaj ÃƒÂ«shtÃƒÂ« pezulluar. Kontaktoni administratorin.");
         return;
       }
       if (rememberMe) {
@@ -5122,10 +5122,10 @@ export default function DataPhone() {
       setData(d => ({ ...d, business: fresh }));
       await hydrateFromSupabase(fresh.id);
       setPage('dashboard');
-      showToast("U kyqÃ«t me sukses!");
+      showToast("U kyqÃƒÂ«t me sukses!");
     } catch (e) {
       console.error("Login error:", e);
-      showToast("Gabim gjatÃ« kyÃ§jes: " + e.message);
+      showToast("Gabim gjatÃƒÂ« kyÃƒÂ§jes: " + e.message);
     }
   };
 
@@ -5147,7 +5147,7 @@ export default function DataPhone() {
 
   if (!data.business && page !== "auth") setPage("auth");
 
-  // If admin is logged in â€“ show admin panel
+  // If admin is logged in Ã¢â‚¬â€œ show admin panel
   if (isAdmin) {
     return <AdminPanel accounts={accounts} setAccounts={handleSetAccounts} onLogout={handleAdminLogout} />;
   }
@@ -5199,14 +5199,14 @@ export default function DataPhone() {
       .stat-cards-grid > div { min-width: unset !important; padding: 12px 8px !important; }
       .stat-cards-grid > div > div:last-child { font-size: 22px !important; }
 
-      /* Tables â†’ card layout */
+      /* Tables Ã¢â€ â€™ card layout */
       .jobs-table-header, .clients-table-header, .workers-table-header { display: none !important; }
       .jobs-table-row { display: flex !important; flex-direction: column !important; padding: 14px 16px !important; gap: 8px !important; border-radius: 12px !important; margin-bottom: 8px !important; border: 1.5px solid ${T.border} !important; background: ${T.surface} !important; }
       .jobs-table-row > span:first-child { font-size: 15px !important; font-weight: 700 !important; }
       .clients-table-row, .workers-table-row { display: flex !important; flex-wrap: wrap !important; padding: 14px 16px !important; gap: 6px 16px !important; border-radius: 12px !important; margin-bottom: 8px !important; border: 1.5px solid ${T.border} !important; background: ${T.surface} !important; }
       .clients-table-row > span:first-child { width: 100% !important; font-size: 15px !important; }
 
-      /* All 2-col grids â†’ 1 col */
+      /* All 2-col grids Ã¢â€ â€™ 1 col */
       .settings-grid-2col, .create-job-grid, .job-detail-grid, .report-grid, .posta-form-grid { grid-template-columns: 1fr !important; }
 
       /* Status breakdown 2 col */
@@ -5227,7 +5227,7 @@ export default function DataPhone() {
       .dashboard-header > div:last-child { width: 100% !important; display: flex !important; gap: 8px !important; }
       .dashboard-header > div:last-child > button { flex: 1 !important; justify-content: center !important; }
 
-      /* Admin detail 2-col â†’ 1 col */
+      /* Admin detail 2-col Ã¢â€ â€™ 1 col */
       .admin-detail-grid { grid-template-columns: 1fr !important; }
 
       /* Arka landing grid */
@@ -5338,7 +5338,7 @@ export default function DataPhone() {
             {/* Stale notification bell */}
             {staleCount > 0 && (
               <button onClick={() => navigate("dashboard")} style={{ background: "#FEE2E2", border: "none", borderRadius: 10, padding: "7px 12px", cursor: "pointer", display: "flex", alignItems: "center", gap: 6, color: "#EF4444", fontSize: 12, fontWeight: 700 }}>
-                {Ic.bell(14)} {staleCount} punÃ« me vonesÃ«
+                {Ic.bell(14)} {staleCount} punÃƒÂ« me vonesÃƒÂ«
               </button>
             )}
             {/* Dark mode toggle */}
@@ -5347,7 +5347,7 @@ export default function DataPhone() {
             </button>
             <div style={{ position: "relative" }}>
               <button onClick={() => setMenuOpen(!menuOpen)} style={{ padding: "8px 16px", borderRadius: 10, fontSize: 13, fontWeight: 600, border: `1.5px solid ${T.border}`, cursor: "pointer", background: T.surface, color: T.textMuted, display: "flex", alignItems: "center", gap: 6 }}>
-                {data.business?.name || "â€”"} {Ic.down(10)}
+                {data.business?.name || "Ã¢â‚¬â€"} {Ic.down(10)}
               </button>
               {menuOpen && (
                 <div style={{ position: "absolute", top: "100%", right: 0, marginTop: 4, background: T.surface, borderRadius: 12, border: `1.5px solid ${T.border}`, boxShadow: "0 8px 24px rgba(0,0,0,.15)", width: 200, zIndex: 200, overflow: "hidden" }}>
@@ -5370,14 +5370,14 @@ export default function DataPhone() {
             <div style={{ background: "#FEE2E2", border: "1.5px solid #FCA5A5", borderRadius: 12, padding: "12px 20px", marginBottom: 16, display: "flex", alignItems: "center", gap: 10, fontSize: 13 }}>
               <span style={{ color: "#EF4444" }}>{Ic.warn(16)}</span>
               <strong style={{ color: "#EF4444" }}>Abonimet tuaj ka skaduar!</strong>
-              <span style={{ color: "#7F1D1D" }}>Kontaktoni administratorin pÃ«r ta rinovuar.</span>
+              <span style={{ color: "#7F1D1D" }}>Kontaktoni administratorin pÃƒÂ«r ta rinovuar.</span>
             </div>
           )}
           {data.business && getAccountStatus(data.business) === "expiring" && data.business.expiryDate && (
             <div style={{ background: "#FEF3C7", border: "1.5px solid #FCD34D", borderRadius: 12, padding: "12px 20px", marginBottom: 16, display: "flex", alignItems: "center", gap: 10, fontSize: 13 }}>
               <span style={{ color: "#D97706" }}>{Ic.warn(16)}</span>
-              <strong style={{ color: "#D97706" }}>Abonimet skadon pas {data.business ? Math.ceil((new Date(data.business.expiryDate) - new Date()) / 86400000) : 0} ditÃ«sh!</strong>
-              <span style={{ color: "#78350F" }}>Kontaktoni administratorin pÃ«r rinovim.</span>
+              <strong style={{ color: "#D97706" }}>Abonimet skadon pas {data.business ? Math.ceil((new Date(data.business.expiryDate) - new Date()) / 86400000) : 0} ditÃƒÂ«sh!</strong>
+              <span style={{ color: "#78350F" }}>Kontaktoni administratorin pÃƒÂ«r rinovim.</span>
             </div>
           )}
             {page === "dashboard" && <Dashboard data={data} setData={wrappedSetData} onNavigate={navigate} currentWorker={currentWorker} T={T} />}
@@ -5457,10 +5457,10 @@ export default function DataPhone() {
           if (data.business?.hasArka) n.push(NAV_ARKA);
           if (data.business?.hasPosta) n.push(NAV_POSTA);
           n.push(NAV_BASE[3]);
-          const icons = { dashboard: "ðŸ ", workers: "ðŸ‘·", clients: "ðŸ‘¥", arka: "ðŸ§¾", posta: "ðŸ“¦", business: "âš™ï¸" };
+          const icons = { dashboard: "Ã°Å¸ÂÂ ", workers: "Ã°Å¸â€˜Â·", clients: "Ã°Å¸â€˜Â¥", arka: "Ã°Å¸Â§Â¾", posta: "Ã°Å¸â€œÂ¦", business: "Ã¢Å¡â„¢Ã¯Â¸Â" };
           return n.map(item => (
             <button key={item.key} onClick={() => navigate(item.key)} className={page === item.key ? "active" : ""}>
-              <span className="nav-icon" style={{ filter: page === item.key ? "none" : "grayscale(1) opacity(.55)" }}>{icons[item.key] || "â€¢"}</span>
+              <span className="nav-icon" style={{ filter: page === item.key ? "none" : "grayscale(1) opacity(.55)" }}>{icons[item.key] || "Ã¢â‚¬Â¢"}</span>
               <span className="nav-label" style={{ color: page === item.key ? T.accent : T.textMuted }}>{item.label}</span>
             </button>
           ));
@@ -5471,7 +5471,7 @@ export default function DataPhone() {
       {arkaPinOpen && data.business?.arkaPin && (
         <ArkaPinGate T={T}
           expectedPin={data.business.arkaPin}
-          title={arkaPinOpen === "open" ? "Hap ArkÃ«n" : arkaPinOpen === "close" ? "Mbyll ArkÃ«n" : arkaPinOpen === "resetDay" ? "Reseto DitÃ«n" : arkaPinOpen === "resetMonth" ? "Reseto Muajin" : arkaPinOpen === "resetYear" ? "Reseto Vitin" : "Veprim i mbrojtur"}
+          title={arkaPinOpen === "open" ? "Hap ArkÃƒÂ«n" : arkaPinOpen === "close" ? "Mbyll ArkÃƒÂ«n" : arkaPinOpen === "resetDay" ? "Reseto DitÃƒÂ«n" : arkaPinOpen === "resetMonth" ? "Reseto Muajin" : arkaPinOpen === "resetYear" ? "Reseto Vitin" : "Veprim i mbrojtur"}
           onSuccess={() => {
             if (arkaPinOpen === "open") { setArkaView("pos"); }
             else if (arkaPinOpen === "close") { setArkaView("landing"); showToast("Arka u mbyll"); }
@@ -5499,9 +5499,9 @@ export default function DataPhone() {
       {arkaPinOpen && !data.business?.arkaPin && (
         <div style={{ position: "fixed", inset: 0, zIndex: 1200, background: "rgba(0,0,0,.5)", display: "flex", alignItems: "center", justifyContent: "center" }} onClick={() => setArkaPinOpen(null)}>
           <div onClick={e => e.stopPropagation()} style={{ background: T.surface, borderRadius: 20, padding: 28, width: "92%", maxWidth: 400, textAlign: "center", border: `1px solid ${T.border}` }}>
-            <div style={{ fontSize: 36 }}>âš ï¸</div>
+            <div style={{ fontSize: 36 }}>Ã¢Å¡Â Ã¯Â¸Â</div>
             <h3 style={{ margin: "10px 0 6px", fontSize: 17, fontWeight: 800, color: T.text }}>PIN i pacaktuar</h3>
-            <p style={{ color: T.textMuted, fontSize: 13, marginBottom: 20 }}>Kontaktoni administratorin ose shkoni te Biznesi â†’ CilÃ«simet e ArkÃ«s pÃ«r tÃ« caktuar njÃ« PIN 6-shifror.</p>
+            <p style={{ color: T.textMuted, fontSize: 13, marginBottom: 20 }}>Kontaktoni administratorin ose shkoni te Biznesi Ã¢â€ â€™ CilÃƒÂ«simet e ArkÃƒÂ«s pÃƒÂ«r tÃƒÂ« caktuar njÃƒÂ« PIN 6-shifror.</p>
             <button onClick={() => setArkaPinOpen(null)} style={{ background: T.accentGrad, color: "#fff", border: "none", borderRadius: 10, padding: "10px 24px", cursor: "pointer", fontWeight: 700, fontSize: 14 }}>OK</button>
           </div>
         </div>
