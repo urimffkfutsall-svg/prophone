@@ -1250,7 +1250,6 @@ function JobDetail({ data, setData, jobId, onNavigate, T }) {
 // ============================================================
 function RevenueResetSection({ data, T }) {
   const RESET_KEY = "prophone_revreset_" + (data.business?.id || "x");
-  const showToast = (msg) => { try { window.alert(msg); } catch(e){ } };
   const getReset = () => { try { const v = localStorage.getItem(RESET_KEY); return v ? new Date(v).getTime() : 0; } catch(e){ return 0; } };
   const completed = data.jobs.filter(j => j.status === "perfunduar" && j.price);
   const now = new Date();

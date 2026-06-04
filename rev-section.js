@@ -1,0 +1,90 @@
+const fs = require("fs");
+const path = "src/prophone_v3.jsx";
+let src = fs.readFileSync(path, "utf8");
+fs.writeFileSync(path + ".bak13", src);
+const report = [];
+const OB = "{" + "{";
+const CB = "}" + "}";
+function apply(name, a, b) {
+  const i = src.indexOf(a);
+  if (i === -1) { report.push(name + ": NUK U GJET"); return; }
+  if (src.indexOf(a, i + a.length) !== -1) { report.push(name + ": SHUME NDESHJE - u anulua"); return; }
+  src = src.replace(a, () => b);
+  report.push(name + ": OK");
+}
+
+const L = [];
+L.push('function RevenueResetSection({ data, T }) {');
+L.push('  const RESET_KEY = "prophone_revreset_" + (data.business?.id || "x");');
+L.push('  const getReset = () => { try { const v = localStorage.getItem(RESET_KEY); return v ? new Date(v).getTime() : 0; } catch(e){ return 0; } };');
+L.push('  const completed = data.jobs.filter(j => j.status === "perfunduar" && j.price);');
+L.push('  const now = new Date();');
+L.push('  const dayStart = Math.max(getReset(), now.getTime() - 86400000);');
+L.push('  const monthStart = new Date(now.getFullYear(), now.getMonth(), 1).getTime();');
+L.push('  const yearStart = new Date(now.getFullYear(), 0, 1).getTime();');
+L.push('  const sumIn = (s) => completed.filter(j => new Date(j.createdAt).getTime() >= s).reduce((a, j) => a + parseFloat(j.price || 0), 0);');
+L.push('  const cntIn = (s) => completed.filter(j => new Date(j.createdAt).getTime() >= s).length;');
+L.push('  const ditore = sumIn(dayStart), mujore = sumIn(monthStart), vjetore = sumIn(yearStart);');
+L.push('  const [reports, setReports] = useState([]);');
+L.push('  const [busy, setBusy] = useState(false);');
+L.push('  const loadReports = async () => {');
+L.push('    if (!data.business?.id) return;');
+L.push('    try {');
+L.push('      const res = await supabase.from("revenue_reports").select("*").eq("account_id", data.business.id).order("created_at", { ascending: false }).limit(50);');
+L.push('      if (res && res.data) setReports(res.data);');
+L.push('    } catch(e){ }');
+L.push('  };');
+L.push('  useEffect(() => { loadReports(); }, [data.business?.id]);');
+L.push('  const doReset = async (periodType, label, amount, jobsCount, periodStart) => {');
+L.push('    if (busy) return;');
+L.push('    if (!data.business?.id) { showToast("Hyr ne llogari fillimisht"); return; }');
+L.push('    if (!window.confirm("Reseto te ardhurat " + label + "? Totali (" + amount.toFixed(2) + " EUR) do te ruhet te raportet.")) return;');
+L.push('    setBusy(true);');
+L.push('    try {');
+L.push('      const res = await supabase.from("revenue_reports").insert({ account_id: data.business.id, period_type: periodType, label: label, amount: amount, jobs_count: jobsCount, period_start: new Date(periodStart).toISOString(), period_end: new Date().toISOString() });');
+L.push('      if (res.error) { showToast("Gabim ne ruajtje: " + (res.error.message || "")); setBusy(false); return; }');
+L.push('      try { localStorage.setItem(RESET_KEY, new Date().toISOString()); } catch(e){ }');
+L.push('      showToast(label + " u ruajt te raportet dhe u resetua");');
+L.push('      await loadReports();');
+L.push('    } catch(e){ showToast("Gabim ne lidhje"); }');
+L.push('    setBusy(false);');
+L.push('  };');
+L.push('  const fmtNum = (n) => (parseFloat(n) || 0).toFixed(2) + " EUR";');
+L.push('  const fmtDt = (s) => { try { return new Date(s).toLocaleString("sq-AL"); } catch(e){ return ""; } };');
+L.push('  return (');
+L.push('    <div style=' + OB + ' background: T.surface, borderRadius: 20, padding: 24, marginBottom: 20, border: "1.5px solid " + T.border ' + CB + '>');
+L.push('      <h3 style=' + OB + ' margin: "0 0 4px", fontSize: 16, fontWeight: 700, color: T.text ' + CB + '>Reseto dhe raporto te ardhurat</h3>');
+L.push('      <p style=' + OB + ' margin: "0 0 16px", fontSize: 13, color: T.textMuted ' + CB + '>Ruaj totalin te raportet dhe rifillo numeruesin e Ballines (24h).</p>');
+L.push('      <div style=' + OB + ' display: "flex", gap: 10, flexWrap: "wrap", marginBottom: 16 ' + CB + '>');
+L.push('        <div style=' + OB + ' flex: "1 1 130px", background: T.surfaceAlt, borderRadius: 12, padding: 14, textAlign: "center", border: "1px solid " + T.border ' + CB + '>');
+L.push('          <div style=' + OB + ' fontSize: 12, color: T.textMuted, marginBottom: 4 ' + CB + '>Ditore (24h)</div>');
+L.push('          <div style=' + OB + ' fontSize: 20, fontWeight: 800, color: T.accent ' + CB + '>{ditore.toFixed(2)} EUR</div>');
+L.push('        </div>');
+L.push('        <div style=' + OB + ' flex: "1 1 130px", background: T.surfaceAlt, borderRadius: 12, padding: 14, textAlign: "center", border: "1px solid " + T.border ' + CB + '>');
+L.push('          <div style=' + OB + ' fontSize: 12, color: T.textMuted, marginBottom: 4 ' + CB + '>Mujore</div>');
+L.push('          <div style=' + OB + ' fontSize: 20, fontWeight: 800, color: T.accent ' + CB + '>{mujore.toFixed(2)} EUR</div>');
+L.push('        </div>');
+L.push('        <div style=' + OB + ' flex: "1 1 130px", background: T.surfaceAlt, borderRadius: 12, padding: 14, textAlign: "center", border: "1px solid " + T.border ' + CB + '>');
+L.push('          <div style=' + OB + ' fontSize: 12, color: T.textMuted, marginBottom: 4 ' + CB + '>Vjetore</div>');
+L.push('          <div style=' + OB + ' fontSize: 20, fontWeight: 800, color: T.accent ' + CB + '>{vjetore.toFixed(2)} EUR</div>');
+L.push('        </div>');
+L.push('      </div>');
+L.push('      <div style=' + OB + ' display: "flex", gap: 10, flexWrap: "wrap" ' + CB + '>');
+L.push('        <button disabled={busy} onClick={() => doReset("daily", "Ditore", ditore, cntIn(dayStart), dayStart)} style=' + OB + ' flex: "1 1 130px", background: T.accent, color: "#fff", border: "none", borderRadius: 10, padding: "12px 14px", cursor: busy ? "default" : "pointer", fontWeight: 700, fontSize: 13, opacity: busy ? 0.5 : 1 ' + CB + '>Reseto Ditore</button>');
+L.push('        <button disabled={busy} onClick={() => doReset("monthly", "Mujore", mujore, cntIn(monthStart), monthStart)} style=' + OB + ' flex: "1 1 130px", background: T.accent, color: "#fff", border: "none", borderRadius: 10, padding: "12px 14px", cursor: busy ? "default" : "pointer", fontWeight: 700, fontSize: 13, opacity: busy ? 0.5 : 1 ' + CB + '>Reseto Mujore</button>');
+L.push('        <button disabled={busy} onClick={() => doReset("yearly", "Vjetore", vjetore, cntIn(yearStart), yearStart)} style=' + OB + ' flex: "1 1 130px", background: T.accent, color: "#fff", border: "none", borderRadius: 10, padding: "12px 14px", cursor: busy ? "default" : "pointer", fontWeight: 700, fontSize: 13, opacity: busy ? 0.5 : 1 ' + CB + '>Reseto Vjetore</button>');
+L.push('      </div>');
+L.push('      <h4 style=' + OB + ' margin: "20px 0 8px", fontSize: 14, fontWeight: 700, color: T.text ' + CB + '>Raporte te ruajtura</h4>');
+L.push('      {reports.length === 0 ? <div style=' + OB + ' fontSize: 13, color: T.textFaint, padding: "8px 0" ' + CB + '>Nuk ka raporte ende.</div> : <div>{reports.map(r => <div key={r.id} style=' + OB + ' display: "flex", justifyContent: "space-between", alignItems: "center", padding: "10px 12px", borderBottom: "1px solid " + T.border, fontSize: 13 ' + CB + '><span style=' + OB + ' color: T.textMuted ' + CB + '>{r.label} - {fmtDt(r.created_at)}</span><span style=' + OB + ' fontWeight: 700, color: T.text ' + CB + '>{fmtNum(r.amount)}</span></div>)}</div>}');
+L.push('    </div>');
+L.push('  );');
+L.push('}');
+L.push('');
+
+const comp = L.join("\n");
+
+apply("rev-component", "function BusinessSettings({ data, setData, T }) {", comp + "\nfunction BusinessSettings({ data, setData, T }) {");
+apply("rev-render", ">Biznesi</h2>", ">Biznesi</h2>\n      <RevenueResetSection data={data} T={T} />");
+
+fs.writeFileSync(path, src);
+console.log(report.join("\n"));
