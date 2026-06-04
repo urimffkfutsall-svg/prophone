@@ -572,9 +572,9 @@ function AuthPage({ onRegister, onLogin, accounts, regSuccess, onGoLogin }) {
             {regSuccess ? (
                 <div style={{ background: "#D1FAE5", border: "1.5px solid #059669", borderRadius: 12, padding: "20px 16px", textAlign: "center", marginTop: 8 }}>
                   <div style={{ fontSize: 32, marginBottom: 8 }}>✅</div>
-                  <div style={{ fontWeight: 800, color: "#059669", fontSize: 16, marginBottom: 4 }}>U regjistruat me sukses!</div>
-                  <div style={{ color: "#065f46", fontSize: 13, marginBottom: 16 }}>Tani mund të kyqeni me llogarinë tuaj.</div>
-                  <Btn onClick={() => { onGoLogin(); setMode("login"); setError(""); }} variant="success" size="lg" style={{ width: "100%", justifyContent: "center" }} t={T}>KYQU TANI</Btn>
+                  <div style={{ fontWeight: 800, color: "#059669", fontSize: 16, marginBottom: 4 }}>Kerkesa u dergua me sukses!</div>
+                  <div style={{ color: "#065f46", fontSize: 13, marginBottom: 16 }}>Ju do te keni mundesi te kyceni vetem pasi te verifikohet kerkesa juaj nga administratori. Per cdo gje, ju lutemi kontaktoni ne numrin e telefonit: 045 278 279</div>
+                  <Btn onClick={() => { onGoLogin(); setMode("login"); setError(""); }} variant="success" size="lg" style={{ width: "100%", justifyContent: "center" }} t={T}>NE RREGULL</Btn>
                 </div>
               ) : (
                 <Btn onClick={handleRegister} variant="primary" size="lg" disabled={!name.trim() || !email.trim() || !password.trim()} style={{ width: "100%", justifyContent: "center", marginTop: 8 }} t={T} data-enter="1">REGJISTRO BIZNESIN</Btn>
@@ -1591,6 +1591,17 @@ function AdminPanel({ accounts, setAccounts, onLogout }) {
     showToast(accounts.find(a => a.id === id)?.status === "suspended" ? "Firma u aktivizua!" : "Firma u pezullua!");
   };
 
+  const handleVerify = async (id) => {
+    console.log("[VERIFY] clicked id =", id);
+    try {
+      const { data, error } = await supabase.from("accounts").update({ is_verified: true }).eq("id", id).select();
+      if (error) { showToast("Gabim gjate verifikimit: " + error.message); return; }
+      if (!data || data.length === 0) { showToast("Nuk u ruajt ne DB - kontrollo RLS/policies ne Supabase."); return; }
+      setAccounts(prev => prev.map(a => a.id === id ? { ...a, isVerified: true } : a));
+      showToast("Firma u verifikua! Tani mund te kyqet.");
+    } catch (e) { showToast("Gabim: " + e.message); }
+  };
+
   const handleDelete = (id) => {
     setAccounts(prev => prev.filter(a => a.id !== id));
     setDeleteConfirm(null);
@@ -1997,7 +2008,7 @@ CREATE TABLE IF NOT EXISTS coupons (
                         {dl !== null ? `${dl} ditë` : "Pa abonim"}
                       </span>
                       <span style={{ display: "flex", gap: 6 }} onClick={e => e.stopPropagation()}>
-                        <button onClick={() => openSubModal(acc)} title="Shto abonim" style={{ background: T.accentGrad, color: "#fff", border: "none", borderRadius: 7, width: 30, height: 30, cursor: "pointer", display: "flex", alignItems: "center", justifyContent: "center" }}>{Ic.money(12)}</button>
+                        {!acc.isVerified && (<button onClick={() => handleVerify(acc.id)} title="Verifiko firmen" style={{ background: "#D1FAE5", color: "#059669", border: "none", borderRadius: 7, height: 30, padding: "0 10px", cursor: "pointer", fontWeight: 800, fontSize: 12, whiteSpace: "nowrap" }}>Verifiko</button>)}{acc.isVerified && (<span title="E verifikuar" style={{ color: "#059669", fontWeight: 900, fontSize: 16, padding: "0 4px" }}>{"✓"}</span>)}<button onClick={() => openSubModal(acc)} title="Shto abonim" style={{ background: T.accentGrad, color: "#fff", border: "none", borderRadius: 7, width: 30, height: 30, cursor: "pointer", display: "flex", alignItems: "center", justifyContent: "center" }}>{Ic.money(12)}</button>
                         <button onClick={() => handleEdit(acc)} title="Edito" style={{ background: T.surfaceAlt, color: T.textMuted, border: `1px solid ${T.border}`, borderRadius: 7, width: 30, height: 30, cursor: "pointer", display: "flex", alignItems: "center", justifyContent: "center" }}>{Ic.edit(12)}</button>
                         <button onClick={() => handleSuspend(acc.id)} title={status === "suspended" ? "Aktivizo" : "Pezullo"} style={{ background: status === "suspended" ? "#D1FAE5" : "#FEF3C7", color: status === "suspended" ? "#059669" : "#D97706", border: "none", borderRadius: 7, width: 30, height: 30, cursor: "pointer", display: "flex", alignItems: "center", justifyContent: "center", fontWeight: 900, fontSize: 13 }}>{status === "suspended" ? "▶" : "⏸"}</button>
                         <button onClick={() => setDeleteConfirm(acc.id)} title="Fshi" style={{ background: "#FEE2E2", color: "#EF4444", border: "none", borderRadius: 7, width: 30, height: 30, cursor: "pointer", display: "flex", alignItems: "center", justifyContent: "center" }}>{Ic.trash(12)}</button>
@@ -2178,6 +2189,7 @@ function mapAccountFromDB(row) {
     instagram: row.instagram || "",
     website: row.website || "",
     status: row.status || "active",
+    isVerified: !!row.is_verified,
     registeredAt: row.registered_at,
     expiryDate: row.expiry_date,
     trialStart: row.trial_start,
@@ -5103,6 +5115,7 @@ export default function DataPhone() {
 
 
   const handleLogin = async (account, rememberMe = true) => {
+    console.log("[LOGIN] start", account && account.email);
     // Check if admin
     if (account.email === ADMIN_CREDENTIALS.email && account.password === ADMIN_CREDENTIALS.password) {
       setIsAdmin(true);
@@ -5118,13 +5131,15 @@ export default function DataPhone() {
         .eq('email', account.email.trim())
         .eq('password', account.password)
         .maybeSingle();
+      console.log("[LOGIN] error=", error, " rows=", rows);
       if (error || !rows) {
         showToast("Email ose fjalëkalim i gabuar");
         return;
       }
       // Bllokoje kyqjen nese email-i nuk eshte verifikuar
+      console.log("[LOGIN] is_verified =", rows.is_verified, typeof rows.is_verified);
       if (rows.is_verified === false) {
-        showToast("Verifikoni email-in tuaj para kyqjes. Kontrolloni inbox-in.");
+        showToast("Llogaria juaj ende nuk eshte verifikuar nga administratori. Per me shume informacion kontaktoni ne numrin: 045 278 279");
         return;
       }
       const fresh = mapAccountFromDB(rows);
