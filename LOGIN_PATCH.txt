@@ -1,0 +1,36 @@
+﻿// =============================================
+// SHTOJE KETE BLLOK PAS signInWithPassword
+// ne skedarin e Login-it (zakonisht src/Login.js ose src/auth.js)
+// =============================================
+
+const { data: authData, error: authError } = await supabase.auth.signInWithPassword({
+  email,
+  password
+});
+
+if (authError) {
+  alert("Email ose fjalekalim i gabuar");
+  return;
+}
+
+// 🔒 Kontroll i verifikimit
+const { data: company } = await supabase
+  .from("companies")
+  .select("verified")
+  .eq("email", email)  // ndrysho ne user_id nese e ke ashtu
+  .single();
+
+if (!company) {
+  await supabase.auth.signOut();
+  alert("Firma juaj nuk u gjet ne sistem.");
+  return;
+}
+
+if (!company.verified) {
+  await supabase.auth.signOut();
+  alert("⏳ Llogaria juaj eshte ne pritje te verifikimit nga administratori.");
+  return;
+}
+
+// ✅ Vazhdo me login
+window.location.href = "/dashboard";
