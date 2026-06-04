@@ -527,7 +527,7 @@ function ClientStatusView({ job: initialJob, client: initialClient, worker: init
 // Auth Page
 // ============================================================
 function AuthPage({ onRegister, onLogin, accounts, regSuccess, onGoLogin }) {
-  const [mode, setMode] = useState(() => { try { const m = window.__authMode; delete window.__authMode; return m === "register" ? "register" : "login"; } catch(e){ return "login"; } });
+  const [mode, setMode] = useState("login");
   const [name, setName] = useState(""); const [email, setEmail] = useState(""); const [password, setPassword] = useState("");
   const [phone, setPhone] = useState(""); const [country, setCountry] = useState(""); const [city, setCity] = useState("");
   const [error, setError] = useState("");
@@ -1248,253 +1248,6 @@ function JobDetail({ data, setData, jobId, onNavigate, T }) {
 // ============================================================
 // Business Settings
 // ============================================================
-function Icon({ name, size, color }) {
-  const sz = size || 24;
-  const cl = color || "currentColor";
-  const p = { width: sz, height: sz, viewBox: "0 0 24 24", fill: "none", stroke: cl, strokeWidth: 1.75, strokeLinecap: "round", strokeLinejoin: "round" };
-  switch(name) {
-    case "wrench": return <svg {...p}><path d="M14.7 6.3a1 1 0 0 0 0 1.4l1.6 1.6a1 1 0 0 0 1.4 0l3.77-3.77a6 6 0 0 1-7.94 7.94l-6.91 6.91a2.12 2.12 0 0 1-3-3l6.91-6.91a6 6 0 0 1 7.94-7.94l-3.76 3.76z"/></svg>;
-    case "cart": return <svg {...p}><circle cx="9" cy="21" r="1"/><circle cx="20" cy="21" r="1"/><path d="M1 2h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"/></svg>;
-    case "package": return <svg {...p}><path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"/><polyline points="3.27 6.96 12 12.01 20.73 6.96"/><line x1="12" y1="22.08" x2="12" y2="12"/></svg>;
-    case "users": return <svg {...p}><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>;
-    case "user": return <svg {...p}><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>;
-    case "shield": return <svg {...p}><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/><polyline points="9 12 11 14 15 10"/></svg>;
-    case "card": return <svg {...p}><rect x="1" y="4" width="22" height="16" rx="2" ry="2"/><line x1="1" y1="10" x2="23" y2="10"/></svg>;
-    case "chart": return <svg {...p}><line x1="12" y1="20" x2="12" y2="10"/><line x1="18" y1="20" x2="18" y2="4"/><line x1="6" y1="20" x2="6" y2="16"/></svg>;
-    case "arrow": return <svg {...p}><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>;
-    case "phone": return <svg {...p}><rect x="5" y="2" width="14" height="20" rx="2" ry="2"/><line x1="12" y1="18" x2="12.01" y2="18"/></svg>;
-    case "check": return <svg {...p}><polyline points="20 6 9 17 4 12"/></svg>;
-    case "zap": return <svg {...p}><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg>;
-    case "globe": return <svg {...p}><circle cx="12" cy="12" r="10"/><line x1="2" y1="12" x2="22" y2="12"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/></svg>;
-    default: return null;
-  }
-}
-
-function Landing({ T, onLogin, onRegister }) {
-  const goLogin = () => { try { window.__authMode = "login"; } catch(e){ } onLogin(); };
-  const goRegister = () => { try { window.__authMode = "register"; } catch(e){ } onRegister(); };
-  const S = {
-    page: { minHeight: "100vh", background: T.bg, color: T.text, fontFamily: "-apple-system, BlinkMacSystemFont, Inter, Segoe UI, Roboto, sans-serif", lineHeight: 1.5 },
-    nav: { display: "flex", alignItems: "center", justifyContent: "space-between", padding: "14px 24px", borderBottom: "1px solid " + T.border, background: T.surface, position: "sticky", top: 0, zIndex: 100, backdropFilter: "blur(12px)" },
-    logoWrap: { display: "flex", alignItems: "center", gap: 8 },
-    logoDot: { width: 10, height: 10, borderRadius: 3, background: T.accent },
-    logo: { fontSize: 20, fontWeight: 800, color: T.text, letterSpacing: -0.5 },
-    navBtns: { display: "flex", gap: 8, alignItems: "center" },
-    btnGhost: { display: "inline-flex", alignItems: "center", gap: 6, padding: "9px 16px", borderRadius: 10, border: "1px solid " + T.border, background: "transparent", color: T.text, fontWeight: 600, fontSize: 14, cursor: "pointer" },
-    btnPrimary: { display: "inline-flex", alignItems: "center", gap: 6, padding: "9px 16px", borderRadius: 10, border: "none", background: T.accent, color: "#fff", fontWeight: 700, fontSize: 14, cursor: "pointer" },
-    hero: { padding: "80px 24px 56px", textAlign: "center", maxWidth: 980, margin: "0 auto" },
-    pill: { display: "inline-flex", alignItems: "center", gap: 8, padding: "6px 14px", borderRadius: 999, background: T.surfaceAlt, border: "1px solid " + T.border, fontSize: 13, color: T.textMuted, fontWeight: 600, marginBottom: 24 },
-    pillDot: { width: 6, height: 6, borderRadius: "50%", background: T.accent, display: "inline-block" },
-    h1: { margin: "0 0 20px", fontSize: 56, fontWeight: 900, lineHeight: 1.05, letterSpacing: -1.5, color: T.text },
-    h1grad: { background: T.accentGrad || T.accent, WebkitBackgroundClip: "text", WebkitTextFillColor: "transparent", backgroundClip: "text" },
-    heroSub: { margin: "0 auto 32px", fontSize: 19, color: T.textMuted, maxWidth: 680, lineHeight: 1.55 },
-    heroBtns: { display: "flex", gap: 12, justifyContent: "center", flexWrap: "wrap", marginBottom: 12 },
-    btnHeroPrimary: { display: "inline-flex", alignItems: "center", gap: 8, padding: "16px 28px", borderRadius: 12, border: "none", background: T.accent, color: "#fff", fontWeight: 700, fontSize: 16, cursor: "pointer", boxShadow: "0 10px 30px -10px " + T.accent },
-    btnHeroGhost: { display: "inline-flex", alignItems: "center", gap: 8, padding: "16px 28px", borderRadius: 12, border: "1px solid " + T.border, background: T.surface, color: T.text, fontWeight: 700, fontSize: 16, cursor: "pointer" },
-    miniNote: { fontSize: 13, color: T.textFaint, marginTop: 12 },
-    statsRow: { display: "grid", gridTemplateColumns: "repeat(3, 1fr)", gap: 24, maxWidth: 880, margin: "48px auto 0", padding: "32px 24px", borderTop: "1px solid " + T.border, borderBottom: "1px solid " + T.border },
-    statItem: { textAlign: "center" },
-    statNum: { fontSize: 32, fontWeight: 900, color: T.text, letterSpacing: -0.5 },
-    statLabel: { fontSize: 12, color: T.textMuted, fontWeight: 600, textTransform: "uppercase", letterSpacing: 0.8, marginTop: 4 },
-    section: { padding: "80px 24px", maxWidth: 1140, margin: "0 auto" },
-    sectionHeader: { textAlign: "center", marginBottom: 48 },
-    eyebrow: { fontSize: 13, fontWeight: 700, color: T.accent, textTransform: "uppercase", letterSpacing: 1.5, marginBottom: 12 },
-    sectionTitle: { fontSize: 36, fontWeight: 900, margin: "0 0 12px", color: T.text, letterSpacing: -0.8, lineHeight: 1.15 },
-    sectionSub: { fontSize: 17, color: T.textMuted, margin: "0 auto", maxWidth: 600, lineHeight: 1.55 },
-    modulesGrid: { display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(220px, 1fr))", gap: 16 },
-    moduleCard: { background: T.surface, border: "1px solid " + T.border, borderRadius: 16, padding: 24, transition: "all 0.2s" },
-    moduleIconBox: { width: 48, height: 48, borderRadius: 12, background: T.surfaceAlt, color: T.accent, display: "flex", alignItems: "center", justifyContent: "center", marginBottom: 16 },
-    moduleName: { fontSize: 16, fontWeight: 700, color: T.text, marginBottom: 6 },
-    moduleDesc: { fontSize: 14, color: T.textMuted, lineHeight: 1.5 },
-    featureRow: { display: "grid", gridTemplateColumns: "1fr 1fr", gap: 48, alignItems: "center", marginBottom: 80 },
-    featureEyebrow: { fontSize: 13, fontWeight: 700, color: T.accent, textTransform: "uppercase", letterSpacing: 1.5, marginBottom: 12 },
-    featureTitle: { fontSize: 30, fontWeight: 800, margin: "0 0 16px", color: T.text, letterSpacing: -0.5, lineHeight: 1.2 },
-    featureText: { fontSize: 16, color: T.textMuted, lineHeight: 1.65, margin: "0 0 20px" },
-    featureList: { listStyle: "none", padding: 0, margin: 0, display: "flex", flexDirection: "column", gap: 12 },
-    featureLi: { display: "flex", alignItems: "flex-start", gap: 10, fontSize: 15, color: T.text },
-    featureLiIcon: { color: T.accent, flexShrink: 0, marginTop: 2, display: "inline-flex" },
-    featureVisual: { background: T.surface, border: "1px solid " + T.border, borderRadius: 20, padding: 24 },
-    mockCard: { background: T.surfaceAlt, borderRadius: 12, padding: 14, marginBottom: 10, display: "flex", alignItems: "center", justifyContent: "space-between", gap: 12 },
-    mockLeft: { display: "flex", alignItems: "center", gap: 12, minWidth: 0 },
-    mockIcon: { width: 36, height: 36, borderRadius: 10, background: T.surface, color: T.accent, display: "flex", alignItems: "center", justifyContent: "center", flexShrink: 0 },
-    mockText: { fontSize: 14, fontWeight: 600, color: T.text },
-    mockSub: { fontSize: 12, color: T.textMuted, marginTop: 2 },
-    mockBadge: { padding: "4px 10px", borderRadius: 999, background: T.accent, color: "#fff", fontSize: 11, fontWeight: 700, whiteSpace: "nowrap" },
-    valuesGrid: { display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(240px, 1fr))", gap: 16 },
-    valueCard: { background: T.surface, border: "1px solid " + T.border, borderRadius: 16, padding: 28 },
-    valueIconBox: { width: 44, height: 44, borderRadius: 12, background: T.surfaceAlt, color: T.accent, display: "flex", alignItems: "center", justifyContent: "center", marginBottom: 16 },
-    valueTitle: { fontSize: 18, fontWeight: 700, color: T.text, marginBottom: 6 },
-    valueDesc: { fontSize: 14, color: T.textMuted, lineHeight: 1.55 },
-    ctaBox: { background: T.accentGrad || T.accent, borderRadius: 24, padding: "64px 32px", textAlign: "center", color: "#fff" },
-    ctaTitle: { fontSize: 36, fontWeight: 900, margin: "0 0 12px", color: "#fff", letterSpacing: -0.8, lineHeight: 1.15 },
-    ctaSub: { fontSize: 17, opacity: 0.95, margin: "0 auto 28px", color: "#fff", maxWidth: 520 },
-    ctaBtn: { display: "inline-flex", alignItems: "center", gap: 8, padding: "16px 32px", borderRadius: 12, border: "none", background: "#fff", color: T.accent, fontWeight: 800, fontSize: 16, cursor: "pointer" },
-    footer: { padding: "48px 24px 32px", borderTop: "1px solid " + T.border, background: T.surface },
-    footerInner: { maxWidth: 1140, margin: "0 auto", display: "grid", gridTemplateColumns: "2fr 1fr 1fr", gap: 32 },
-    footerLogoRow: { display: "flex", alignItems: "center", gap: 8, marginBottom: 12 },
-    footerTag: { fontSize: 14, color: T.textMuted, lineHeight: 1.55, maxWidth: 320 },
-    footerColTitle: { fontSize: 13, fontWeight: 700, color: T.text, textTransform: "uppercase", letterSpacing: 1, marginBottom: 12 },
-    footerLine: { fontSize: 14, color: T.textMuted, marginBottom: 8 },
-    footerLink: { cursor: "pointer", color: T.textMuted, fontSize: 14, display: "block", marginBottom: 8 },
-    footerBottom: { maxWidth: 1140, margin: "32px auto 0", paddingTop: 24, borderTop: "1px solid " + T.border, textAlign: "center", fontSize: 13, color: T.textFaint }
-  };
-  const modules = [
-    { icon: "wrench", name: "Servisi", desc: "Riparime telefonash me ndjekje statusi dhe kuponat publike" },
-    { icon: "cart", name: "Arka POS", desc: "Shitje te shpejta, faturat A4 dhe inventari" },
-    { icon: "package", name: "Posta", desc: "Porosi dhe dorezime me ndjekje online" },
-    { icon: "users", name: "Klientet", desc: "Baza e plote e klienteve me histori" },
-    { icon: "user", name: "Punetoret", desc: "Stafi, detyrat dhe performancat" },
-    { icon: "shield", name: "Garancite", desc: "Garanci profesionale A4 me logon" },
-    { icon: "card", name: "Borxhet", desc: "Menaxho borxhet e klienteve me lehtesi" },
-    { icon: "chart", name: "Raportet", desc: "Te ardhura ditore, mujore dhe vjetore" }
-  ];
-  return (
-    <div style={S.page}>
-      <style>{`
-        @media (max-width: 768px) {
-          .ld-hero { padding: 56px 20px 40px !important; }
-          .ld-h1 { font-size: 38px !important; letter-spacing: -1px !important; }
-          .ld-hero-sub { font-size: 16px !important; }
-          .ld-stats { gap: 12px !important; padding: 24px 16px !important; margin-top: 32px !important; }
-          .ld-stat-num { font-size: 24px !important; }
-          .ld-section { padding: 56px 20px !important; }
-          .ld-section-title { font-size: 28px !important; letter-spacing: -0.5px !important; }
-          .ld-feature-row { grid-template-columns: 1fr !important; gap: 24px !important; margin-bottom: 56px !important; }
-          .ld-feature-title { font-size: 24px !important; }
-          .ld-cta-box { padding: 48px 24px !important; }
-          .ld-cta-title { font-size: 28px !important; }
-          .ld-footer-inner { grid-template-columns: 1fr !important; gap: 24px !important; }
-          .ld-nav-btns button { padding: 8px 12px !important; font-size: 13px !important; }
-          .ld-hero-btn { padding: 14px 22px !important; font-size: 15px !important; }
-        }
-      `}</style>
-      <nav style={S.nav}>
-        <div style={S.logoWrap}><div style={S.logoDot}></div><div style={S.logo}>DataPos</div></div>
-        <div style={S.navBtns} className="ld-nav-btns">
-          <button onClick={goLogin} style={S.btnGhost}>Kyqu</button>
-          <button onClick={goRegister} style={S.btnPrimary}>Regjistrohu<Icon name="arrow" size={16} color="#fff"/></button>
-        </div>
-      </nav>
-      <section style={S.hero} className="ld-hero">
-        <div style={S.pill}><span style={S.pillDot}></span><span>Tani me sinkronizim online</span></div>
-        <h1 style={S.h1} className="ld-h1">Menaxhoni biznesin tuaj<br/>me <span style={S.h1grad}>DataPos</span></h1>
-        <p style={S.heroSub} className="ld-hero-sub">Platforma e plote per servisin e telefonave, arken, postat dhe te gjitha operacionet ditore - ne nje vend te vetem.</p>
-        <div style={S.heroBtns}>
-          <button onClick={goRegister} style={S.btnHeroPrimary} className="ld-hero-btn">Regjistrohu Falas<Icon name="arrow" size={18} color="#fff"/></button>
-          <button onClick={goLogin} style={S.btnHeroGhost} className="ld-hero-btn">Kyqu</button>
-        </div>
-        <div style={S.miniNote}>30 dite falas . Pa karte krediti . Anulo ne cdo kohe</div>
-        <div style={S.statsRow} className="ld-stats">
-          <div style={S.statItem}><div style={S.statNum} className="ld-stat-num">500+</div><div style={S.statLabel}>Biznese</div></div>
-          <div style={S.statItem}><div style={S.statNum} className="ld-stat-num">50K+</div><div style={S.statLabel}>Pune</div></div>
-          <div style={S.statItem}><div style={S.statNum} className="ld-stat-num">99.9%</div><div style={S.statLabel}>Uptime</div></div>
-        </div>
-      </section>
-      <section style={S.section} className="ld-section">
-        <div style={S.sectionHeader}>
-          <div style={S.eyebrow}>MODULET</div>
-          <h2 style={S.sectionTitle} className="ld-section-title">Cdo gje qe ju nevojitet</h2>
-          <p style={S.sectionSub}>Tete module te integruara per te menaxhuar cdo aspekt te biznesit tuaj me lehtesi.</p>
-        </div>
-        <div style={S.modulesGrid}>
-          {modules.map(m => <div key={m.name} style={S.moduleCard}><div style={S.moduleIconBox}><Icon name={m.icon} size={22} color={T.accent}/></div><div style={S.moduleName}>{m.name}</div><div style={S.moduleDesc}>{m.desc}</div></div>)}
-        </div>
-      </section>
-      <section style={S.section} className="ld-section">
-        <div style={S.featureRow} className="ld-feature-row">
-          <div>
-            <div style={S.featureEyebrow}>SERVISI</div>
-            <h3 style={S.featureTitle} className="ld-feature-title">Ndjekje profesionale e riparimeve</h3>
-            <p style={S.featureText}>Regjistroni pune te reja, ndiqni statuset dhe gjeneroni kuponat publike per klientet - gjithcka brenda 30 sekondash.</p>
-            <ul style={S.featureList}>
-              <li style={S.featureLi}><span style={S.featureLiIcon}><Icon name="check" size={18} color={T.accent}/></span>Link publik per klientin ne kohe reale</li>
-              <li style={S.featureLi}><span style={S.featureLiIcon}><Icon name="check" size={18} color={T.accent}/></span>Kuponat e printueshem me logon tuaj</li>
-              <li style={S.featureLi}><span style={S.featureLiIcon}><Icon name="check" size={18} color={T.accent}/></span>Statuset dhe njoftimet automatike</li>
-            </ul>
-          </div>
-          <div style={S.featureVisual}>
-            <div style={S.mockCard}><div style={S.mockLeft}><div style={S.mockIcon}><Icon name="phone" size={18} color={T.accent}/></div><div><div style={S.mockText}>iPhone 14 Pro</div><div style={S.mockSub}>IMEI: 35178...</div></div></div><div style={S.mockBadge}>Ne pune</div></div>
-            <div style={S.mockCard}><div style={S.mockLeft}><div style={S.mockIcon}><Icon name="phone" size={18} color={T.accent}/></div><div><div style={S.mockText}>Samsung S23</div><div style={S.mockSub}>IMEI: 35892...</div></div></div><div style={S.mockBadge}>Perfunduar</div></div>
-            <div style={S.mockCard}><div style={S.mockLeft}><div style={S.mockIcon}><Icon name="phone" size={18} color={T.accent}/></div><div><div style={S.mockText}>Xiaomi 13</div><div style={S.mockSub}>IMEI: 35441...</div></div></div><div style={S.mockBadge}>Pranuar</div></div>
-          </div>
-        </div>
-        <div style={S.featureRow} className="ld-feature-row">
-          <div style={S.featureVisual}>
-            <div style={S.mockCard}><div style={S.mockLeft}><div style={S.mockIcon}><Icon name="cart" size={18} color={T.accent}/></div><div><div style={S.mockText}>Shitje #1245</div><div style={S.mockSub}>3 produkte</div></div></div><div style={S.mockBadge}>120 EUR</div></div>
-            <div style={S.mockCard}><div style={S.mockLeft}><div style={S.mockIcon}><Icon name="card" size={18} color={T.accent}/></div><div><div style={S.mockText}>Borxh - Klient A</div><div style={S.mockSub}>Afati: 15 dite</div></div></div><div style={S.mockBadge}>45 EUR</div></div>
-            <div style={S.mockCard}><div style={S.mockLeft}><div style={S.mockIcon}><Icon name="shield" size={18} color={T.accent}/></div><div><div style={S.mockText}>Garanci #G102</div><div style={S.mockSub}>Vlefshme 12 muaj</div></div></div><div style={S.mockBadge}>Aktive</div></div>
-          </div>
-          <div>
-            <div style={S.featureEyebrow}>ARKA & BORXHET</div>
-            <h3 style={S.featureTitle} className="ld-feature-title">Shitje te shpejta, gjithcka e organizuar</h3>
-            <p style={S.featureText}>Arka POS me skanim te shpejte, menaxhim produktesh, faturat A4, garancite dhe borxhet e klienteve - te sinkronizuara online.</p>
-            <ul style={S.featureList}>
-              <li style={S.featureLi}><span style={S.featureLiIcon}><Icon name="check" size={18} color={T.accent}/></span>Faturat profesionale A4 me logon</li>
-              <li style={S.featureLi}><span style={S.featureLiIcon}><Icon name="check" size={18} color={T.accent}/></span>Menaxhim borxhesh me afate</li>
-              <li style={S.featureLi}><span style={S.featureLiIcon}><Icon name="check" size={18} color={T.accent}/></span>Garancite e printueshme</li>
-            </ul>
-          </div>
-        </div>
-        <div style={S.featureRow} className="ld-feature-row">
-          <div>
-            <div style={S.featureEyebrow}>RAPORTET</div>
-            <h3 style={S.featureTitle} className="ld-feature-title">Statistikat ne kohe reale</h3>
-            <p style={S.featureText}>Ndiqni te ardhurat ditore, mujore dhe vjetore. Resetoni numeruesin kur deshironi dhe ruani raportet per analiza te metejshme.</p>
-            <ul style={S.featureList}>
-              <li style={S.featureLi}><span style={S.featureLiIcon}><Icon name="check" size={18} color={T.accent}/></span>Te ardhurat 24h te dukshme ne Ballina</li>
-              <li style={S.featureLi}><span style={S.featureLiIcon}><Icon name="check" size={18} color={T.accent}/></span>Raporte ditore, mujore, vjetore</li>
-              <li style={S.featureLi}><span style={S.featureLiIcon}><Icon name="check" size={18} color={T.accent}/></span>Ruajtje online e raporteve</li>
-            </ul>
-          </div>
-          <div style={S.featureVisual}>
-            <div style={S.mockCard}><div style={S.mockLeft}><div style={S.mockIcon}><Icon name="chart" size={18} color={T.accent}/></div><div><div style={S.mockText}>Te ardhura 24h</div><div style={S.mockSub}>+12% nga dje</div></div></div><div style={S.mockBadge}>340 EUR</div></div>
-            <div style={S.mockCard}><div style={S.mockLeft}><div style={S.mockIcon}><Icon name="chart" size={18} color={T.accent}/></div><div><div style={S.mockText}>Te ardhura mujore</div><div style={S.mockSub}>Maj 2026</div></div></div><div style={S.mockBadge}>8420 EUR</div></div>
-            <div style={S.mockCard}><div style={S.mockLeft}><div style={S.mockIcon}><Icon name="chart" size={18} color={T.accent}/></div><div><div style={S.mockText}>Te ardhura vjetore</div><div style={S.mockSub}>2026</div></div></div><div style={S.mockBadge}>62800 EUR</div></div>
-          </div>
-        </div>
-      </section>
-      <section style={S.section} className="ld-section">
-        <div style={S.sectionHeader}>
-          <div style={S.eyebrow}>PERFITIMET</div>
-          <h2 style={S.sectionTitle} className="ld-section-title">Pse DataPos?</h2>
-          <p style={S.sectionSub}>I ndertuar per bizneset e vogla dhe te mesme qe duan te punojne me shpejt dhe me sigurt.</p>
-        </div>
-        <div style={S.valuesGrid}>
-          <div style={S.valueCard}><div style={S.valueIconBox}><Icon name="zap" size={22} color={T.accent}/></div><div style={S.valueTitle}>Shpejt dhe i thjeshte</div><div style={S.valueDesc}>Hapni dhe perdorni menjehere. Pa konfigurim te komplikuar, gati per pune ne minuta.</div></div>
-          <div style={S.valueCard}><div style={S.valueIconBox}><Icon name="shield" size={22} color={T.accent}/></div><div style={S.valueTitle}>I sigurt</div><div style={S.valueDesc}>Te dhenat e ruajtura online me enkriptim te plote dhe rezerva automatike.</div></div>
-          <div style={S.valueCard}><div style={S.valueIconBox}><Icon name="globe" size={22} color={T.accent}/></div><div style={S.valueTitle}>Online & Mobile</div><div style={S.valueDesc}>Qasje kudo qe jeni - desktop, telefon ose tablet. Sinkronizim ne kohe reale.</div></div>
-        </div>
-      </section>
-      <section style={S.section} className="ld-section">
-        <div style={S.ctaBox} className="ld-cta-box">
-          <h2 style={S.ctaTitle} className="ld-cta-title">Filloni sot me DataPos</h2>
-          <p style={S.ctaSub}>Provoni 30 dite falas, pa kerkesa per karte krediti. Anuloni kur te doni.</p>
-          <button onClick={goRegister} style={S.ctaBtn}>Regjistrohu Falas<Icon name="arrow" size={18} color={T.accent}/></button>
-        </div>
-      </section>
-      <footer style={S.footer}>
-        <div style={S.footerInner} className="ld-footer-inner">
-          <div>
-            <div style={S.footerLogoRow}><div style={S.logoDot}></div><div style={S.logo}>DataPos</div></div>
-            <div style={S.footerTag}>Platforma e plote per menaxhimin e biznesit - servisi, arka, posta, klientet dhe me shume.</div>
-          </div>
-          <div>
-            <div style={S.footerColTitle}>Kontakt</div>
-            <div style={S.footerLine}>Tel: 045 278 279</div>
-            <div style={S.footerLine}>info@datapos.pro</div>
-          </div>
-          <div>
-            <div style={S.footerColTitle}>Llogaria</div>
-            <span onClick={goLogin} style={S.footerLink}>Kyqu</span>
-            <span onClick={goRegister} style={S.footerLink}>Regjistrohu</span>
-          </div>
-        </div>
-        <div style={S.footerBottom}>{"Copyright \u00A9 2026 DataPos . Te gjitha te drejtat e rezervuara"}</div>
-      </footer>
-    </div>
-  );
-}
-
 function RevenueResetSection({ data, T }) {
   const RESET_KEY = "prophone_revreset_" + (data.business?.id || "x");
   const showToast = (msg) => { try { window.alert(msg); } catch(e){ } };
@@ -5140,7 +4893,7 @@ export default function DataPhone() {
   // accounts is shared — both admin and businesses share this list
   const [accounts, setAccounts] = useState([]);
   const [data, setData] = useState(DEFAULT_DATA);
-  const [page, setPage] = useState("landing");
+  const [page, setPage] = useState("auth");
   const [pageParam, setPageParam] = useState(null);
   const [toast, setToast] = useState({ msg: "", show: false });
   const [menuOpen, setMenuOpen] = useState(false);
@@ -5494,8 +5247,7 @@ export default function DataPhone() {
   // If admin logs out
   const handleAdminLogout = () => { setIsAdmin(false); localStorage.removeItem('prophone_is_admin'); showToast("U shkyqet me sukses!"); };
 
-  if (!data.business && page !== "auth" && page !== "landing") setPage("landing");
-  if (data.business && page === "landing") setPage("dashboard");
+  if (!data.business && page !== "auth") setPage("auth");
 
   // If admin is logged in – show admin panel
   if (isAdmin) {
@@ -5721,7 +5473,6 @@ export default function DataPhone() {
   if (page === "postaStatus" && pageParam) return (
     <PostaStatusPublicPage orderId={pageParam} onBack={() => setPage("auth")} />
   );
-  if (page === "landing") return <Landing T={T} onLogin={() => setPage("auth")} onRegister={() => setPage("auth")} />;
   if (page === "auth") return (
     <><style>{styles}</style>
     <AuthPage onRegister={handleRegister} onLogin={handleLogin} accounts={accounts} regSuccess={regSuccess} onGoLogin={() => { setRegSuccess(false); }} />
