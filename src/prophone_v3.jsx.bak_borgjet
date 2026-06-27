@@ -2,7 +2,6 @@
 import { supabase } from "./supabase";
 import AdminAddFirmaButton from "./components/AdminAddFirmaButton";
 import { QRCodeSVG } from "qrcode.react";
-import { Borgjet, BorgjiPublicPage } from "./Borgjet";
 import React, { useState, useEffect, useCallback, useRef } from "react";
 
 // ============================================================
@@ -5307,8 +5306,6 @@ export default function DataPhone() {
       setPageParam(postaId);
       return;
     }
-    const borgjiId = params.get('borgji');
-    if (borgjiId) { setPage('borgjiPublic'); setPageParam(borgjiId); return; }
     const savedAdmin = localStorage.getItem('prophone_is_admin');
     if (savedAdmin === '1') {
       setIsAdmin(true);
@@ -5859,7 +5856,6 @@ export default function DataPhone() {
   if (page === "postaStatus" && pageParam) return (
     <PostaStatusPublicPage orderId={pageParam} onBack={() => setPage("auth")} />
   );
-  if (page === "borgjiPublic" && pageParam) return (<BorgjiPublicPage debtId={pageParam} onBack={() => setPage("auth")} />);
   if (page === "app-upload") return <AppUploadSection T={T} setPage={setPage} />;
   if (page === "landing") return <Landing T={T} onLogin={() => setPage("auth")} onRegister={() => setPage("auth")} />;
   if (page === "auth") return (
@@ -5876,7 +5872,7 @@ export default function DataPhone() {
           <div style={{ display: "flex", alignItems: "center", gap: 24 }}>
             <div style={{ fontWeight: 800, fontSize: 20, color: T.accent, letterSpacing: -0.5, display: "flex", alignItems: "center", gap: 8 }}><img src="./icon.png" alt="" style={{ width: 28, height: 28, objectFit: "contain" }} />DataPOS</div>
             <div className="desktop-nav-tabs" style={{ display: "flex", gap: 4 }}>
-              {(() => { let n = [NAV_BASE[0], NAV_BASE[1], NAV_BASE[2]]; if (data.business?.hasArka) n.push(NAV_ARKA); if (data.business?.hasPosta) n.push(NAV_POSTA); n.push({ key: "borgjet", label: "Borgjet" }); n.push(NAV_BASE[3]); return n; })().map(item => (
+              {(() => { let n = [NAV_BASE[0], NAV_BASE[1], NAV_BASE[2]]; if (data.business?.hasArka) n.push(NAV_ARKA); if (data.business?.hasPosta) n.push(NAV_POSTA); n.push(NAV_BASE[3]); return n; })().map(item => (
                 <button key={item.key} onClick={() => navigate(item.key)} style={{ padding: "8px 18px", borderRadius: 10, fontSize: 13, fontWeight: 600, border: "none", cursor: "pointer", transition: "all .2s", background: page === item.key ? T.accent : "transparent", color: page === item.key ? "#fff" : T.textMuted, position: "relative" }}
                   onMouseEnter={e => { if (page !== item.key) e.target.style.background = T.surfaceAlt; }} onMouseLeave={e => { if (page !== item.key) e.target.style.background = "transparent"; }}>
                   {item.label}
@@ -5937,7 +5933,6 @@ export default function DataPhone() {
           {page === "createJob" && <CreateJob data={data} setData={wrappedSetData} onNavigate={navigate} T={T} />}
           {page === "jobDetail" && <JobDetail data={data} setData={wrappedSetData} jobId={pageParam} onNavigate={navigate} T={T} />}
           {page === "business" && <BusinessSettings data={data} setData={wrappedSetData} T={T} />}
-          {page === "borgjet" && <Borgjet business={data.business} T={T} showToast={showToast} />}
           {page === "settings" && <SettingsPage tab={pageParam} data={data} setData={wrappedSetData} onNavigate={navigate} T={T} />}
           {page === "arka" && data.business?.hasArka && (
             <>
@@ -6008,8 +6003,8 @@ export default function DataPhone() {
           let n = [NAV_BASE[0], NAV_BASE[1], NAV_BASE[2]];
           if (data.business?.hasArka) n.push(NAV_ARKA);
           if (data.business?.hasPosta) n.push(NAV_POSTA);
-          n.push({ key: "borgjet", label: "Borgjet" }); n.push(NAV_BASE[3]);
-          const icons = { borgjet: "$", dashboard: "🏠", workers: "👷", clients: "👥", arka: "🧾", posta: "📦", business: "⚙️" };
+          n.push(NAV_BASE[3]);
+          const icons = { dashboard: "🏠", workers: "👷", clients: "👥", arka: "🧾", posta: "📦", business: "⚙️" };
           return n.map(item => (
             <button key={item.key} onClick={() => navigate(item.key)} className={page === item.key ? "active" : ""}>
               <span className="nav-icon" style={{ filter: page === item.key ? "none" : "grayscale(1) opacity(.55)" }}>{icons[item.key] || "•"}</span>

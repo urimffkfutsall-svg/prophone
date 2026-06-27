@@ -9,7 +9,7 @@ function createWindow() {
     height: 800,
     minWidth: 400,
     minHeight: 600,
-    title: 'ProPhone',
+    title: 'DataPos',
     icon: path.join(__dirname, '..', 'public', 'icon.ico'),
     webPreferences: {
       nodeIntegration: false,
@@ -55,7 +55,7 @@ ipcMain.handle('check-online', () => {
 });
 
 app.whenReady().then(() => {
-  app.setAppUserModelId('com.prophone.app');
+  app.setAppUserModelId('pro.datapos.app');
   createWindow();
 });
 
