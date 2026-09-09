@@ -11,6 +11,8 @@ function App() {
         <Route path="/" element={<ProphoneV3 />} />
         <Route path="/admin/companies" element={<AdminCompanies />} />
         <Route path="/verify" element={<VerifyEmail />} />
+        <Route path="/app-upload" element={<ProphoneV3 />} />
+        <Route path="*" element={<ProphoneV3 />} />
       </Routes>
     </HashRouter>
   );
