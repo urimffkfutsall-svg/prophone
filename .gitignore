@@ -1,0 +1,40 @@
+# Varësitë
+/node_modules
+
+# Build output
+/build
+/dist
+/out
+
+# Skedarë të sistemit
+.DS_Store
+Thumbs.db
+
+# Variablat e mjedisit (KURRË mos i commit!)
+.env
+.env.local
+.env.development.local
+.env.test.local
+.env.production.local
+
+# Skedarë të redaktorëve
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# Logs
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# Vercel
+.vercel
+
+# Electron
+/dist
+
+# Skedarë backup
+*.bak
+*.bak*
+*.backup
