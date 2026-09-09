@@ -4933,14 +4933,14 @@ function POSView({ T, business, products, onSale, sales, warranties, onAddWarran
 
       {lastReceipt && (
         <div style={{ position: "fixed", inset: 0, zIndex: 1100, background: "rgba(15,23,42,.6)", backdropFilter: "blur(6px)", display: "flex", alignItems: "center", justifyContent: "center" }}>
-          <div onClick={e => e.stopPropagation()} style={{ background: T.surface, borderRadius: 16, padding: 28, width: "92%", maxWidth: 400, textAlign: "center", border: `1px solid ${T.border}`, boxShadow: "0 30px 90px rgba(0,0,0,.35)" }}>
+          <div style={{ background: T.surface, borderRadius: 16, padding: 28, width: "92%", maxWidth: 400, textAlign: "center", border: `1px solid ${T.border}`, boxShadow: "0 30px 90px rgba(0,0,0,.35)" }}>
             <div style={{ width: 60, height: 60, borderRadius: "50%", background: "#D1FAE5", color: "#059669", display: "flex", alignItems: "center", justifyContent: "center", margin: "0 auto 14px" }}>{PIc.check(28)}</div>
             <h3 style={{ margin: "0 0 4px", fontSize: 17, fontWeight: 800, color: T.text }}>Shitja u regjistrua!</h3>
             <div style={{ color: T.textMuted, fontSize: 12, marginBottom: 4 }}>Nr. faturës: <b style={{ color: T.text }}>{lastReceipt.receiptNo}</b></div>
             <div style={{ fontSize: 28, fontWeight: 800, color: T.accent, marginBottom: 20 }}>€{lastReceipt.total.toFixed(2)}</div>
             <div style={{ display: "flex", gap: 10 }}>
-              <button onClick={(e) => { e.stopPropagation(); setLastReceipt(null); }} style={{ flex: 1, background: T.surfaceAlt, color: T.textMuted, border: `1.5px solid ${T.border}`, borderRadius: 10, padding: "11px", cursor: "pointer", fontWeight: 600, fontSize: 13, fontFamily: "inherit" }}>Mbyll</button>
-              <button onClick={(e) => { e.stopPropagation(); const r = lastReceipt; setLastReceipt(null); printThermal(r); }} style={{ flex: 2, background: T.accentGrad, color: "#fff", border: "none", borderRadius: 10, padding: "11px", cursor: "pointer", fontWeight: 800, fontSize: 13, display: "flex", alignItems: "center", justifyContent: "center", gap: 6, fontFamily: "inherit" }}>
+              <button onClick={() => setLastReceipt(null)} style={{ flex: 1, background: T.surfaceAlt, color: T.textMuted, border: `1.5px solid ${T.border}`, borderRadius: 10, padding: "11px", cursor: "pointer", fontWeight: 600, fontSize: 13, fontFamily: "inherit" }}>Mbyll</button>
+              <button onClick={() => { const r = lastReceipt; setLastReceipt(null); printThermal(r); }} style={{ flex: 2, background: T.accentGrad, color: "#fff", border: "none", borderRadius: 10, padding: "11px", cursor: "pointer", fontWeight: 800, fontSize: 13, display: "flex", alignItems: "center", justifyContent: "center", gap: 6, fontFamily: "inherit" }}>
                 {PIc.printer(14)} Printo Kuponin
               </button>
             </div>
@@ -6068,4 +6068,4 @@ export default function DataPhone() {
 
 
 
-
+
