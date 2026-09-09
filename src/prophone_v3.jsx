@@ -4406,6 +4406,35 @@ function ClientDialog({ T, initial, onSave, onClose }) {
   );
 }
 
+const ActionBtn = React.memo(function ActionBtn({ T, icon, label, shortcut, onClick, variant, disabled }) {
+  const isPrimary = variant === "primary";
+  const isDanger = variant === "danger";
+  const isAccent = variant === "accent";
+  return (
+    <button onClick={onClick} disabled={disabled}
+      style={{
+        display: "flex", alignItems: "center", justifyContent: "space-between",
+        padding: "10px 12px", borderRadius: 10, cursor: disabled ? "not-allowed" : "pointer",
+        fontSize: 12.5, fontWeight: 600, textAlign: "left", width: "100%",
+        background: isPrimary ? T.accentGrad : isAccent ? `${T.accent}10` : T.surface,
+        color: isPrimary ? "#fff" : isDanger ? T.danger : isAccent ? T.accent : T.text,
+        border: isPrimary ? "none" : isDanger ? `1.5px solid ${T.danger}55` : isAccent ? `1.5px solid ${T.accent}50` : `1px solid ${T.border}`,
+        opacity: disabled ? 0.45 : 1,
+        fontFamily: "inherit",
+        transition: "all .15s",
+        minHeight: 40,
+      }}
+      onMouseEnter={e => { if (!disabled && !isPrimary) { e.currentTarget.style.borderColor = T.accent; e.currentTarget.style.background = isDanger ? `${T.danger}08` : isAccent ? `${T.accent}18` : T.surfaceAlt; } }}
+      onMouseLeave={e => { if (!disabled && !isPrimary) { e.currentTarget.style.borderColor = isDanger ? `${T.danger}55` : isAccent ? `${T.accent}50` : T.border; e.currentTarget.style.background = isAccent ? `${T.accent}10` : T.surface; } }}>
+      <span style={{ display: "flex", alignItems: "center", gap: 10 }}>
+        <span style={{ color: isPrimary ? "#fff" : isDanger ? T.danger : isAccent ? T.accent : T.textMuted, display: "flex" }}>{icon}</span>
+        <span>{label}</span>
+      </span>
+      {shortcut && <span style={{ fontSize: 10, fontWeight: 700, background: isPrimary ? "rgba(255,255,255,.22)" : T.surfaceAlt, padding: "2px 7px", borderRadius: 5, color: isPrimary ? "#fff" : T.textFaint, letterSpacing: 0.5, fontFamily: "ui-monospace, monospace" }}>{shortcut}</span>}
+    </button>
+  );
+});
+
 function POSView({ T, business, products, onSale, sales, warranties, onAddWarranty, onRemoveWarranty, onAddDebt, onBack, onCloseArka }) {
   const [cart, setCart] = useState([]);
   const [search, setSearch] = useState("");
@@ -4741,36 +4770,6 @@ function POSView({ T, business, products, onSale, sales, warranties, onAddWarran
   const todaySales = sales.filter(s => new Date(s.createdAt).toDateString() === new Date().toDateString());
   const todayTotal = todaySales.reduce((s, x) => s + x.total, 0);
 
-  // Action button with SVG icon
-  const ActionBtn = ({ icon, label, shortcut, onClick, variant, disabled }) => {
-    const isPrimary = variant === "primary";
-    const isDanger = variant === "danger";
-    const isAccent = variant === "accent";
-    return (
-      <button onClick={onClick} disabled={disabled}
-        style={{
-          display: "flex", alignItems: "center", justifyContent: "space-between",
-          padding: "10px 12px", borderRadius: 10, cursor: disabled ? "not-allowed" : "pointer",
-          fontSize: 12.5, fontWeight: 600, textAlign: "left", width: "100%",
-          background: isPrimary ? T.accentGrad : isAccent ? `${T.accent}10` : T.surface,
-          color: isPrimary ? "#fff" : isDanger ? T.danger : isAccent ? T.accent : T.text,
-          border: isPrimary ? "none" : isDanger ? `1.5px solid ${T.danger}55` : isAccent ? `1.5px solid ${T.accent}50` : `1px solid ${T.border}`,
-          opacity: disabled ? 0.45 : 1,
-          fontFamily: "inherit",
-          transition: "all .15s",
-          minHeight: 40,
-        }}
-        onMouseEnter={e => { if (!disabled && !isPrimary) { e.currentTarget.style.borderColor = T.accent; e.currentTarget.style.background = isDanger ? `${T.danger}08` : isAccent ? `${T.accent}18` : T.surfaceAlt; } }}
-        onMouseLeave={e => { if (!disabled && !isPrimary) { e.currentTarget.style.borderColor = isDanger ? `${T.danger}55` : isAccent ? `${T.accent}50` : T.border; e.currentTarget.style.background = isAccent ? `${T.accent}10` : T.surface; } }}>
-        <span style={{ display: "flex", alignItems: "center", gap: 10 }}>
-          <span style={{ color: isPrimary ? "#fff" : isDanger ? T.danger : isAccent ? T.accent : T.textMuted, display: "flex" }}>{icon}</span>
-          <span>{label}</span>
-        </span>
-        {shortcut && <span style={{ fontSize: 10, fontWeight: 700, background: isPrimary ? "rgba(255,255,255,.22)" : T.surfaceAlt, padding: "2px 7px", borderRadius: 5, color: isPrimary ? "#fff" : T.textFaint, letterSpacing: 0.5, fontFamily: "ui-monospace, monospace" }}>{shortcut}</span>}
-      </button>
-    );
-  };
-
   return (
     <div style={{ display: "flex", flexDirection: "column", height: "calc(100vh - 90px)", marginTop: -24, marginLeft: -24, marginRight: -24, background: T.bg }}>
       {/* HEADER */}
@@ -4874,18 +4873,18 @@ function POSView({ T, business, products, onSale, sales, warranties, onAddWarran
 
         {/* RIGHT SIDEBAR */}
         <div style={{ background: T.surface, borderLeft: `1px solid ${T.border}`, padding: 10, display: "flex", flexDirection: "column", gap: 6, overflow: "auto" }}>
-          <ActionBtn icon={PIc.document(14)} label="Dokumentin" shortcut="F8" onClick={() => { /* not yet */ }} />
-          <ActionBtn icon={PIc.search(14)} label="Kërko artikullin" shortcut="F12" onClick={() => document.getElementById('pos-search')?.focus()} />
-          <ActionBtn icon={PIc.note(14)} label="Shtyp Noten" onClick={printThermalNote} disabled={cart.length === 0} />
-          <ActionBtn icon={PIc.shield(14)} label="Garancioni" shortcut="F7" variant="accent" onClick={() => setWarrantyOpen(true)} />
-          <ActionBtn icon={PIc.shieldList(14)} label="Garancione" variant="accent" onClick={() => setWarrantyListOpen(true)} />
-          <ActionBtn icon={PIc.trashLine(14)} label="Fshij artikullin" shortcut="Del" onClick={removeSelected} disabled={selectedIdx < 0} />
-          <ActionBtn icon={PIc.user(14)} label="Konsumatori" onClick={() => setClientOpen(true)} />
-          <ActionBtn icon={PIc.settings(14)} label="Parametrat" onClick={() => { /* settings placeholder */ }} />
-          <ActionBtn icon={PIc.printer(14)} label="Printo A4" shortcut="F4" onClick={() => setA4Open(true)} disabled={cart.length === 0} />
-          <ActionBtn icon={PIc.receipt(14)} label="Shtyp" shortcut="F2" variant="primary" onClick={() => setPayOpen(true)} disabled={cart.length === 0} />
-          <ActionBtn icon={PIc.lock(14)} label="Mbyll Arkën" onClick={onCloseArka} />
-          <ActionBtn icon={PIc.xCircle(14)} label="Pastro" variant="danger" onClick={() => { setCart([]); setClient(null); }} disabled={cart.length === 0 && !client} />
+          <ActionBtn T={T} icon={PIc.document(14)} label="Dokumentin" shortcut="F8" onClick={() => { /* not yet */ }} />
+          <ActionBtn T={T} icon={PIc.search(14)} label="Kërko artikullin" shortcut="F12" onClick={() => document.getElementById('pos-search')?.focus()} />
+          <ActionBtn T={T} icon={PIc.note(14)} label="Shtyp Noten" onClick={printThermalNote} disabled={cart.length === 0} />
+          <ActionBtn T={T} icon={PIc.shield(14)} label="Garancioni" shortcut="F7" variant="accent" onClick={() => setWarrantyOpen(true)} />
+          <ActionBtn T={T} icon={PIc.shieldList(14)} label="Garancione" variant="accent" onClick={() => setWarrantyListOpen(true)} />
+          <ActionBtn T={T} icon={PIc.trashLine(14)} label="Fshij artikullin" shortcut="Del" onClick={removeSelected} disabled={selectedIdx < 0} />
+          <ActionBtn T={T} icon={PIc.user(14)} label="Konsumatori" onClick={() => setClientOpen(true)} />
+          <ActionBtn T={T} icon={PIc.settings(14)} label="Parametrat" onClick={() => { /* settings placeholder */ }} />
+          <ActionBtn T={T} icon={PIc.printer(14)} label="Printo A4" shortcut="F4" onClick={() => setA4Open(true)} disabled={cart.length === 0} />
+          <ActionBtn T={T} icon={PIc.receipt(14)} label="Shtyp" shortcut="F2" variant="primary" onClick={() => setPayOpen(true)} disabled={cart.length === 0} />
+          <ActionBtn T={T} icon={PIc.lock(14)} label="Mbyll Arkën" onClick={onCloseArka} />
+          <ActionBtn T={T} icon={PIc.xCircle(14)} label="Pastro" variant="danger" onClick={() => { setCart([]); setClient(null); }} disabled={cart.length === 0 && !client} />
         </div>
       </div>
 
@@ -4933,15 +4932,15 @@ function POSView({ T, business, products, onSale, sales, warranties, onAddWarran
       )}
 
       {lastReceipt && (
-        <div style={{ position: "fixed", inset: 0, zIndex: 1000, background: "rgba(15,23,42,.6)", backdropFilter: "blur(6px)", display: "flex", alignItems: "center", justifyContent: "center" }} onClick={() => setLastReceipt(null)}>
+        <div style={{ position: "fixed", inset: 0, zIndex: 1100, background: "rgba(15,23,42,.6)", backdropFilter: "blur(6px)", display: "flex", alignItems: "center", justifyContent: "center" }}>
           <div onClick={e => e.stopPropagation()} style={{ background: T.surface, borderRadius: 16, padding: 28, width: "92%", maxWidth: 400, textAlign: "center", border: `1px solid ${T.border}`, boxShadow: "0 30px 90px rgba(0,0,0,.35)" }}>
             <div style={{ width: 60, height: 60, borderRadius: "50%", background: "#D1FAE5", color: "#059669", display: "flex", alignItems: "center", justifyContent: "center", margin: "0 auto 14px" }}>{PIc.check(28)}</div>
             <h3 style={{ margin: "0 0 4px", fontSize: 17, fontWeight: 800, color: T.text }}>Shitja u regjistrua!</h3>
             <div style={{ color: T.textMuted, fontSize: 12, marginBottom: 4 }}>Nr. faturës: <b style={{ color: T.text }}>{lastReceipt.receiptNo}</b></div>
             <div style={{ fontSize: 28, fontWeight: 800, color: T.accent, marginBottom: 20 }}>€{lastReceipt.total.toFixed(2)}</div>
             <div style={{ display: "flex", gap: 10 }}>
-              <button onClick={() => setLastReceipt(null)} style={{ flex: 1, background: T.surfaceAlt, color: T.textMuted, border: `1.5px solid ${T.border}`, borderRadius: 10, padding: "11px", cursor: "pointer", fontWeight: 600, fontSize: 13, fontFamily: "inherit" }}>Mbyll</button>
-              <button onClick={() => { printThermal(lastReceipt); }} style={{ flex: 2, background: T.accentGrad, color: "#fff", border: "none", borderRadius: 10, padding: "11px", cursor: "pointer", fontWeight: 800, fontSize: 13, display: "flex", alignItems: "center", justifyContent: "center", gap: 6, fontFamily: "inherit" }}>
+              <button onClick={(e) => { e.stopPropagation(); setLastReceipt(null); }} style={{ flex: 1, background: T.surfaceAlt, color: T.textMuted, border: `1.5px solid ${T.border}`, borderRadius: 10, padding: "11px", cursor: "pointer", fontWeight: 600, fontSize: 13, fontFamily: "inherit" }}>Mbyll</button>
+              <button onClick={(e) => { e.stopPropagation(); const r = lastReceipt; setLastReceipt(null); printThermal(r); }} style={{ flex: 2, background: T.accentGrad, color: "#fff", border: "none", borderRadius: 10, padding: "11px", cursor: "pointer", fontWeight: 800, fontSize: 13, display: "flex", alignItems: "center", justifyContent: "center", gap: 6, fontFamily: "inherit" }}>
                 {PIc.printer(14)} Printo Kuponin
               </button>
             </div>
