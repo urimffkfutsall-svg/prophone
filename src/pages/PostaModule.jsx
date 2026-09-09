@@ -163,7 +163,7 @@ const Card = ({children,style={},T}) => (
   </div>
 );
 
-const Input = ({label,value,onChange,type="text",placeholder="",required=false,style={},T}) => (
+const Input = React.memo(({label,value,onChange,type="text",placeholder="",required=false,style={},T}) => (
   <div style={{marginBottom:14,...style}}>
     {label && <label style={{display:"block",fontSize:12,fontWeight:600,color:T.muted,marginBottom:5}}>
       {label}{required && <span style={{color:T.danger}}> *</span>}
@@ -174,9 +174,9 @@ const Input = ({label,value,onChange,type="text",placeholder="",required=false,s
         borderRadius:6,background:T.input,color:T.text,fontSize:14,
         outline:"none",boxSizing:"border-box"}}/>
   </div>
-);
+));
 
-const Select = ({label,value,onChange,options=[],style={},T}) => (
+const Select = React.memo(({label,value,onChange,options=[],style={},T}) => (
   <div style={{marginBottom:14,...style}}>
     {label && <label style={{display:"block",fontSize:12,fontWeight:600,color:T.muted,marginBottom:5}}>{label}</label>}
     <select value={value||""} onChange={e=>onChange(e.target.value)}
@@ -188,7 +188,7 @@ const Select = ({label,value,onChange,options=[],style={},T}) => (
         : <option key={o.value} value={o.value}>{o.label}</option>)}
     </select>
   </div>
-);
+));
 
 const Modal = ({open,onClose,title,children,T,width=520}) => {
   if (!open) return null;
@@ -638,7 +638,7 @@ function CreateShipment({T, setSubPage, setSelectedShipment}) {
     payment_method:"prepaid", cod_amount:0,
   });
 
-  const upd = (k,v) => setForm(f => ({...f, [k]:v}));
+  const upd = useCallback((k,v) => setForm(f => ({...f, [k]:v})), []);
   const fee = calcFee(form.service_type, form.weight, form.cod_amount);
   const svc = SERVICES.find(s=>s.k===form.service_type)||SERVICES[0];
 
@@ -2007,7 +2007,7 @@ function PostaModule({darkMode=false, onBack}) {
     supabase.from("posta_couriers").select("*").then(({data})=>setCouriers(data||[]));
   }, []);
 
-  const content = () => {
+  const content = useMemo(() => {
     switch(subPage) {
       case "dashboard":    return <PostaDashboard T={T}/>;
       case "shipments":    return <ShipmentList T={T} setSubPage={setSubPage} setSelectedShipment={setSelectedShipment}/>;
@@ -2026,7 +2026,8 @@ function PostaModule({darkMode=false, onBack}) {
       case "settings":     return <PostaSettings T={T}/>;
       default:             return <PostaDashboard T={T}/>;
     }
-  };
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [subPage, selectedShipment, couriers, T]);
 
   const currentNav = NAV.find(n=>n.id===subPage);
 
@@ -2063,7 +2064,7 @@ function PostaModule({darkMode=false, onBack}) {
         </div>
 
         {/* Content */}
-        <div style={{flex:1}}>{content()}</div>
+        <div style={{flex:1}}>{content}</div>
       </div>
     </div>
   );
