@@ -18,7 +18,7 @@
                      },
     "scripts":  {
                     "start":  "react-scripts start",
-                    "build":  "react-scripts build",
+                    "build":  "react-scripts --openssl-legacy-provider build",
                     "test":  "react-scripts test",
                     "eject":  "react-scripts eject"
                 },
@@ -37,6 +37,6 @@
     "author":  "ProPhone",
     "description":  "DataPos - Sistemi i menaxhimit te biznesit",
     "engines":  {
-                    "node":  "18.x"
+                    "node":  "20.x"
                 }
 }
