@@ -4447,6 +4447,7 @@ function POSView({ T, business, products, onSale, sales, warranties, onAddWarran
   const [client, setClient] = useState(null);
   const [lastReceipt, setLastReceipt] = useState(null);
   const [now, setNow] = useState(new Date());
+  const [numpadBuffer, setNumpadBuffer] = useState('');  // numpad input buffer
 
   useEffect(() => { const t = setInterval(() => setNow(new Date()), 30000); return () => clearInterval(t); }, []);
 
@@ -4470,6 +4471,21 @@ function POSView({ T, business, products, onSale, sales, warranties, onAddWarran
       setSelectedIdx(-1);
     }
   };
+
+  // Numpad handler: builds qty for selected item
+  const handleNumpad = (key) => {
+    if (selectedIdx < 0) return;
+    setNumpadBuffer(prev => {
+      let next = prev;
+      if (key === 'backspace') { next = prev.slice(0, -1); }
+      else if (key === '.' && prev.includes('.')) { next = prev; }
+      else { next = prev + key; }
+      const val = parseFloat(next);
+      if (!isNaN(val) && val > 0) updateQty(cart[selectedIdx]?.id, Math.round(val));
+      return next;
+    });
+  };
+  const clearNumpad = () => { setNumpadBuffer(''); };
 
   const subtotal = cart.reduce((s, x) => s + x.price * x.qty, 0);
   const totalDiscount = cart.reduce((s, x) => s + (x.discount || 0) * x.qty, 0);
@@ -4798,8 +4814,8 @@ function POSView({ T, business, products, onSale, sales, warranties, onAddWarran
         </div>
       </div>
 
-      {/* MAIN GRID */}
-      <div style={{ display: "grid", gridTemplateColumns: "1fr 230px", flex: 1, overflow: "hidden" }}>
+      {/* MAIN GRID - Touchscreen POS */}
+      <div style={{ display: "grid", gridTemplateColumns: "1fr 300px", flex: 1, overflow: "hidden" }}>
         {/* LEFT */}
         <div style={{ display: "flex", flexDirection: "column", padding: "14px 16px", overflow: "hidden" }}>
           <div style={{ position: "relative", marginBottom: 12, flexShrink: 0 }}>
@@ -4807,7 +4823,7 @@ function POSView({ T, business, products, onSale, sales, warranties, onAddWarran
             <input id="pos-search" autoFocus type="text" value={search} onChange={e => setSearch(e.target.value)}
               placeholder="Kërko produkt ose skano barkod..."
               onKeyDown={e => { if (e.key === 'Enter' && filtered.length > 0) addToCart(filtered[0]); }}
-              style={{ width: "100%", padding: "11px 16px 11px 40px", borderRadius: 10, border: `1.5px solid ${T.border}`, fontSize: 14, background: T.inputBg, color: T.text, outline: "none", boxSizing: "border-box", fontFamily: "inherit" }} />
+              style={{ width: "100%", padding: "14px 16px 14px 44px", borderRadius: 12, border: `1.5px solid ${T.border}`, fontSize: 15, background: T.inputBg, color: T.text, outline: "none", boxSizing: "border-box", fontFamily: "inherit" }} />
             {search && filtered.length > 0 && (
               <div style={{ position: "absolute", top: "100%", left: 0, right: 0, marginTop: 4, background: T.surface, border: `1.5px solid ${T.border}`, borderRadius: 10, boxShadow: "0 12px 32px rgba(0,0,0,.12)", zIndex: 10, maxHeight: 320, overflow: "auto" }}>
                 {filtered.map((p, i) => (
@@ -4836,18 +4852,18 @@ function POSView({ T, business, products, onSale, sales, warranties, onAddWarran
                 <div style={{ marginTop: 4 }}>Kërkoni nga emri ose skanoni barkodin e produktit</div>
               </div>
             ) : cart.map((x, idx) => (
-              <div key={x.id} onClick={() => setSelectedIdx(idx)}
-                style={{ display: "grid", gridTemplateColumns: "50px 2.5fr 110px 90px 80px 80px 100px 100px", padding: "10px 14px", fontSize: 13, color: T.text, borderBottom: `1px solid ${T.border}`, alignItems: "center", cursor: "pointer", background: selectedIdx === idx ? `${T.accent}12` : "transparent", transition: "background .1s" }}>
+              <div key={x.id} onClick={() => { setSelectedIdx(idx); setNumpadBuffer(''); }}
+                style={{ display: "grid", gridTemplateColumns: "50px 2.5fr 110px 90px 80px 80px 100px 100px", padding: "14px 14px", fontSize: 13, color: T.text, borderBottom: `1px solid ${T.border}`, alignItems: "center", cursor: "pointer", background: selectedIdx === idx ? `${T.accent}15` : "transparent", transition: "background .1s", minHeight: 58 }}>
                 <div style={{ color: T.textMuted, fontWeight: 600 }}>{idx + 1}</div>
                 <div style={{ fontWeight: 600, display: "flex", alignItems: "center", gap: 10 }}>
                   {x.image && <img src={x.image} alt="" style={{ width: 32, height: 32, objectFit: "cover", borderRadius: 6, border: `1px solid ${T.border}`, flexShrink: 0 }} />}
                   <span>{x.name}</span>
                 </div>
                 <div style={{ display: "flex", alignItems: "center", gap: 4 }} onClick={e => e.stopPropagation()}>
-                  <button onClick={() => updateQty(x.id, x.qty - 1)} style={{ background: T.surfaceAlt, border: `1px solid ${T.border}`, borderRadius: 5, width: 24, height: 24, cursor: "pointer", color: T.text, display: "flex", alignItems: "center", justifyContent: "center" }}>{PIc.minus(12)}</button>
+                  <button onClick={() => updateQty(x.id, x.qty - 1)} style={{ background: T.surfaceAlt, border: `1px solid ${T.border}`, borderRadius: 7, width: 32, height: 32, cursor: "pointer", color: T.text, display: "flex", alignItems: "center", justifyContent: "center", touchAction: "manipulation" }}>{PIc.minus(12)}</button>
                   <input type="number" value={x.qty} onChange={e => updateQty(x.id, parseInt(e.target.value) || 1)}
                     style={{ width: 40, textAlign: "center", padding: "3px 4px", border: `1px solid ${T.border}`, borderRadius: 5, background: T.inputBg, color: T.text, fontSize: 12, fontWeight: 700, outline: "none", fontFamily: "inherit" }} />
-                  <button onClick={() => updateQty(x.id, x.qty + 1)} style={{ background: T.surfaceAlt, border: `1px solid ${T.border}`, borderRadius: 5, width: 24, height: 24, cursor: "pointer", color: T.text, display: "flex", alignItems: "center", justifyContent: "center" }}>{PIc.plus(12)}</button>
+                  <button onClick={() => updateQty(x.id, x.qty + 1)} style={{ background: T.surfaceAlt, border: `1px solid ${T.border}`, borderRadius: 7, width: 32, height: 32, cursor: "pointer", color: T.text, display: "flex", alignItems: "center", justifyContent: "center", touchAction: "manipulation" }}>{PIc.plus(12)}</button>
                 </div>
                 <div>€{x.price.toFixed(2)}</div>
                 <div style={{ color: T.textMuted }}>0%</div>
@@ -4871,20 +4887,108 @@ function POSView({ T, business, products, onSale, sales, warranties, onAddWarran
           </div>
         </div>
 
-        {/* RIGHT SIDEBAR */}
-        <div style={{ background: T.surface, borderLeft: `1px solid ${T.border}`, padding: 10, display: "flex", flexDirection: "column", gap: 6, overflow: "auto" }}>
-          <ActionBtn T={T} icon={PIc.document(14)} label="Dokumentin" shortcut="F8" onClick={() => { /* not yet */ }} />
-          <ActionBtn T={T} icon={PIc.search(14)} label="Kërko artikullin" shortcut="F12" onClick={() => document.getElementById('pos-search')?.focus()} />
-          <ActionBtn T={T} icon={PIc.note(14)} label="Shtyp Noten" onClick={printThermalNote} disabled={cart.length === 0} />
-          <ActionBtn T={T} icon={PIc.shield(14)} label="Garancioni" shortcut="F7" variant="accent" onClick={() => setWarrantyOpen(true)} />
-          <ActionBtn T={T} icon={PIc.shieldList(14)} label="Garancione" variant="accent" onClick={() => setWarrantyListOpen(true)} />
-          <ActionBtn T={T} icon={PIc.trashLine(14)} label="Fshij artikullin" shortcut="Del" onClick={removeSelected} disabled={selectedIdx < 0} />
-          <ActionBtn T={T} icon={PIc.user(14)} label="Konsumatori" onClick={() => setClientOpen(true)} />
-          <ActionBtn T={T} icon={PIc.settings(14)} label="Parametrat" onClick={() => { /* settings placeholder */ }} />
-          <ActionBtn T={T} icon={PIc.printer(14)} label="Printo A4" shortcut="F4" onClick={() => setA4Open(true)} disabled={cart.length === 0} />
-          <ActionBtn T={T} icon={PIc.receipt(14)} label="Shtyp" shortcut="F2" variant="primary" onClick={() => setPayOpen(true)} disabled={cart.length === 0} />
-          <ActionBtn T={T} icon={PIc.lock(14)} label="Mbyll Arkën" onClick={onCloseArka} />
-          <ActionBtn T={T} icon={PIc.xCircle(14)} label="Pastro" variant="danger" onClick={() => { setCart([]); setClient(null); }} disabled={cart.length === 0 && !client} />
+        {/* RIGHT PANEL - Numpad + Actions (Touchscreen POS) */}
+        <div style={{ background: T.surface, borderLeft: `1px solid ${T.border}`, display: "flex", flexDirection: "column", overflow: "hidden" }}>
+
+          {/* NUMPAD SECTION */}
+          <div style={{ padding: "10px 10px 6px", borderBottom: `1px solid ${T.border}`, flexShrink: 0 }}>
+            {/* Display */}
+            <div style={{ background: T.surfaceAlt, border: `1.5px solid ${selectedIdx >= 0 ? T.accent : T.border}`, borderRadius: 10, padding: "8px 14px", marginBottom: 8, display: "flex", justifyContent: "space-between", alignItems: "center", minHeight: 46 }}>
+              <span style={{ fontSize: 11, color: T.textMuted, textTransform: "uppercase", letterSpacing: 0.5 }}>
+                {selectedIdx >= 0 ? `Sasia — ${cart[selectedIdx]?.name?.slice(0,18) || ''}` : "Zgjidhni artikull"}
+              </span>
+              <span style={{ fontSize: 22, fontWeight: 800, color: selectedIdx >= 0 ? T.text : T.textFaint, letterSpacing: 1 }}>
+                {selectedIdx >= 0 ? (numpadBuffer || String(cart[selectedIdx]?.qty ?? '')) : '—'}
+              </span>
+            </div>
+            {/* Numpad grid */}
+            {(() => {
+              const npBtnStyle = (accent) => ({
+                background: accent ? T.accentGrad : T.surfaceAlt,
+                border: `1.5px solid ${accent ? 'transparent' : T.border}`,
+                borderRadius: 10,
+                color: accent ? '#fff' : T.text,
+                fontSize: 20,
+                fontWeight: 700,
+                cursor: 'pointer',
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+                height: 52,
+                touchAction: 'manipulation',
+                userSelect: 'none',
+                WebkitTapHighlightColor: 'transparent',
+                transition: 'background .1s',
+                fontFamily: 'inherit',
+              });
+              const keys = [
+                ['7','8','9'],
+                ['4','5','6'],
+                ['1','2','3'],
+                ['.'  ,'0','backspace'],
+              ];
+              return (
+                <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3,1fr)', gap: 5 }}>
+                  {keys.flat().map((k) => (
+                    <button key={k} style={npBtnStyle(k === 'backspace')} onClick={() => handleNumpad(k)}
+                      disabled={selectedIdx < 0}
+                      onMouseDown={e => e.preventDefault()}
+                    >
+                      {k === 'backspace' ? (
+                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><path d="M21 4H8l-7 8 7 8h13a2 2 0 0 0 2-2V6a2 2 0 0 0-2-2z"/><line x1="18" y1="9" x2="12" y2="15"/><line x1="12" y1="9" x2="18" y2="15"/></svg>
+                      ) : k}
+                    </button>
+                  ))}
+                </div>
+              );
+            })()}
+            {/* Clear & Confirm row */}
+            <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 5, marginTop: 5 }}>
+              <button onClick={() => { clearNumpad(); if (selectedIdx >= 0 && cart[selectedIdx]) updateQty(cart[selectedIdx].id, 1); }}
+                disabled={selectedIdx < 0}
+                style={{ background: T.surfaceAlt, border: `1.5px solid ${T.border}`, borderRadius: 10, color: T.textMuted, fontSize: 13, fontWeight: 700, height: 44, cursor: 'pointer', touchAction: 'manipulation', userSelect: 'none', fontFamily: 'inherit' }}>
+                C — Fshi
+              </button>
+              <button onClick={() => { clearNumpad(); }}
+                disabled={selectedIdx < 0}
+                style={{ background: '#10B981', border: 'none', borderRadius: 10, color: '#fff', fontSize: 13, fontWeight: 700, height: 44, cursor: 'pointer', touchAction: 'manipulation', userSelect: 'none', fontFamily: 'inherit', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 6 }}>
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round"><polyline points="20 6 9 17 4 12"/></svg> OK
+              </button>
+            </div>
+          </div>
+
+          {/* ACTIONS SECTION */}
+          <div style={{ flex: 1, overflow: 'auto', padding: '8px 10px', display: 'flex', flexDirection: 'column', gap: 5 }}>
+            <ActionBtn T={T} icon={PIc.search(14)} label="Kërko artikullin" shortcut="F12" onClick={() => document.getElementById('pos-search')?.focus()} />
+            <ActionBtn T={T} icon={PIc.trashLine(14)} label="Fshij artikullin" shortcut="Del" onClick={removeSelected} disabled={selectedIdx < 0} />
+            <ActionBtn T={T} icon={PIc.user(14)} label="Konsumatori" onClick={() => setClientOpen(true)} />
+            <ActionBtn T={T} icon={PIc.shield(14)} label="Garancioni" shortcut="F7" variant="accent" onClick={() => setWarrantyOpen(true)} />
+            <ActionBtn T={T} icon={PIc.shieldList(14)} label="Garancione" variant="accent" onClick={() => setWarrantyListOpen(true)} />
+            <ActionBtn T={T} icon={PIc.note(14)} label="Shtyp Noten" onClick={printThermalNote} disabled={cart.length === 0} />
+            <ActionBtn T={T} icon={PIc.printer(14)} label="Printo A4" shortcut="F4" onClick={() => setA4Open(true)} disabled={cart.length === 0} />
+            <ActionBtn T={T} icon={PIc.lock(14)} label="Mbyll Arkën" onClick={onCloseArka} />
+            <ActionBtn T={T} icon={PIc.xCircle(14)} label="Pastro" variant="danger" onClick={() => { setCart([]); setClient(null); setSelectedIdx(-1); }} disabled={cart.length === 0 && !client} />
+          </div>
+
+          {/* PAY BUTTON - Big touchscreen button */}
+          <div style={{ padding: '10px', borderTop: `1px solid ${T.border}`, flexShrink: 0 }}>
+            <button
+              onClick={() => setPayOpen(true)}
+              disabled={cart.length === 0}
+              style={{
+                width: '100%', height: 58, background: cart.length > 0 ? 'linear-gradient(135deg,#0EA5E9,#0284C7)' : T.surfaceAlt,
+                border: 'none', borderRadius: 14, color: cart.length > 0 ? '#fff' : T.textFaint,
+                fontSize: 16, fontWeight: 800, cursor: cart.length > 0 ? 'pointer' : 'not-allowed',
+                display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 10,
+                touchAction: 'manipulation', userSelect: 'none',
+                boxShadow: cart.length > 0 ? '0 4px 18px rgba(14,165,233,.35)' : 'none',
+                fontFamily: 'inherit',
+              }}
+            >
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><rect x="1" y="4" width="22" height="16" rx="2" ry="2"/><line x1="1" y1="10" x2="23" y2="10"/></svg>
+              Paguaj  €{grandTotal.toFixed(2)}
+            </button>
+          </div>
         </div>
       </div>
 
