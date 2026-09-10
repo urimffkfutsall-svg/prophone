@@ -4447,6 +4447,8 @@ function POSView({ T, business, products, onSale, sales, warranties, onAddWarran
   const [client, setClient] = useState(null);
   const [lastReceipt, setLastReceipt] = useState(null);
   const [now, setNow] = useState(new Date());
+  const [activeCategory, setActiveCategory] = useState('all');
+  const [discountPct, setDiscountPct] = useState('');
 
   useEffect(() => { const t = setInterval(() => setNow(new Date()), 30000); return () => clearInterval(t); }, []);
 
@@ -4474,7 +4476,8 @@ function POSView({ T, business, products, onSale, sales, warranties, onAddWarran
   const subtotal = cart.reduce((s, x) => s + x.price * x.qty, 0);
   const totalDiscount = cart.reduce((s, x) => s + (x.discount || 0) * x.qty, 0);
   const totalVat = cart.reduce((s, x) => s + (x.vat || 0) * x.qty, 0);
-  const grandTotal = subtotal - totalDiscount + totalVat;
+  const discountAmount = subtotal * (parseFloat(discountPct) || 0) / 100;
+  const grandTotal = subtotal - totalDiscount - discountAmount + totalVat;
 
   // Keyboard shortcuts
   useEffect(() => {
@@ -4767,6 +4770,17 @@ function POSView({ T, business, products, onSale, sales, warranties, onAddWarran
     w.document.close();
   };
 
+  // Restaurant POS computed
+  const categories = React.useMemo(() => {
+    const cats = [...new Set(products.map(p => p.category).filter(Boolean))];
+    return cats;
+  }, [products]);
+  const filteredProducts = React.useMemo(() => {
+    let list = activeCategory === 'all' ? products : products.filter(p => p.category === activeCategory);
+    if (search) list = list.filter(p => p.name.toLowerCase().includes(search.toLowerCase()) || (p.barcode || '').includes(search));
+    return list;
+  }, [products, activeCategory, search]);
+
   const todaySales = sales.filter(s => new Date(s.createdAt).toDateString() === new Date().toDateString());
   const todayTotal = todaySales.reduce((s, x) => s + x.total, 0);
 
@@ -4791,97 +4805,182 @@ function POSView({ T, business, products, onSale, sales, warranties, onAddWarran
             </>
           )}
         </div>
-        <div style={{ fontSize: 11.5, color: T.textMuted, display: "flex", alignItems: "center", gap: 14 }}>
-          <span style={{ display: "flex", alignItems: "center", gap: 5 }}>{PIc.cash(13)} Sot: <b style={{ color: "#10B981" }}>€{todayTotal.toFixed(2)}</b> ({todaySales.length})</span>
-          <span style={{ color: T.border }}>│</span>
-          <span style={{ display: "flex", alignItems: "center", gap: 5 }}>{PIc.clock(12)} {now.toLocaleTimeString('sq-AL', { hour: '2-digit', minute: '2-digit' })} · {now.toLocaleDateString('sq-AL', { day: '2-digit', month: '2-digit' })}</span>
-        </div>
-      </div>
+        <div style={{ fontSize: 11.5, color: T.textMuted, display: "flex", alignItems: "      {/* MAIN GRID - RESTAURANT STYLE */}
+      <div style={{ display: 'flex', flex: 1, overflow: 'hidden' }}>
 
-      {/* MAIN GRID */}
-      <div style={{ display: "grid", gridTemplateColumns: "1fr 230px", flex: 1, overflow: "hidden" }}>
-        {/* LEFT */}
-        <div style={{ display: "flex", flexDirection: "column", padding: "14px 16px", overflow: "hidden" }}>
-          <div style={{ position: "relative", marginBottom: 12, flexShrink: 0 }}>
-            <span style={{ position: "absolute", left: 14, top: "50%", transform: "translateY(-50%)", color: T.textFaint }}>{PIc.search(15)}</span>
-            <input id="pos-search" autoFocus type="text" value={search} onChange={e => setSearch(e.target.value)}
-              placeholder="Kërko produkt ose skano barkod..."
-              onKeyDown={e => { if (e.key === 'Enter' && filtered.length > 0) addToCart(filtered[0]); }}
-              style={{ width: "100%", padding: "11px 16px 11px 40px", borderRadius: 10, border: `1.5px solid ${T.border}`, fontSize: 14, background: T.inputBg, color: T.text, outline: "none", boxSizing: "border-box", fontFamily: "inherit" }} />
-            {search && filtered.length > 0 && (
-              <div style={{ position: "absolute", top: "100%", left: 0, right: 0, marginTop: 4, background: T.surface, border: `1.5px solid ${T.border}`, borderRadius: 10, boxShadow: "0 12px 32px rgba(0,0,0,.12)", zIndex: 10, maxHeight: 320, overflow: "auto" }}>
-                {filtered.map((p, i) => (
-                  <div key={p.id} onClick={() => addToCart(p)}
-                    style={{ padding: "10px 16px", cursor: "pointer", fontSize: 13, color: T.text, borderBottom: i < filtered.length - 1 ? `1px solid ${T.border}` : "none", display: "flex", justifyContent: "space-between", alignItems: "center" }}
-                    onMouseEnter={e => e.currentTarget.style.background = T.surfaceAlt} onMouseLeave={e => e.currentTarget.style.background = "transparent"}>
-                    <div>
-                      <div style={{ fontWeight: 600 }}>{p.name}</div>
-                      {p.barcode && <div style={{ fontSize: 11, color: T.textFaint, marginTop: 2 }}>{p.barcode}</div>}
+        {/* ── LEFT: PRODUCT GRID ─────────────────────────────────────────── */}
+        <div style={{ flex: 1, display: 'flex', flexDirection: 'column', overflow: 'hidden', background: T.bg || T.surfaceAlt }}>
+
+          {/* TOP BAR */}
+          <div style={{ padding: '12px 16px 10px', display: 'flex', alignItems: 'center', gap: 10, flexShrink: 0, background: T.surface, borderBottom: `1px solid ${T.border}` }}>
+            <div style={{ position: 'relative', flex: 1 }}>
+              <span style={{ position: 'absolute', left: 12, top: '50%', transform: 'translateY(-50%)', color: T.textFaint, display: 'flex' }}>{PIc.search(14)}</span>
+              <input id="pos-search" autoFocus type="text" value={search} onChange={e => setSearch(e.target.value)}
+                placeholder="Kërko produkt ose skano barkod..."
+                onKeyDown={e => { if (e.key === 'Enter' && filteredProducts.length > 0) addToCart(filteredProducts[0]); }}
+                style={{ width: '100%', padding: '10px 14px 10px 36px', borderRadius: 10, border: `1.5px solid ${T.border}`, fontSize: 13, background: T.inputBg, color: T.text, outline: 'none', boxSizing: 'border-box', fontFamily: 'inherit' }}
+              />
+            </div>
+            <button onClick={() => setWarrantyOpen(true)}
+              style={{ display: 'flex', alignItems: 'center', gap: 6, background: T.accentGrad, color: '#fff', border: 'none', borderRadius: 10, padding: '10px 16px', cursor: 'pointer', fontWeight: 700, fontSize: 13, whiteSpace: 'nowrap', fontFamily: 'inherit' }}>
+              {PIc.shield(13)} Garanci
+            </button>
+            <button onClick={() => setA4Open(true)} disabled={cart.length === 0}
+              style={{ display: 'flex', alignItems: 'center', gap: 6, background: cart.length ? T.surface : T.surfaceAlt, color: cart.length ? T.accent : T.textFaint, border: `1.5px solid ${cart.length ? T.accent : T.border}`, borderRadius: 10, padding: '10px 14px', cursor: cart.length ? 'pointer' : 'not-allowed', fontWeight: 700, fontSize: 13, fontFamily: 'inherit' }}>
+              {PIc.printer(13)} A4
+            </button>
+          </div>
+
+          {/* PRODUCT GRID */}
+          <div style={{ flex: 1, overflowY: 'auto', padding: '14px 14px 0' }}>
+            {filteredProducts.length === 0 ? (
+              <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', height: 300, color: T.textFaint, gap: 10 }}>
+                <div style={{ opacity: .3 }}>{PIc.search(48)}</div>
+                <div style={{ fontWeight: 600, color: T.textMuted }}>Nuk u gjet asnjë produkt</div>
+              </div>
+            ) : (
+              <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(130px, 1fr))', gap: 10 }}>
+                {filteredProducts.map(p => {
+                  const inCart = cart.find(x => x.id === p.id);
+                  return (
+                    <div key={p.id} onClick={() => addToCart(p)}
+                      style={{ background: T.surface, borderRadius: 14, overflow: 'hidden', cursor: 'pointer', border: inCart ? `2px solid ${T.accent}` : `1.5px solid ${T.border}`, boxShadow: inCart ? `0 0 0 3px ${T.accent}18` : '0 2px 8px rgba(0,0,0,.06)', transition: 'all .15s', position: 'relative' }}
+                      onMouseEnter={e => { e.currentTarget.style.transform = 'translateY(-2px)'; e.currentTarget.style.boxShadow = inCart ? `0 6px 20px ${T.accent}30` : '0 6px 20px rgba(0,0,0,.12)'; }}
+                      onMouseLeave={e => { e.currentTarget.style.transform = ''; e.currentTarget.style.boxShadow = inCart ? `0 0 0 3px ${T.accent}18` : '0 2px 8px rgba(0,0,0,.06)'; }}>
+                      {inCart && (
+                        <div style={{ position: 'absolute', top: 6, right: 6, background: T.accent, color: '#fff', borderRadius: 20, fontSize: 10, fontWeight: 800, padding: '2px 7px', zIndex: 1 }}>
+                          x{inCart.qty}
+                        </div>
+                      )}
+                      <div style={{ height: 90, background: T.surfaceAlt, display: 'flex', alignItems: 'center', justifyContent: 'center', overflow: 'hidden' }}>
+                        {p.image
+                          ? <img src={p.image} alt={p.name} style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
+                          : <div style={{ fontSize: 30, opacity: .18 }}>{PIc.receipt(34)}</div>
+                        }
+                      </div>
+                      <div style={{ padding: '8px 10px 10px' }}>
+                        <div style={{ fontSize: 12, fontWeight: 700, color: T.text, lineHeight: 1.3, marginBottom: 4, overflow: 'hidden', display: '-webkit-box', WebkitLineClamp: 2, WebkitBoxOrient: 'vertical' }}>{p.name}</div>
+                        <div style={{ fontSize: 13, fontWeight: 800, color: T.accent }}>€{Number(p.price).toFixed(2)}</div>
+                      </div>
                     </div>
-                    <span style={{ color: T.accent, fontWeight: 700 }}>€{Number(p.price).toFixed(2)}</span>
-                  </div>
-                ))}
+                  );
+                })}
               </div>
             )}
           </div>
 
-          <div style={{ flex: 1, background: T.surface, border: `1px solid ${T.border}`, borderRadius: 10, overflow: "auto" }}>
-            <div style={{ display: "grid", gridTemplateColumns: "50px 2.5fr 110px 90px 80px 80px 100px 100px", padding: "10px 14px", background: T.surfaceAlt, fontSize: 10.5, fontWeight: 700, color: T.textMuted, textTransform: "uppercase", letterSpacing: 0.5, position: "sticky", top: 0, borderBottom: `1px solid ${T.border}`, zIndex: 1 }}>
-              <div>Nr</div><div>Emërtimi</div><div>Sasia</div><div>Çmimi</div><div>Zbritja %</div><div>TVSH %</div><div style={{ textAlign: "right" }}>Çmimi me TVSH</div><div style={{ textAlign: "right" }}>Totali</div>
-            </div>
-            {cart.length === 0 ? (
-              <div style={{ padding: "80px 20px", textAlign: "center", color: T.textFaint, fontSize: 13 }}>
-                <div style={{ marginBottom: 12, opacity: .25, display: "flex", justifyContent: "center" }}>{PIc.receipt(52)}</div>
-                <div style={{ fontWeight: 600, fontSize: 14, color: T.textMuted }}>Shporta është e zbrazët</div>
-                <div style={{ marginTop: 4 }}>Kërkoni nga emri ose skanoni barkodin e produktit</div>
-              </div>
-            ) : cart.map((x, idx) => (
-              <div key={x.id} onClick={() => setSelectedIdx(idx)}
-                style={{ display: "grid", gridTemplateColumns: "50px 2.5fr 110px 90px 80px 80px 100px 100px", padding: "10px 14px", fontSize: 13, color: T.text, borderBottom: `1px solid ${T.border}`, alignItems: "center", cursor: "pointer", background: selectedIdx === idx ? `${T.accent}12` : "transparent", transition: "background .1s" }}>
-                <div style={{ color: T.textMuted, fontWeight: 600 }}>{idx + 1}</div>
-                <div style={{ fontWeight: 600, display: "flex", alignItems: "center", gap: 10 }}>
-                  {x.image && <img src={x.image} alt="" style={{ width: 32, height: 32, objectFit: "cover", borderRadius: 6, border: `1px solid ${T.border}`, flexShrink: 0 }} />}
-                  <span>{x.name}</span>
-                </div>
-                <div style={{ display: "flex", alignItems: "center", gap: 4 }} onClick={e => e.stopPropagation()}>
-                  <button onClick={() => updateQty(x.id, x.qty - 1)} style={{ background: T.surfaceAlt, border: `1px solid ${T.border}`, borderRadius: 5, width: 24, height: 24, cursor: "pointer", color: T.text, display: "flex", alignItems: "center", justifyContent: "center" }}>{PIc.minus(12)}</button>
-                  <input type="number" value={x.qty} onChange={e => updateQty(x.id, parseInt(e.target.value) || 1)}
-                    style={{ width: 40, textAlign: "center", padding: "3px 4px", border: `1px solid ${T.border}`, borderRadius: 5, background: T.inputBg, color: T.text, fontSize: 12, fontWeight: 700, outline: "none", fontFamily: "inherit" }} />
-                  <button onClick={() => updateQty(x.id, x.qty + 1)} style={{ background: T.surfaceAlt, border: `1px solid ${T.border}`, borderRadius: 5, width: 24, height: 24, cursor: "pointer", color: T.text, display: "flex", alignItems: "center", justifyContent: "center" }}>{PIc.plus(12)}</button>
-                </div>
-                <div>€{x.price.toFixed(2)}</div>
-                <div style={{ color: T.textMuted }}>0%</div>
-                <div style={{ color: T.textMuted }}>0%</div>
-                <div style={{ textAlign: "right" }}>€{x.price.toFixed(2)}</div>
-                <div style={{ textAlign: "right", fontWeight: 700, color: T.accent }}>€{(x.price * x.qty).toFixed(2)}</div>
-              </div>
+          {/* CATEGORY TABS */}
+          <div style={{ flexShrink: 0, display: 'flex', gap: 6, padding: '10px 14px', background: T.surface, borderTop: `1px solid ${T.border}`, overflowX: 'auto' }}>
+            {[{ key: 'all', label: 'Të gjitha' }, ...categories.map(c => ({ key: c, label: c }))].map(cat => (
+              <button key={cat.key} onClick={() => setActiveCategory(cat.key)}
+                style={{ flexShrink: 0, padding: '8px 16px', borderRadius: 30, fontSize: 12.5, fontWeight: 700, cursor: 'pointer', fontFamily: 'inherit', transition: 'all .15s',
+                  background: activeCategory === cat.key ? T.accentGrad : T.surfaceAlt,
+                  color: activeCategory === cat.key ? '#fff' : T.textMuted,
+                  border: activeCategory === cat.key ? 'none' : `1.5px solid ${T.border}`,
+                }}>
+                {cat.label}
+              </button>
             ))}
-          </div>
-
-          <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", padding: "14px 4px 4px", flexShrink: 0 }}>
-            <div style={{ display: "flex", gap: 28, fontSize: 12.5, color: T.textMuted }}>
-              <span>Subtotal: <b style={{ color: T.text }}>€{subtotal.toFixed(2)}</b></span>
-              <span>Zbritja: <b style={{ color: T.danger }}>-€{totalDiscount.toFixed(2)}</b></span>
-              <span>TVSH: <b style={{ color: T.text }}>€{totalVat.toFixed(2)}</b></span>
-            </div>
-            <div style={{ display: "flex", alignItems: "baseline", gap: 10 }}>
-              <span style={{ fontSize: 11, color: T.textFaint, textTransform: "uppercase", letterSpacing: 1 }}>Total</span>
-              <span style={{ fontSize: 30, fontWeight: 800, color: T.text, letterSpacing: -0.5 }}>€{grandTotal.toFixed(2)}</span>
-            </div>
           </div>
         </div>
 
-        {/* RIGHT SIDEBAR */}
-        <div style={{ background: T.surface, borderLeft: `1px solid ${T.border}`, padding: 10, display: "flex", flexDirection: "column", gap: 6, overflow: "auto" }}>
-          <ActionBtn T={T} icon={PIc.document(14)} label="Dokumentin" shortcut="F8" onClick={() => { /* not yet */ }} />
-          <ActionBtn T={T} icon={PIc.search(14)} label="Kërko artikullin" shortcut="F12" onClick={() => document.getElementById('pos-search')?.focus()} />
-          <ActionBtn T={T} icon={PIc.note(14)} label="Shtyp Noten" onClick={printThermalNote} disabled={cart.length === 0} />
-          <ActionBtn T={T} icon={PIc.shield(14)} label="Garancioni" shortcut="F7" variant="accent" onClick={() => setWarrantyOpen(true)} />
-          <ActionBtn T={T} icon={PIc.shieldList(14)} label="Garancione" variant="accent" onClick={() => setWarrantyListOpen(true)} />
-          <ActionBtn T={T} icon={PIc.trashLine(14)} label="Fshij artikullin" shortcut="Del" onClick={removeSelected} disabled={selectedIdx < 0} />
-          <ActionBtn T={T} icon={PIc.user(14)} label="Konsumatori" onClick={() => setClientOpen(true)} />
-          <ActionBtn T={T} icon={PIc.settings(14)} label="Parametrat" onClick={() => { /* settings placeholder */ }} />
-          <ActionBtn T={T} icon={PIc.printer(14)} label="Printo A4" shortcut="F4" onClick={() => setA4Open(true)} disabled={cart.length === 0} />
+        {/* ── RIGHT: CHECKOUT ─────────────────────────────────────────────── */}
+        <div style={{ width: 310, display: 'flex', flexDirection: 'column', background: T.surface, borderLeft: `1px solid ${T.border}`, flexShrink: 0 }}>
+
+          {/* CHECKOUT HEADER */}
+          <div style={{ padding: '16px 18px 14px', borderBottom: `1px solid ${T.border}`, display: 'flex', alignItems: 'center', justifyContent: 'space-between', flexShrink: 0 }}>
+            <div style={{ fontSize: 16, fontWeight: 900, color: T.text }}>Checkout</div>
+            <div style={{ display: 'flex', gap: 6 }}>
+              {client && (
+                <div style={{ display: 'flex', alignItems: 'center', gap: 5, background: `${T.accent}12`, borderRadius: 20, padding: '4px 10px', fontSize: 11, color: T.accent, fontWeight: 700 }}>
+                  {PIc.user(11)} {client.name}
+                  <button onClick={() => setClient(null)} style={{ background: 'none', border: 'none', cursor: 'pointer', color: T.accent, padding: 0, display: 'flex' }}>{PIc.close(10)}</button>
+                </div>
+              )}
+              <button onClick={() => setClientOpen(true)} title="Klient" style={{ background: T.surfaceAlt, border: `1px solid ${T.border}`, borderRadius: 8, width: 30, height: 30, cursor: 'pointer', color: T.textMuted, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>{PIc.user(14)}</button>
+            </div>
+          </div>
+
+          {/* CART ITEMS */}
+          <div style={{ flex: 1, overflowY: 'auto' }}>
+            {cart.length === 0 ? (
+              <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', height: '100%', color: T.textFaint, gap: 8, padding: 20, textAlign: 'center' }}>
+                <div style={{ opacity: .2 }}>{PIc.receipt(40)}</div>
+                <div style={{ fontWeight: 600, fontSize: 12, color: T.textMuted }}>Shporta është e zbrazët</div>
+                <div style={{ fontSize: 11 }}>Klikoni produktet nga lista</div>
+              </div>
+            ) : (
+              <>
+                {/* TABLE HEADER */}
+                <div style={{ display: 'grid', gridTemplateColumns: '1fr 80px 60px', padding: '8px 14px', background: T.surfaceAlt, fontSize: 10, fontWeight: 800, color: T.textMuted, textTransform: 'uppercase', letterSpacing: .8, borderBottom: `1px solid ${T.border}` }}>
+                  <div>Emri</div><div style={{ textAlign: 'center' }}>Sasia</div><div style={{ textAlign: 'right' }}>Çmimi</div>
+                </div>
+                {cart.map((x, idx) => (
+                  <div key={x.id}
+                    onClick={() => setSelectedIdx(idx)}
+                    style={{ display: 'grid', gridTemplateColumns: '1fr 80px 60px', padding: '9px 14px', alignItems: 'center', borderBottom: `1px solid ${T.border}`, background: selectedIdx === idx ? `${T.accent}0e` : 'transparent', cursor: 'pointer', transition: 'background .1s' }}>
+                    <div style={{ display: 'flex', alignItems: 'center', gap: 7, overflow: 'hidden' }}>
+                      <button onClick={e => { e.stopPropagation(); removeItem(x.id); }} title="Fshij"
+                        style={{ background: '#FEE2E2', border: 'none', borderRadius: 5, width: 20, height: 20, display: 'flex', alignItems: 'center', justifyContent: 'center', cursor: 'pointer', flexShrink: 0, color: '#EF4444' }}>
+                        {PIc.trashLine(10)}
+                      </button>
+                      <span style={{ fontSize: 12, fontWeight: 600, color: T.text, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>{x.name}</span>
+                    </div>
+                    <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 3 }} onClick={e => e.stopPropagation()}>
+                      <button onClick={() => updateQty(x.id, x.qty - 1)}
+                        style={{ width: 22, height: 22, borderRadius: '50%', border: `1.5px solid ${T.accent}`, background: 'transparent', color: T.accent, cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', fontWeight: 900, fontSize: 14 }}>−</button>
+                      <span style={{ fontSize: 12, fontWeight: 800, color: T.text, minWidth: 18, textAlign: 'center' }}>{String(x.qty).padStart(2,'0')}</span>
+                      <button onClick={() => updateQty(x.id, x.qty + 1)}
+                        style={{ width: 22, height: 22, borderRadius: '50%', border: `1.5px solid ${T.accent}`, background: T.accent, color: '#fff', cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', fontWeight: 900, fontSize: 14 }}>+</button>
+                    </div>
+                    <div style={{ textAlign: 'right', fontSize: 12, fontWeight: 800, color: T.accent }}>€{(x.price * x.qty).toFixed(2)}</div>
+                  </div>
+                ))}
+              </>
+            )}
+          </div>
+
+          {/* TOTALS + ACTIONS */}
+          <div style={{ flexShrink: 0, borderTop: `1px solid ${T.border}`, padding: '12px 16px 14px' }}>
+            {/* Discount */}
+            <div style={{ display: 'flex', alignItems: 'center', gap: 8, marginBottom: 10 }}>
+              <label style={{ fontSize: 11, fontWeight: 700, color: T.textMuted, flexShrink: 0 }}>Zbritja (%)</label>
+              <input type="number" min="0" max="100" value={discountPct} onChange={e => setDiscountPct(e.target.value)}
+                placeholder="0" disabled={cart.length === 0}
+                style={{ flex: 1, padding: '6px 10px', borderRadius: 8, border: `1.5px solid ${T.border}`, fontSize: 12, background: T.inputBg, color: T.text, outline: 'none', fontFamily: 'inherit', textAlign: 'right' }}
+              />
+            </div>
+            {/* Lines */}
+            {[{ label: 'Sub Total', val: subtotal }, { label: `Zbritja (${discountPct || 0}%)`, val: -discountAmount, red: true }, { label: 'TVSH', val: totalVat }].map(row => (
+              <div key={row.label} style={{ display: 'flex', justifyContent: 'space-between', fontSize: 12, color: row.red ? '#EF4444' : T.textMuted, marginBottom: 5 }}>
+                <span>{row.label}</span>
+                <span style={{ fontWeight: 600 }}>{row.red && row.val < 0 ? '-' : ''}€{Math.abs(row.val).toFixed(2)}</span>
+              </div>
+            ))}
+            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'baseline', paddingTop: 10, borderTop: `2px solid ${T.border}`, marginBottom: 14 }}>
+              <span style={{ fontSize: 15, fontWeight: 900, color: T.text }}>Total</span>
+              <span style={{ fontSize: 22, fontWeight: 900, color: T.accent }}>€{grandTotal.toFixed(2)}</span>
+            </div>
+            {/* Buttons */}
+            <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 7, marginBottom: 7 }}>
+              <button onClick={() => { setCart([]); setClient(null); setDiscountPct(''); }} disabled={cart.length === 0}
+                style={{ padding: '10px 8px', borderRadius: 10, border: `1.5px solid #EF4444`, background: 'transparent', color: '#EF4444', cursor: cart.length ? 'pointer' : 'not-allowed', fontWeight: 700, fontSize: 12, opacity: cart.length ? 1 : .45, fontFamily: 'inherit' }}>
+                Pastro
+              </button>
+              <button onClick={printThermalNote} disabled={cart.length === 0}
+                style={{ padding: '10px 8px', borderRadius: 10, border: `1.5px solid ${T.accent}`, background: 'transparent', color: T.accent, cursor: cart.length ? 'pointer' : 'not-allowed', fontWeight: 700, fontSize: 12, opacity: cart.length ? 1 : .45, fontFamily: 'inherit' }}>
+                Printo Notën
+              </button>
+            </div>
+            <button onClick={() => setPayOpen(true)} disabled={cart.length === 0}
+              style={{ width: '100%', padding: 14, borderRadius: 12, border: 'none', background: cart.length ? T.accentGrad : T.surfaceAlt, color: cart.length ? '#fff' : T.textFaint, cursor: cart.length ? 'pointer' : 'not-allowed', fontWeight: 800, fontSize: 15, display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 8, fontFamily: 'inherit', boxShadow: cart.length ? `0 4px 16px ${T.accent}40` : 'none' }}>
+              {PIc.cash(16)} Paguaj (€{grandTotal.toFixed(2)})
+            </button>
+          </div>
+        </div>
+      </div>
+
+      rtcut="F4" onClick={() => setA4Open(true)} disabled={cart.length === 0} />
           <ActionBtn T={T} icon={PIc.receipt(14)} label="Shtyp" shortcut="F2" variant="primary" onClick={() => setPayOpen(true)} disabled={cart.length === 0} />
           <ActionBtn T={T} icon={PIc.lock(14)} label="Mbyll Arkën" onClick={onCloseArka} />
           <ActionBtn T={T} icon={PIc.xCircle(14)} label="Pastro" variant="danger" onClick={() => { setCart([]); setClient(null); }} disabled={cart.length === 0 && !client} />
