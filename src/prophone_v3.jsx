@@ -4787,7 +4787,7 @@ function POSView({ T, business, products, onSale, sales, warranties, onAddWarran
   const todayTotal = todaySales.reduce((s, x) => s + x.total, 0);
 
   return (
-    <div style={{ display: "flex", flexDirection: "column", height: "calc(100vh - 90px)", marginTop: -24, marginLeft: -24, marginRight: -24, background: T.bg }}>
+    <div style={{ position: "fixed", inset: 0, zIndex: 200, display: "flex", flexDirection: "column", background: T.bg }}>
       {/* HEADER */}
       <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", padding: "10px 20px", background: T.surface, borderBottom: `1px solid ${T.border}`, flexShrink: 0 }}>
         <div style={{ display: "flex", alignItems: "center", gap: 14 }}>
@@ -4918,6 +4918,7 @@ function POSView({ T, business, products, onSale, sales, warranties, onAddWarran
                 touchAction: 'manipulation',
                 userSelect: 'none',
                 WebkitTapHighlightColor: 'transparent',
+                pointerEvents: 'auto',
                 transition: 'background .1s',
                 fontFamily: 'inherit',
               });
@@ -4932,7 +4933,7 @@ function POSView({ T, business, products, onSale, sales, warranties, onAddWarran
                   {keys.flat().map((k) => (
                     <button key={k} style={npBtnStyle(k === 'backspace')} onClick={() => handleNumpad(k)}
                       disabled={selectedIdx < 0}
-                      onMouseDown={e => e.preventDefault()}
+                      onMouseDown={e => { e.preventDefault(); e.stopPropagation(); }}
                     >
                       {k === 'backspace' ? (
                         <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><path d="M21 4H8l-7 8 7 8h13a2 2 0 0 0 2-2V6a2 2 0 0 0-2-2z"/><line x1="18" y1="9" x2="12" y2="15"/><line x1="12" y1="9" x2="18" y2="15"/></svg>
