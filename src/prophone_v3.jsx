@@ -2838,7 +2838,7 @@ function mapPostaOrderFromDB(row) {
     id: row.id, orderNo: row.order_no || "", clientName: row.client_name || "", clientSurname: row.client_surname || "",
     clientPhone: row.client_phone || "", city: row.city || "", country: row.country || "", address: row.address || "",
     description: row.description || "", price: Number(row.price) || 0, weight: row.weight || "", notes: row.notes || "",
-    status: row.status || "procesuara", createdAt: row.created_at, updatedAt: row.updated_at,
+    status: row.status || "procesuara", teHapet: row.te_hapet || "JO", createdAt: row.created_at, updatedAt: row.updated_at,
   };
 }
 function mapPostaOrderToDB(o, accountId) {
@@ -2846,7 +2846,7 @@ function mapPostaOrderToDB(o, accountId) {
     id: o.id, account_id: accountId, order_no: o.orderNo || null, client_name: o.clientName || null,
     client_surname: o.clientSurname || null, client_phone: o.clientPhone || null, city: o.city || null,
     country: o.country || null, address: o.address || null, description: o.description || null,
-    price: o.price || 0, weight: o.weight || null, notes: o.notes || null, status: o.status || "procesuara",
+    price: o.price || 0, weight: o.weight || null, notes: o.notes || null, status: o.status || "procesuara", te_hapet: o.teHapet || "JO",
     created_at: o.createdAt || new Date().toISOString(), updated_at: new Date().toISOString(),
   };
 }
@@ -4406,6 +4406,35 @@ function ClientDialog({ T, initial, onSave, onClose }) {
   );
 }
 
+const ActionBtn = React.memo(function ActionBtn({ T, icon, label, shortcut, onClick, variant, disabled }) {
+  const isPrimary = variant === "primary";
+  const isDanger = variant === "danger";
+  const isAccent = variant === "accent";
+  return (
+    <button onClick={onClick} disabled={disabled}
+      style={{
+        display: "flex", alignItems: "center", justifyContent: "space-between",
+        padding: "10px 12px", borderRadius: 10, cursor: disabled ? "not-allowed" : "pointer",
+        fontSize: 12.5, fontWeight: 600, textAlign: "left", width: "100%",
+        background: isPrimary ? T.accentGrad : isAccent ? `${T.accent}10` : T.surface,
+        color: isPrimary ? "#fff" : isDanger ? T.danger : isAccent ? T.accent : T.text,
+        border: isPrimary ? "none" : isDanger ? `1.5px solid ${T.danger}55` : isAccent ? `1.5px solid ${T.accent}50` : `1px solid ${T.border}`,
+        opacity: disabled ? 0.45 : 1,
+        fontFamily: "inherit",
+        transition: "all .15s",
+        minHeight: 40,
+      }}
+      onMouseEnter={e => { if (!disabled && !isPrimary) { e.currentTarget.style.borderColor = T.accent; e.currentTarget.style.background = isDanger ? `${T.danger}08` : isAccent ? `${T.accent}18` : T.surfaceAlt; } }}
+      onMouseLeave={e => { if (!disabled && !isPrimary) { e.currentTarget.style.borderColor = isDanger ? `${T.danger}55` : isAccent ? `${T.accent}50` : T.border; e.currentTarget.style.background = isAccent ? `${T.accent}10` : T.surface; } }}>
+      <span style={{ display: "flex", alignItems: "center", gap: 10 }}>
+        <span style={{ color: isPrimary ? "#fff" : isDanger ? T.danger : isAccent ? T.accent : T.textMuted, display: "flex" }}>{icon}</span>
+        <span>{label}</span>
+      </span>
+      {shortcut && <span style={{ fontSize: 10, fontWeight: 700, background: isPrimary ? "rgba(255,255,255,.22)" : T.surfaceAlt, padding: "2px 7px", borderRadius: 5, color: isPrimary ? "#fff" : T.textFaint, letterSpacing: 0.5, fontFamily: "ui-monospace, monospace" }}>{shortcut}</span>}
+    </button>
+  );
+});
+
 function POSView({ T, business, products, onSale, sales, warranties, onAddWarranty, onRemoveWarranty, onAddDebt, onBack, onCloseArka }) {
   const [cart, setCart] = useState([]);
   const [search, setSearch] = useState("");
@@ -4741,36 +4770,6 @@ function POSView({ T, business, products, onSale, sales, warranties, onAddWarran
   const todaySales = sales.filter(s => new Date(s.createdAt).toDateString() === new Date().toDateString());
   const todayTotal = todaySales.reduce((s, x) => s + x.total, 0);
 
-  // Action button with SVG icon
-  const ActionBtn = ({ icon, label, shortcut, onClick, variant, disabled }) => {
-    const isPrimary = variant === "primary";
-    const isDanger = variant === "danger";
-    const isAccent = variant === "accent";
-    return (
-      <button onClick={onClick} disabled={disabled}
-        style={{
-          display: "flex", alignItems: "center", justifyContent: "space-between",
-          padding: "10px 12px", borderRadius: 10, cursor: disabled ? "not-allowed" : "pointer",
-          fontSize: 12.5, fontWeight: 600, textAlign: "left", width: "100%",
-          background: isPrimary ? T.accentGrad : isAccent ? `${T.accent}10` : T.surface,
-          color: isPrimary ? "#fff" : isDanger ? T.danger : isAccent ? T.accent : T.text,
-          border: isPrimary ? "none" : isDanger ? `1.5px solid ${T.danger}55` : isAccent ? `1.5px solid ${T.accent}50` : `1px solid ${T.border}`,
-          opacity: disabled ? 0.45 : 1,
-          fontFamily: "inherit",
-          transition: "all .15s",
-          minHeight: 40,
-        }}
-        onMouseEnter={e => { if (!disabled && !isPrimary) { e.currentTarget.style.borderColor = T.accent; e.currentTarget.style.background = isDanger ? `${T.danger}08` : isAccent ? `${T.accent}18` : T.surfaceAlt; } }}
-        onMouseLeave={e => { if (!disabled && !isPrimary) { e.currentTarget.style.borderColor = isDanger ? `${T.danger}55` : isAccent ? `${T.accent}50` : T.border; e.currentTarget.style.background = isAccent ? `${T.accent}10` : T.surface; } }}>
-        <span style={{ display: "flex", alignItems: "center", gap: 10 }}>
-          <span style={{ color: isPrimary ? "#fff" : isDanger ? T.danger : isAccent ? T.accent : T.textMuted, display: "flex" }}>{icon}</span>
-          <span>{label}</span>
-        </span>
-        {shortcut && <span style={{ fontSize: 10, fontWeight: 700, background: isPrimary ? "rgba(255,255,255,.22)" : T.surfaceAlt, padding: "2px 7px", borderRadius: 5, color: isPrimary ? "#fff" : T.textFaint, letterSpacing: 0.5, fontFamily: "ui-monospace, monospace" }}>{shortcut}</span>}
-      </button>
-    );
-  };
-
   return (
     <div style={{ display: "flex", flexDirection: "column", height: "calc(100vh - 90px)", marginTop: -24, marginLeft: -24, marginRight: -24, background: T.bg }}>
       {/* HEADER */}
@@ -4874,18 +4873,18 @@ function POSView({ T, business, products, onSale, sales, warranties, onAddWarran
 
         {/* RIGHT SIDEBAR */}
         <div style={{ background: T.surface, borderLeft: `1px solid ${T.border}`, padding: 10, display: "flex", flexDirection: "column", gap: 6, overflow: "auto" }}>
-          <ActionBtn icon={PIc.document(14)} label="Dokumentin" shortcut="F8" onClick={() => { /* not yet */ }} />
-          <ActionBtn icon={PIc.search(14)} label="Kërko artikullin" shortcut="F12" onClick={() => document.getElementById('pos-search')?.focus()} />
-          <ActionBtn icon={PIc.note(14)} label="Shtyp Noten" onClick={printThermalNote} disabled={cart.length === 0} />
-          <ActionBtn icon={PIc.shield(14)} label="Garancioni" shortcut="F7" variant="accent" onClick={() => setWarrantyOpen(true)} />
-          <ActionBtn icon={PIc.shieldList(14)} label="Garancione" variant="accent" onClick={() => setWarrantyListOpen(true)} />
-          <ActionBtn icon={PIc.trashLine(14)} label="Fshij artikullin" shortcut="Del" onClick={removeSelected} disabled={selectedIdx < 0} />
-          <ActionBtn icon={PIc.user(14)} label="Konsumatori" onClick={() => setClientOpen(true)} />
-          <ActionBtn icon={PIc.settings(14)} label="Parametrat" onClick={() => { /* settings placeholder */ }} />
-          <ActionBtn icon={PIc.printer(14)} label="Printo A4" shortcut="F4" onClick={() => setA4Open(true)} disabled={cart.length === 0} />
-          <ActionBtn icon={PIc.receipt(14)} label="Shtyp" shortcut="F2" variant="primary" onClick={() => setPayOpen(true)} disabled={cart.length === 0} />
-          <ActionBtn icon={PIc.lock(14)} label="Mbyll Arkën" onClick={onCloseArka} />
-          <ActionBtn icon={PIc.xCircle(14)} label="Pastro" variant="danger" onClick={() => { setCart([]); setClient(null); }} disabled={cart.length === 0 && !client} />
+          <ActionBtn T={T} icon={PIc.document(14)} label="Dokumentin" shortcut="F8" onClick={() => { /* not yet */ }} />
+          <ActionBtn T={T} icon={PIc.search(14)} label="Kërko artikullin" shortcut="F12" onClick={() => document.getElementById('pos-search')?.focus()} />
+          <ActionBtn T={T} icon={PIc.note(14)} label="Shtyp Noten" onClick={printThermalNote} disabled={cart.length === 0} />
+          <ActionBtn T={T} icon={PIc.shield(14)} label="Garancioni" shortcut="F7" variant="accent" onClick={() => setWarrantyOpen(true)} />
+          <ActionBtn T={T} icon={PIc.shieldList(14)} label="Garancione" variant="accent" onClick={() => setWarrantyListOpen(true)} />
+          <ActionBtn T={T} icon={PIc.trashLine(14)} label="Fshij artikullin" shortcut="Del" onClick={removeSelected} disabled={selectedIdx < 0} />
+          <ActionBtn T={T} icon={PIc.user(14)} label="Konsumatori" onClick={() => setClientOpen(true)} />
+          <ActionBtn T={T} icon={PIc.settings(14)} label="Parametrat" onClick={() => { /* settings placeholder */ }} />
+          <ActionBtn T={T} icon={PIc.printer(14)} label="Printo A4" shortcut="F4" onClick={() => setA4Open(true)} disabled={cart.length === 0} />
+          <ActionBtn T={T} icon={PIc.receipt(14)} label="Shtyp" shortcut="F2" variant="primary" onClick={() => setPayOpen(true)} disabled={cart.length === 0} />
+          <ActionBtn T={T} icon={PIc.lock(14)} label="Mbyll Arkën" onClick={onCloseArka} />
+          <ActionBtn T={T} icon={PIc.xCircle(14)} label="Pastro" variant="danger" onClick={() => { setCart([]); setClient(null); }} disabled={cart.length === 0 && !client} />
         </div>
       </div>
 
@@ -4933,15 +4932,15 @@ function POSView({ T, business, products, onSale, sales, warranties, onAddWarran
       )}
 
       {lastReceipt && (
-        <div style={{ position: "fixed", inset: 0, zIndex: 1000, background: "rgba(15,23,42,.6)", backdropFilter: "blur(6px)", display: "flex", alignItems: "center", justifyContent: "center" }} onClick={() => setLastReceipt(null)}>
-          <div onClick={e => e.stopPropagation()} style={{ background: T.surface, borderRadius: 16, padding: 28, width: "92%", maxWidth: 400, textAlign: "center", border: `1px solid ${T.border}`, boxShadow: "0 30px 90px rgba(0,0,0,.35)" }}>
+        <div style={{ position: "fixed", inset: 0, zIndex: 1100, background: "rgba(15,23,42,.6)", backdropFilter: "blur(6px)", display: "flex", alignItems: "center", justifyContent: "center" }}>
+          <div style={{ background: T.surface, borderRadius: 16, padding: 28, width: "92%", maxWidth: 400, textAlign: "center", border: `1px solid ${T.border}`, boxShadow: "0 30px 90px rgba(0,0,0,.35)" }}>
             <div style={{ width: 60, height: 60, borderRadius: "50%", background: "#D1FAE5", color: "#059669", display: "flex", alignItems: "center", justifyContent: "center", margin: "0 auto 14px" }}>{PIc.check(28)}</div>
             <h3 style={{ margin: "0 0 4px", fontSize: 17, fontWeight: 800, color: T.text }}>Shitja u regjistrua!</h3>
             <div style={{ color: T.textMuted, fontSize: 12, marginBottom: 4 }}>Nr. faturës: <b style={{ color: T.text }}>{lastReceipt.receiptNo}</b></div>
             <div style={{ fontSize: 28, fontWeight: 800, color: T.accent, marginBottom: 20 }}>€{lastReceipt.total.toFixed(2)}</div>
             <div style={{ display: "flex", gap: 10 }}>
               <button onClick={() => setLastReceipt(null)} style={{ flex: 1, background: T.surfaceAlt, color: T.textMuted, border: `1.5px solid ${T.border}`, borderRadius: 10, padding: "11px", cursor: "pointer", fontWeight: 600, fontSize: 13, fontFamily: "inherit" }}>Mbyll</button>
-              <button onClick={() => { printThermal(lastReceipt); }} style={{ flex: 2, background: T.accentGrad, color: "#fff", border: "none", borderRadius: 10, padding: "11px", cursor: "pointer", fontWeight: 800, fontSize: 13, display: "flex", alignItems: "center", justifyContent: "center", gap: 6, fontFamily: "inherit" }}>
+              <button onClick={() => { const r = lastReceipt; setLastReceipt(null); printThermal(r); }} style={{ flex: 2, background: T.accentGrad, color: "#fff", border: "none", borderRadius: 10, padding: "11px", cursor: "pointer", fontWeight: 800, fontSize: 13, display: "flex", alignItems: "center", justifyContent: "center", gap: 6, fontFamily: "inherit" }}>
                 {PIc.printer(14)} Printo Kuponin
               </button>
             </div>
@@ -5031,7 +5030,7 @@ const PostaFieldInput = React.memo(function PostaFieldInput({ label, field, type
 function PostaOrderForm({ T, initial, onSave, onClose }) {
   const [form, setForm] = React.useState(initial || {
     clientName: "", clientSurname: "", clientPhone: "", city: "", country: "", address: "",
-    description: "", price: "", weight: "", notes: "", status: "procesuara",
+    description: "", price: "", weight: "", notes: "", status: "procesuara", teHapet: "JO",
   });
   const set = React.useCallback((k, v) => setForm(f => ({ ...f, [k]: v })), []);
   const canSave = form.clientName.trim() && form.city.trim();
@@ -5052,6 +5051,17 @@ function PostaOrderForm({ T, initial, onSave, onClose }) {
         <PostaFieldInput T={T} label="Çmimi (€)" field="price" type="number" placeholder="0.00" value={form.price} onChange={set} />
         <PostaFieldInput T={T} label="Pesha" field="weight" placeholder="kg..." value={form.weight} onChange={set} />
         <PostaFieldInput T={T} label="Shënime" field="notes" placeholder="Shënim opsional..." value={form.notes} onChange={set} />
+        <div style={{ display: "flex", flexDirection: "column", gap: 4 }}>
+          <label style={{ fontSize: 12, fontWeight: 600, color: T.textMuted }}>Te hapet</label>
+          <select
+            value={form.teHapet || "JO"}
+            onChange={e => set("teHapet", e.target.value)}
+            style={{ padding: "9px 12px", borderRadius: 10, border: `1.5px solid ${T.border}`, fontSize: 13, background: T.inputBg || T.surface, color: T.text, outline: "none", fontFamily: "inherit", cursor: "pointer", appearance: "auto" }}
+          >
+            <option value="JO">JO</option>
+            <option value="PO">PO</option>
+          </select>
+        </div>
       </div>
       {initial && (
         <div style={{ marginBottom: 12 }}>
@@ -5218,58 +5228,192 @@ function PostaPage({ T, business, orders, onAdd, onUpdate, onDelete }) {
 }
 
 // Public status page for posta orders (QR scan)
-function PostaStatusPublicPage({ orderId, onBack }) {
+function PostaStatusPublicPage({ orderId }) {
   const [order, setOrder] = React.useState(null);
   const [biz, setBiz] = React.useState(null);
   const [loading, setLoading] = React.useState(true);
-  React.useEffect(() => {
-    (async () => {
-      try {
-        const { data: o } = await supabase.from('posta_orders').select('*').eq('id', orderId).single();
-        if (o) {
-          setOrder(mapPostaOrderFromDB(o));
-          const { data: a } = await supabase.from('accounts').select('name,phone,city').eq('id', o.account_id).single();
-          if (a) setBiz(a);
-        }
-      } catch(e) {}
-      setLoading(false);
-    })();
+  const [lastUpdated, setLastUpdated] = React.useState(null);
+
+  const fetchOrder = React.useCallback(async () => {
+    try {
+      const { data: o } = await supabase.from('posta_orders').select('*').eq('id', orderId).single();
+      if (o) {
+        setOrder(mapPostaOrderFromDB(o));
+        setLastUpdated(new Date());
+        const { data: a } = await supabase.from('accounts').select('name,phone,city').eq('id', o.account_id).single();
+        if (a) setBiz(a);
+      }
+    } catch(e) {}
+    setLoading(false);
   }, [orderId]);
 
-  if (loading) return <div style={{ minHeight: "100vh", display: "flex", alignItems: "center", justifyContent: "center", fontFamily: "DM Sans, sans-serif", fontSize: 16, color: "#64748b" }}>Duke ngarkuar...</div>;
-  if (!order) return <div style={{ minHeight: "100vh", display: "flex", alignItems: "center", justifyContent: "center", fontFamily: "DM Sans, sans-serif", fontSize: 16, color: "#EF4444" }}>Porosia nuk u gjet.</div>;
+  React.useEffect(() => {
+    fetchOrder();
+    const iv = setInterval(fetchOrder, 30000);
+    return () => clearInterval(iv);
+  }, [fetchOrder]);
 
-  const st = POSTA_STATUSES.find(s => s.key === order.status) || POSTA_STATUSES[0];
-  const progress = POSTA_STATUSES.findIndex(s => s.key === order.status);
+  const STEPS = [
+    { key: 'procesuara', label: 'Procesuara', desc: 'Pranuar dhe po processohet', color: '#3B82F6', num: 1 },
+    { key: 'derguar',    label: 'Derguar',    desc: 'Ne rrugore per tek ju',      color: '#F59E0B', num: 2 },
+    { key: 'dorezuar',   label: 'Dorezuar',   desc: 'Dorezuar me sukses!',         color: '#10B981', num: 3 },
+    { key: 'kthyer',     label: 'Kthyer',     desc: 'Porosia u kthye',            color: '#EF4444', num: 4 },
+  ];
+
+  if (loading) return (
+    <div style={{ minHeight: '100vh', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', background: '#6366F1', fontFamily: 'system-ui,sans-serif' }}>
+      <style dangerouslySetInnerHTML={{ __html: '@keyframes spin{to{transform:rotate(360deg)}}' }} />
+      <div style={{ width: 48, height: 48, border: '4px solid rgba(255,255,255,.3)', borderTopColor: '#fff', borderRadius: '50%', animation: 'spin .8s linear infinite', marginBottom: 18 }} />
+      <div style={{ color: 'rgba(255,255,255,.9)', fontWeight: 700, fontSize: 15 }}>Duke ngarkuar...</div>
+    </div>
+  );
+
+  if (!order) return (
+    <div style={{ minHeight: '100vh', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', background: '#F8FAFC', fontFamily: 'system-ui,sans-serif', padding: 24, textAlign: 'center' }}>
+      <div style={{ fontSize: 22, fontWeight: 800, color: '#0F172A', marginBottom: 8 }}>Porosia nuk u gjet</div>
+      <div style={{ color: '#64748b', fontSize: 14 }}>Kodi i gjurmimit nuk ekziston.</div>
+    </div>
+  );
+
+  const stepIdx = STEPS.findIndex(function(s) { return s.key === order.status; });
+  const st = STEPS[stepIdx >= 0 ? stepIdx : 0];
+  const isReturned = order.status === 'kthyer';
+  const visibleSteps = isReturned
+    ? [STEPS[0], STEPS[1], STEPS[3]]
+    : [STEPS[0], STEPS[1], STEPS[2]];
+  const curIdx = isReturned
+    ? (stepIdx === 3 ? 2 : Math.min(stepIdx, 1))
+    : Math.min(stepIdx, 2);
+
+  const details = [
+    { label: 'Marresi',       val: [order.clientName, order.clientSurname].filter(Boolean).join(' ') },
+    { label: 'Destinacioni',  val: [order.address, order.city, order.country].filter(Boolean).join(', ') },
+    { label: 'Telefon',       val: order.clientPhone },
+    { label: 'Pershkrim',     val: order.description },
+    { label: 'Cmimi',         val: order.price > 0 ? 'EUR ' + Number(order.price).toFixed(2) : null },
+    { label: 'Pesha',         val: order.weight },
+    { label: 'Shenime',       val: order.notes },
+  ].filter(function(d) { return d.val && String(d.val).trim(); });
+
+  const isDone = order.status === 'dorezuar';
+  const pulse = (!isDone && !isReturned) ? { animation: 'pulse 1.4s ease-in-out infinite' } : {};
+
   return (
-    <div style={{ minHeight: "100vh", background: "#F8FAFC", fontFamily: "DM Sans, sans-serif", display: "flex", flexDirection: "column", alignItems: "center", padding: "40px 16px" }}>
-      <div style={{ width: "100%", maxWidth: 480, background: "#fff", borderRadius: 20, padding: 28, boxShadow: "0 4px 24px rgba(0,0,0,.08)" }}>
-        {biz && <div style={{ fontSize: 13, color: "#64748b", marginBottom: 4 }}>{biz.name}</div>}
-        <h1 style={{ fontSize: 22, fontWeight: 900, margin: "0 0 4px", color: "#0F172A" }}>Porosia #{order.orderNo || order.id.slice(-6).toUpperCase()}</h1>
-        <div style={{ fontSize: 13, color: "#64748b", marginBottom: 20 }}>{new Date(order.createdAt).toLocaleDateString("sq-AL")}</div>
-        {/* Status bar */}
-        <div style={{ display: "flex", alignItems: "center", gap: 0, marginBottom: 24 }}>
-          {POSTA_STATUSES.map((s, i) => (
-            <React.Fragment key={s.key}>
-              <div style={{ textAlign: "center", flex: 1 }}>
-                <div style={{ width: 32, height: 32, borderRadius: "50%", background: i <= progress ? s.color : "#E2E8F0", color: "#fff", display: "flex", alignItems: "center", justifyContent: "center", margin: "0 auto 4px", fontWeight: 700, fontSize: 12, transition: "background .3s" }}>
-                  {i < progress ? "✓" : i + 1}
-                </div>
-                <div style={{ fontSize: 10, color: i <= progress ? s.color : "#94A3B8", fontWeight: 600 }}>{s.label}</div>
+    <div style={{ minHeight: '100vh', background: '#F1F5F9', fontFamily: 'system-ui,-apple-system,sans-serif' }}>
+      <style dangerouslySetInnerHTML={{ __html: '@keyframes spin{to{transform:rotate(360deg)}}@keyframes pulse{0%,100%{opacity:1}50%{opacity:.5}}@keyframes up{from{opacity:0;transform:translateY(14px)}to{opacity:1;transform:none}}.trk{animation:up .4s ease both}.trk1{animation-delay:.08s}.trk2{animation-delay:.16s}.trk3{animation-delay:.24s}' }} />
+
+      <div style={{ background: st.color, padding: '36px 20px 72px', textAlign: 'center' }}>
+        <div style={{ display: 'inline-flex', alignItems: 'center', background: 'rgba(255,255,255,.22)', borderRadius: 50, padding: '5px 18px', marginBottom: 14 }}>
+          <span style={{ fontSize: 11, fontWeight: 800, color: '#fff', letterSpacing: 2, textTransform: 'uppercase' }}>
+            {biz ? biz.name : 'DataPOS'}
+          </span>
+        </div>
+        <div style={{ fontSize: 26, fontWeight: 900, color: '#fff' }}>Gjurmimi i Porosise</div>
+        <div style={{ fontSize: 15, color: 'rgba(255,255,255,.82)', marginTop: 4, fontWeight: 600 }}>
+          {'#' + (order.orderNo || (order.id ? order.id.slice(-8).toUpperCase() : ''))}
+        </div>
+      </div>
+
+      <div style={{ padding: '0 16px 40px', maxWidth: 480, margin: '0 auto', marginTop: -44 }}>
+
+        <div className="trk" style={{ background: '#fff', borderRadius: 22, boxShadow: '0 8px 40px rgba(0,0,0,.12)', overflow: 'hidden', marginBottom: 14 }}>
+          <div style={{ height: 5, background: st.color }} />
+          <div style={{ padding: '22px 22px 26px' }}>
+            <div style={{ display: 'flex', alignItems: 'center', gap: 14, marginBottom: 26, paddingBottom: 20, borderBottom: '1px solid #F1F5F9' }}>
+              <div style={{ width: 54, height: 54, borderRadius: 16, background: st.color + '22', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 24, flexShrink: 0, fontWeight: 900, color: st.color }}>
+                {st.num}
               </div>
-              {i < POSTA_STATUSES.length - 1 && <div style={{ flex: 1, height: 2, background: i < progress ? st.color : "#E2E8F0", marginBottom: 18 }} />}
-            </React.Fragment>
-          ))}
-        </div>
-        <div style={{ background: st.color + "15", border: `1.5px solid ${st.color}30`, borderRadius: 12, padding: "12px 16px", marginBottom: 20, textAlign: "center" }}>
-          <div style={{ fontWeight: 800, fontSize: 18, color: st.color }}>{st.label}</div>
-        </div>
-        {[["Emri", order.clientName + " " + order.clientSurname], ["Telefon", order.clientPhone], ["Qyteti", order.city + (order.country ? ", " + order.country : "")], ["Adresa", order.address], ["Çmimi", "€" + Number(order.price).toFixed(2)], ["Pesha", order.weight]].filter(([,v]) => v && v.trim()).map(([l, v]) => (
-          <div key={l} style={{ display: "flex", justifyContent: "space-between", padding: "8px 0", borderBottom: "1px solid #F1F5F9", fontSize: 14 }}>
-            <span style={{ color: "#64748b", fontWeight: 600 }}>{l}</span>
-            <span style={{ color: "#0F172A", fontWeight: 700 }}>{v}</span>
+              <div style={{ flex: 1 }}>
+                <div style={{ fontSize: 11, fontWeight: 700, color: '#94A3B8', textTransform: 'uppercase', letterSpacing: 1.2, marginBottom: 3 }}>Statusi Aktual</div>
+                <div style={{ fontSize: 21, fontWeight: 900, color: st.color }}>{st.label}</div>
+                <div style={{ fontSize: 12, color: '#64748b', marginTop: 2 }}>{st.desc}</div>
+              </div>
+              <div style={{ width: 11, height: 11, borderRadius: '50%', background: st.color, flexShrink: 0, ...pulse }} />
+            </div>
+
+            <div style={{ position: 'relative', paddingLeft: 56 }}>
+              <div style={{ position: 'absolute', left: 19, top: 20, bottom: 20, width: 2, background: '#E2E8F0', borderRadius: 2 }} />
+              {visibleSteps.map(function(step, i) {
+                var done    = i < curIdx;
+                var current = i === curIdx;
+                var future  = i > curIdx;
+                return (
+                  <div key={step.key} style={{ display: 'flex', alignItems: 'flex-start', marginBottom: i < visibleSteps.length - 1 ? 28 : 0, position: 'relative', marginLeft: -56 }}>
+                    <div style={{
+                      width: 40, height: 40, borderRadius: '50%', flexShrink: 0, marginRight: 16,
+                      background: done ? step.color : current ? '#fff' : '#F8FAFC',
+                      border: done ? 'none' : current ? ('3px solid ' + step.color) : '2px solid #E2E8F0',
+                      display: 'flex', alignItems: 'center', justifyContent: 'center',
+                      boxShadow: current ? ('0 0 0 5px ' + step.color + '22') : 'none',
+                      position: 'relative', zIndex: 1,
+                    }}>
+                      {done    && <span style={{ fontSize: 16, color: '#fff', fontWeight: 900 }}>v</span>}
+                      {current && <span style={{ fontSize: 14, color: step.color, fontWeight: 900 }}>{step.num}</span>}
+                      {future  && <span style={{ fontSize: 13, color: '#CBD5E1', fontWeight: 700 }}>{i + 1}</span>}
+                    </div>
+                    <div style={{ paddingTop: 8, flex: 1 }}>
+                      <div style={{ fontSize: 14, fontWeight: current ? 800 : done ? 700 : 500, color: future ? '#94A3B8' : current ? '#0F172A' : '#475569', marginBottom: current || done ? 3 : 0 }}>
+                        {step.label}
+                      </div>
+                      {current && <div style={{ fontSize: 12, color: '#64748b', lineHeight: 1.5 }}>{step.desc}</div>}
+                      {done    && <div style={{ fontSize: 11, color: step.color, fontWeight: 700 }}>Kompletuar</div>}
+                    </div>
+                  </div>
+                );
+              })}
+            </div>
           </div>
-        ))}
+        </div>
+
+        {details.length > 0 && (
+          <div className="trk trk1" style={{ background: '#fff', borderRadius: 20, boxShadow: '0 4px 20px rgba(0,0,0,.07)', padding: '20px 22px', marginBottom: 14 }}>
+            <div style={{ fontSize: 11, fontWeight: 800, color: '#94A3B8', textTransform: 'uppercase', letterSpacing: 1.5, marginBottom: 16 }}>Detajet e Porosise</div>
+            {details.map(function(d, idx) {
+              return (
+                <div key={d.label} style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', padding: '10px 0', borderBottom: idx < details.length - 1 ? '1px solid #F8FAFC' : 'none', gap: 16 }}>
+                  <span style={{ fontSize: 13, color: '#64748b', fontWeight: 600, flexShrink: 0 }}>{d.label}</span>
+                  <span style={{ fontSize: 13, color: '#0F172A', fontWeight: 700, textAlign: 'right', wordBreak: 'break-word' }}>{d.val}</span>
+                </div>
+              );
+            })}
+            <div style={{ display: 'flex', justifyContent: 'space-between', paddingTop: 12, borderTop: '1px solid #F1F5F9', marginTop: 4 }}>
+              <span style={{ fontSize: 12, color: '#94A3B8', fontWeight: 600 }}>Data e porosise</span>
+              <span style={{ fontSize: 12, color: '#475569', fontWeight: 700 }}>
+                {new Date(order.createdAt).toLocaleDateString('sq-AL', { day: 'numeric', month: 'long', year: 'numeric' })}
+              </span>
+            </div>
+          </div>
+        )}
+
+        {biz && (
+          <div className="trk trk2" style={{ background: st.color + '12', borderRadius: 18, border: '1.5px solid ' + st.color + '28', padding: '18px 20px', marginBottom: 14 }}>
+            <div style={{ display: 'flex', alignItems: 'center', gap: 14 }}>
+              <div style={{ width: 46, height: 46, borderRadius: 14, background: st.color, display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 22, color: '#fff', fontWeight: 900, flexShrink: 0 }}>B</div>
+              <div style={{ flex: 1, minWidth: 0 }}>
+                <div style={{ fontSize: 14, fontWeight: 900, color: '#0F172A', marginBottom: 2 }}>{biz.name}</div>
+                {biz.city && <div style={{ fontSize: 12, color: '#64748b' }}>{biz.city}</div>}
+              </div>
+              {biz.phone && (
+                <a href={'tel:' + biz.phone} style={{ background: st.color, color: '#fff', borderRadius: 12, padding: '10px 16px', fontSize: 13, fontWeight: 800, textDecoration: 'none', flexShrink: 0 }}>
+                  Na Kontakto
+                </a>
+              )}
+            </div>
+          </div>
+        )}
+
+        <div className="trk trk3" style={{ textAlign: 'center', paddingTop: 4 }}>
+          <div style={{ display: 'inline-flex', alignItems: 'center', gap: 7, background: '#fff', borderRadius: 50, padding: '7px 16px', boxShadow: '0 2px 10px rgba(0,0,0,.07)', fontSize: 11, color: '#94A3B8', fontWeight: 600 }}>
+            <span style={{ width: 7, height: 7, borderRadius: '50%', background: '#10B981', display: 'inline-block', ...pulse }} />
+            Rifresohet cdo 30 sekonda
+            {lastUpdated && (
+              <span style={{ color: '#CBD5E1', marginLeft: 4 }}>
+                {lastUpdated.toLocaleTimeString('sq-AL')}
+              </span>
+            )}
+          </div>
+        </div>
+
       </div>
     </div>
   );
@@ -6069,4 +6213,4 @@ export default function DataPhone() {
 
 
 
-
+
