@@ -5217,62 +5217,211 @@ function PostaPage({ T, business, orders, onAdd, onUpdate, onDelete }) {
 }
 
 // Public status page for posta orders (QR scan)
-function PostaStatusPublicPage({ orderId, onBack }) {
+function PostaStatusPublicPage({ orderId }) {
   const [order, setOrder] = React.useState(null);
   const [biz, setBiz] = React.useState(null);
   const [loading, setLoading] = React.useState(true);
-  React.useEffect(() => {
-    (async () => {
-      try {
-        const { data: o } = await supabase.from('posta_orders').select('*').eq('id', orderId).single();
-        if (o) {
-          setOrder(mapPostaOrderFromDB(o));
-          const { data: a } = await supabase.from('accounts').select('name,phone,city').eq('id', o.account_id).single();
-          if (a) setBiz(a);
-        }
-      } catch(e) {}
-      setLoading(false);
-    })();
+  const [lastUpdated, setLastUpdated] = React.useState(null);
+
+  const fetchOrder = React.useCallback(async () => {
+    try {
+      const { data: o } = await supabase.from('posta_orders').select('*').eq('id', orderId).single();
+      if (o) {
+        setOrder(mapPostaOrderFromDB(o));
+        setLastUpdated(new Date());
+        const { data: a } = await supabase.from('accounts').select('name,phone,city').eq('id', o.account_id).single();
+        if (a) setBiz(a);
+      }
+    } catch(e) {}
+    setLoading(false);
   }, [orderId]);
 
-  if (loading) return <div style={{ minHeight: "100vh", display: "flex", alignItems: "center", justifyContent: "center", fontFamily: "DM Sans, sans-serif", fontSize: 16, color: "#64748b" }}>Duke ngarkuar...</div>;
-  if (!order) return <div style={{ minHeight: "100vh", display: "flex", alignItems: "center", justifyContent: "center", fontFamily: "DM Sans, sans-serif", fontSize: 16, color: "#EF4444" }}>Porosia nuk u gjet.</div>;
+  React.useEffect(() => {
+    fetchOrder();
+    const iv = setInterval(fetchOrder, 30000);
+    return () => clearInterval(iv);
+  }, [fetchOrder]);
 
-  const st = POSTA_STATUSES.find(s => s.key === order.status) || POSTA_STATUSES[0];
-  const progress = POSTA_STATUSES.findIndex(s => s.key === order.status);
+  const TRACK_STEPS = [
+    { key: "procesuara", label: "Procesuara",  desc: "Porosia është pranuar dhe po processohet",    icon: "📋", color: "#3B82F6" },
+    { key: "derguar",    label: "Dërguar",     desc: "Në rrugore drejt destinacionit tuaj",          icon: "🚚", color: "#F59E0B" },
+    { key: "dorezuar",   label: "Dorëzuar",    desc: "Porosia është dorëzuar me sukses! 🎉",         icon: "✅", color: "#10B981" },
+    { key: "kthyer",     label: "Kthyer",      desc: "Porosia nuk u dorëzua dhe është kthyer",     icon: "↩️", color: "#EF4444" },
+  ];
+
+  if (loading) return (
+    <div style={{ minHeight: "100vh", display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center", background: "linear-gradient(135deg,#6366F1 0%,#8B5CF6 100%)", fontFamily: "system-ui,sans-serif" }}>
+      <style>{`@keyframes spin{to{transform:rotate(360deg);}}`}</style>
+      <div style={{ width: 48, height: 48, border: "4px solid rgba(255,255,255,.3)", borderTopColor: "#fff", borderRadius: "50%", animation: "spin .8s linear infinite", marginBottom: 18 }} />
+      <div style={{ color: "rgba(255,255,255,.9)", fontWeight: 700, fontSize: 15 }}>Duke ngarkuar porosinë...</div>
+    </div>
+  );
+
+  if (!order) return (
+    <div style={{ minHeight: "100vh", display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center", background: "#F8FAFC", fontFamily: "system-ui,sans-serif", padding: 24, textAlign: "center" }}>
+      <div style={{ fontSize: 64, marginBottom: 16 }}>📦</div>
+      <div style={{ fontSize: 22, fontWeight: 800, color: "#0F172A", marginBottom: 8 }}>Porosia nuk u gjet</div>
+      <div style={{ color: "#64748b", fontSize: 14 }}>Kodi i gjurmimit nuk ekziston ose ka skaduar.</div>
+    </div>
+  );
+
+  const stepIndex   = TRACK_STEPS.findIndex(s => s.key === order.status);
+  const st          = TRACK_STEPS[stepIndex >= 0 ? stepIndex : 0];
+  const isReturned  = order.status === "kthyer";
+  const isDone      = order.status === "dorezuar";
+  const visibleSteps = isReturned
+    ? [TRACK_STEPS[0], TRACK_STEPS[1], TRACK_STEPS[3]]
+    : TRACK_STEPS.slice(0, 3);
+  const curIdx = isReturned
+    ? (order.status === "kthyer" ? 2 : Math.min(stepIndex, 1))
+    : Math.min(stepIndex, 2);
+
+  const details = [
+    { icon: "👤", label: "Marresi",      val: [order.clientName, order.clientSurname].filter(Boolean).join(" ") },
+    { icon: "📍", label: "Destinacioni", val: [order.address, order.city, order.country].filter(Boolean).join(", ") },
+    { icon: "📞", label: "Telefon",      val: order.clientPhone },
+    { icon: "📦", label: "Përshkrim",   val: order.description },
+    { icon: "💶", label: "Çmimi",        val: order.price > 0 ? `€${Number(order.price).toFixed(2)}` : null },
+    { icon: "⚖️",  label: "Pesha",        val: order.weight },
+    { icon: "🗒️", label: "Shënime",      val: order.notes },
+  ].filter(d => d.val && String(d.val).trim());
+
   return (
-    <div style={{ minHeight: "100vh", background: "#F8FAFC", fontFamily: "DM Sans, sans-serif", display: "flex", flexDirection: "column", alignItems: "center", padding: "40px 16px" }}>
-      <div style={{ width: "100%", maxWidth: 480, background: "#fff", borderRadius: 20, padding: 28, boxShadow: "0 4px 24px rgba(0,0,0,.08)" }}>
-        {biz && <div style={{ fontSize: 13, color: "#64748b", marginBottom: 4 }}>{biz.name}</div>}
-        <h1 style={{ fontSize: 22, fontWeight: 900, margin: "0 0 4px", color: "#0F172A" }}>Porosia #{order.orderNo || order.id.slice(-6).toUpperCase()}</h1>
-        <div style={{ fontSize: 13, color: "#64748b", marginBottom: 20 }}>{new Date(order.createdAt).toLocaleDateString("sq-AL")}</div>
-        {/* Status bar */}
-        <div style={{ display: "flex", alignItems: "center", gap: 0, marginBottom: 24 }}>
-          {POSTA_STATUSES.map((s, i) => (
-            <React.Fragment key={s.key}>
-              <div style={{ textAlign: "center", flex: 1 }}>
-                <div style={{ width: 32, height: 32, borderRadius: "50%", background: i <= progress ? s.color : "#E2E8F0", color: "#fff", display: "flex", alignItems: "center", justifyContent: "center", margin: "0 auto 4px", fontWeight: 700, fontSize: 12, transition: "background .3s" }}>
-                  {i < progress ? "✓" : i + 1}
-                </div>
-                <div style={{ fontSize: 10, color: i <= progress ? s.color : "#94A3B8", fontWeight: 600 }}>{s.label}</div>
-              </div>
-              {i < POSTA_STATUSES.length - 1 && <div style={{ flex: 1, height: 2, background: i < progress ? st.color : "#E2E8F0", marginBottom: 18 }} />}
-            </React.Fragment>
-          ))}
-        </div>
-        <div style={{ background: st.color + "15", border: `1.5px solid ${st.color}30`, borderRadius: 12, padding: "12px 16px", marginBottom: 20, textAlign: "center" }}>
-          <div style={{ fontWeight: 800, fontSize: 18, color: st.color }}>{st.label}</div>
-        </div>
-        {[["Emri", order.clientName + " " + order.clientSurname], ["Telefon", order.clientPhone], ["Qyteti", order.city + (order.country ? ", " + order.country : "")], ["Adresa", order.address], ["Çmimi", "€" + Number(order.price).toFixed(2)], ["Pesha", order.weight]].filter(([,v]) => v && v.trim()).map(([l, v]) => (
-          <div key={l} style={{ display: "flex", justifyContent: "space-between", padding: "8px 0", borderBottom: "1px solid #F1F5F9", fontSize: 14 }}>
-            <span style={{ color: "#64748b", fontWeight: 600 }}>{l}</span>
-            <span style={{ color: "#0F172A", fontWeight: 700 }}>{v}</span>
+    <div style={{ minHeight: "100vh", background: "#F1F5F9", fontFamily: "system-ui,-apple-system,sans-serif" }}>
+      <style>{`
+        @keyframes spin    { to { transform: rotate(360deg); } }
+        @keyframes pulse   { 0%,100%{opacity:1;} 50%{opacity:.5;} }
+        @keyframes slideUp { from{opacity:0;transform:translateY(18px)} to{opacity:1;transform:none} }
+        .trk  { animation: slideUp .4s ease both; }
+        .trk1 { animation-delay:.08s; }
+        .trk2 { animation-delay:.16s; }
+        .trk3 { animation-delay:.24s; }
+      `}</style>
+
+      {/* HERO HEADER */}
+      <div style={{ background: `linear-gradient(135deg,${st.color} 0%,${st.color}aa 100%)`, padding: "36px 20px 72px", textAlign: "center", position: "relative", overflow: "hidden" }}>
+        <div style={{ position: "absolute", inset: 0, opacity: 0.07, backgroundImage: "url(\"data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none'%3E%3Cg fill='%23fff'%3E%3Cpath d='M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E\")" }} />
+        <div style={{ position: "relative", zIndex: 1 }}>
+          <div style={{ display: "inline-flex", alignItems: "center", gap: 8, background: "rgba(255,255,255,.2)", borderRadius: 50, padding: "5px 16px", marginBottom: 16 }}>
+            <span style={{ fontSize: 11, fontWeight: 800, color: "#fff", letterSpacing: 2, textTransform: "uppercase" }}>
+              {biz?.name || "DataPOS"}
+            </span>
           </div>
-        ))}
+          <div style={{ fontSize: 38, marginBottom: 8, lineHeight: 1 }}>{st.icon}</div>
+          <div style={{ fontSize: 26, fontWeight: 900, color: "#fff", letterSpacing: -0.5 }}>Gjurmimi i Porosisë</div>
+          <div style={{ fontSize: 15, color: "rgba(255,255,255,.8)", marginTop: 5, fontWeight: 600, letterSpacing: 0.5 }}>
+            #{order.orderNo || order.id.slice(-8).toUpperCase()}
+          </div>
+        </div>
+      </div>
+
+      <div style={{ padding: "0 16px 40px", maxWidth: 480, margin: "0 auto", marginTop: -44 }}>
+
+        {/* STATUS TIMELINE CARD */}
+        <div className="trk" style={{ background: "#fff", borderRadius: 22, boxShadow: "0 8px 40px rgba(0,0,0,.13)", overflow: "hidden", marginBottom: 14 }}>
+          <div style={{ height: 5, background: `linear-gradient(90deg,${st.color},${st.color}88)` }} />
+          <div style={{ padding: "22px 22px 26px" }}>
+
+            {/* Badge */}
+            <div style={{ display: "flex", alignItems: "center", gap: 14, marginBottom: 26, paddingBottom: 20, borderBottom: "1px solid #F1F5F9" }}>
+              <div style={{ width: 54, height: 54, borderRadius: 16, background: st.color + "18", display: "flex", alignItems: "center", justifyContent: "center", fontSize: 26, flexShrink: 0 }}>{st.icon}</div>
+              <div style={{ flex: 1 }}>
+                <div style={{ fontSize: 11, fontWeight: 700, color: "#94A3B8", textTransform: "uppercase", letterSpacing: 1.2, marginBottom: 3 }}>Statusi Aktual</div>
+                <div style={{ fontSize: 21, fontWeight: 900, color: st.color }}>{st.label}</div>
+                <div style={{ fontSize: 12, color: "#64748b", marginTop: 2, lineHeight: 1.4 }}>{st.desc}</div>
+              </div>
+              {!isDone && !isReturned && (
+                <div style={{ width: 11, height: 11, borderRadius: "50%", background: st.color, animation: "pulse 1.4s ease-in-out infinite", flexShrink: 0 }} />
+              )}
+            </div>
+
+            {/* Vertical timeline steps */}
+            <div style={{ position: "relative", paddingLeft: 56 }}>
+              <div style={{ position: "absolute", left: 19, top: 20, bottom: 20, width: 2, background: "#E2E8F0", borderRadius: 2 }} />
+              {visibleSteps.map((step, i) => {
+                const done    = i < curIdx;
+                const current = i === curIdx;
+                const future  = i > curIdx;
+                return (
+                  <div key={step.key} style={{ display: "flex", alignItems: "flex-start", marginBottom: i < visibleSteps.length - 1 ? 28 : 0, position: "relative", marginLeft: -56 }}>
+                    <div style={{
+                      width: 40, height: 40, borderRadius: "50%", flexShrink: 0, marginRight: 16,
+                      background: done ? step.color : current ? "#fff" : "#F8FAFC",
+                      border: done ? "none" : current ? `3px solid ${step.color}` : "2px solid #E2E8F0",
+                      display: "flex", alignItems: "center", justifyContent: "center",
+                      boxShadow: current ? `0 0 0 5px ${step.color}22` : "none",
+                      position: "relative", zIndex: 1, transition: "all .3s",
+                    }}>
+                      {done    && <span style={{ fontSize: 16, color: "#fff", fontWeight: 900 }}>✓</span>}
+                      {current && <span style={{ fontSize: 20 }}>{step.icon}</span>}
+                      {future  && <span style={{ fontSize: 13, color: "#CBD5E1", fontWeight: 700 }}>{i + 1}</span>}
+                    </div>
+                    <div style={{ paddingTop: 8, flex: 1 }}>
+                      <div style={{ fontSize: 14, fontWeight: current ? 800 : done ? 700 : 500, color: future ? "#94A3B8" : current ? "#0F172A" : "#475569", marginBottom: current || done ? 3 : 0 }}>{step.label}</div>
+                      {current && <div style={{ fontSize: 12, color: "#64748b", lineHeight: 1.5 }}>{step.desc}</div>}
+                      {done    && <div style={{ fontSize: 11, color: step.color, fontWeight: 700 }}>✓ Kompletuar</div>}
+                    </div>
+                  </div>
+                );
+              })}
+            </div>
+          </div>
+        </div>
+
+        {/* DETAILS CARD */}
+        {details.length > 0 && (
+          <div className="trk trk1" style={{ background: "#fff", borderRadius: 20, boxShadow: "0 4px 20px rgba(0,0,0,.07)", padding: "20px 22px", marginBottom: 14 }}>
+            <div style={{ fontSize: 11, fontWeight: 800, color: "#94A3B8", textTransform: "uppercase", letterSpacing: 1.5, marginBottom: 16 }}>Detajet e Porosisë</div>
+            {details.map(({ icon, label, val }, idx) => (
+              <div key={label} style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", padding: "10px 0", borderBottom: idx < details.length - 1 ? "1px solid #F8FAFC" : "none", gap: 16 }}>
+                <span style={{ fontSize: 13, color: "#64748b", fontWeight: 600, display: "flex", alignItems: "center", gap: 7, flexShrink: 0 }}>
+                  <span>{icon}</span>{label}
+                </span>
+                <span style={{ fontSize: 13, color: "#0F172A", fontWeight: 700, textAlign: "right", wordBreak: "break-word" }}>{val}</span>
+              </div>
+            ))}
+            <div style={{ display: "flex", justifyContent: "space-between", paddingTop: 12, borderTop: "1px solid #F1F5F9", marginTop: 4 }}>
+              <span style={{ fontSize: 12, color: "#94A3B8", fontWeight: 600 }}>📅 Data e porosisë</span>
+              <span style={{ fontSize: 12, color: "#475569", fontWeight: 700 }}>
+                {new Date(order.createdAt).toLocaleDateString("sq-AL", { day: "numeric", month: "long", year: "numeric" })}
+              </span>
+            </div>
+          </div>
+        )}
+
+        {/* BUSINESS CARD */}
+        {biz && (
+          <div className="trk trk2" style={{ background: st.color + "0e", borderRadius: 18, border: `1.5px solid ${st.color}28`, padding: "18px 20px", marginBottom: 14 }}>
+            <div style={{ display: "flex", alignItems: "center", gap: 14 }}>
+              <div style={{ width: 46, height: 46, borderRadius: 14, background: st.color, display: "flex", alignItems: "center", justifyContent: "center", fontSize: 22, flexShrink: 0 }}>🏪</div>
+              <div style={{ flex: 1, minWidth: 0 }}>
+                <div style={{ fontSize: 14, fontWeight: 900, color: "#0F172A", marginBottom: 2 }}>{biz.name}</div>
+                {biz.city && <div style={{ fontSize: 12, color: "#64748b" }}>📍 {biz.city}</div>}
+              </div>
+              {biz.phone && (
+                <a href={`tel:${biz.phone}`}
+                  style={{ background: st.color, color: "#fff", borderRadius: 12, padding: "10px 16px", fontSize: 13, fontWeight: 800, textDecoration: "none", display: "flex", alignItems: "center", gap: 6, flexShrink: 0, boxShadow: `0 4px 14px ${st.color}55` }}>
+                  📞 Na Kontakto
+                </a>
+              )}
+            </div>
+          </div>
+        )}
+
+        {/* LIVE REFRESH INDICATOR */}
+        <div className="trk trk3" style={{ textAlign: "center", paddingTop: 4 }}>
+          <div style={{ display: "inline-flex", alignItems: "center", gap: 7, background: "#fff", borderRadius: 50, padding: "7px 16px", boxShadow: "0 2px 10px rgba(0,0,0,.07)", fontSize: 11, color: "#94A3B8", fontWeight: 600 }}>
+            <span style={{ width: 7, height: 7, borderRadius: "50%", background: "#10B981", display: "inline-block", animation: "pulse 2s ease-in-out infinite" }} />
+            Rifresohet çdo 30 sekënd
+            {lastUpdated && <span style={{ color: "#CBD5E1" }}>• {lastUpdated.toLocaleTimeString("sq-AL")}</span>}
+          </div>
+        </div>
+
       </div>
     </div>
   );
 }
+
 
 export default function DataPhone() {
   // accounts is shared — both admin and businesses share this list
